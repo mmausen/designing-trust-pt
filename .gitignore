@@ -1,0 +1,18 @@
+# ── participant data: never commit ──────────────────────────────────
+# The collector writes real session data into logs/. Only the folder's
+# own README and .gitignore are tracked (see logs/.gitignore).
+logs/**/*.json
+logs/**/*.jsonl
+logs/**/*.tmp
+
+# ── dependencies / build ────────────────────────────────────────────
+node_modules/
+package-lock.json
+
+# ── OS / editor noise ───────────────────────────────────────────────
+.DS_Store
+*.swp
+*~
+
+# ── local tool state (machine-specific, not shared) ─────────────────
+.claude/settings.local.json

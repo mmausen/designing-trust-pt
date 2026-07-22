@@ -1,0 +1,3052 @@
+{
+  "meta": {
+    "name": {
+      "de": "Sortieraufgaben – Kategorie A: Prozess-Reihenfolgen",
+      "en": "Sorting Tasks – Category A: Process Sequences"
+    },
+    "languages": [
+      "de",
+      "en"
+    ],
+    "revision": 4,
+    "variant": "thoughts",
+    "tileCount": 6,
+    "notes": "Bilingual. STRUCTURE IS SHARED, PROSE IS PER LANGUAGE: id, tiles[].key and scriptedError.swapKeys appear exactly once, so they can never diverge between languages. tiles[].key = correct 0-based target position; the prototype shuffles the tiles deterministically. tiles[].<lang>.thought = plausible first-person reasoning for the correct placement. scriptedError.swapKeys = the position pair swapped when a stage sets aiError; <lang>.wrongThought = the convincing but wrong justification for that swapped order.",
+    "sourceNotes": {
+      "de": "tiles[].key = korrekte Zielposition (0–5). Im Prototyp werden die Kacheln zufällig gemischt präsentiert. Alle Reihenfolgen sind streng erzwungen: Jede Kachel setzt die vorherige logisch, physisch oder per expliziter Textreferenz voraus. tiles[].thought = plausibler Gedanke (Ich-Perspektive) zur korrekten Platzierung der Kachel. scriptedError.swapKeys benennt das Positionspaar für die manipulierte Empfehlung; scriptedError.wrongThought = überzeugend klingende, aber falsche Begründung, die die vertauschte Reihenfolge rechtfertigt.",
+      "en": "tiles[].key = correct target position (0–5). In the prototype the tiles are presented in random order. All sequences are strictly forced: each tile logically, physically, or via an explicit textual reference presupposes the previous one. tiles[].thought = a plausible first-person thought justifying the correct placement of the tile. scriptedError.swapKeys names the position pair used for the manipulated recommendation; scriptedError.wrongThought = a convincing-sounding but incorrect justification for the swapped order."
+    }
+  },
+  "tasks": [
+    {
+      "id": "A01",
+      "de": {
+        "title": "Die Post muss raus",
+        "description": "Ein wichtiger Brief an einen Kunden muss heute noch raus. Bitte bringen Sie die folgenden Schritte in die richtige Reihenfolge."
+      },
+      "en": {
+        "title": "The Mail Has to Go Out",
+        "description": "An important letter to a client needs to go out today. Please put the following steps in the right order."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          3,
+          4
+        ],
+        "de": {
+          "pair": [
+            "Brief in den Umschlag stecken",
+            "Umschlag zukleben"
+          ],
+          "rationale": "Physisch unmöglich (in zugeklebten Umschlag stecken), aber beide Schritte betreffen den Umschlag und verschwimmen beim schnellen Lesen.",
+          "wrongThought": "Ich bereite den Umschlag komplett vor und klebe ihn zu – dann muss der Brief später nur noch rein und raus."
+        },
+        "en": {
+          "pair": [
+            "Put the letter in the envelope",
+            "Seal the envelope"
+          ],
+          "rationale": "Physically impossible (putting a letter into a sealed envelope), but both steps involve the envelope and blur together when read quickly.",
+          "wrongThought": "I'll get the envelope fully ready and seal it — then the letter just has to slip in and out later."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Brief am Computer schreiben",
+            "thought": "Ohne Text kein Brief – zuerst muss ich ihn am Computer verfassen."
+          },
+          "en": {
+            "text": "Write the letter on the computer",
+            "thought": "No text, no letter — first I have to write it on the computer."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Brief ausdrucken",
+            "thought": "Nur was geschrieben ist, kann ich ausdrucken."
+          },
+          "en": {
+            "text": "Print the letter",
+            "thought": "I can only print what's been written."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Brief unterschreiben",
+            "thought": "Die Unterschrift gehört aufs gedruckte Papier."
+          },
+          "en": {
+            "text": "Sign the letter",
+            "thought": "The signature goes on the printed page."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Brief in den Umschlag stecken",
+            "thought": "Der unterschriebene Brief kommt jetzt in den Umschlag."
+          },
+          "en": {
+            "text": "Put the letter in the envelope",
+            "thought": "The signed letter now goes into the envelope."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Umschlag zukleben",
+            "thought": "Erst wenn der Brief drin ist, klebe ich den Umschlag zu."
+          },
+          "en": {
+            "text": "Seal the envelope",
+            "thought": "Once the letter is inside, I seal the envelope."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Brief in den Briefkasten werfen",
+            "thought": "Verschlossen und fertig – ab in den Briefkasten."
+          },
+          "en": {
+            "text": "Drop the letter in the mailbox",
+            "thought": "Sealed and done — off to the mailbox."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A02",
+      "de": {
+        "title": "Verstärkung fürs Team",
+        "description": "Ihr Team bekommt eine neue Kollegin. Bitte ordnen Sie die Schritte des Einstellungsprozesses vom Anfang bis zum Ende."
+      },
+      "en": {
+        "title": "Reinforcements for the Team",
+        "description": "Your team is getting a new colleague. Please order the steps of the hiring process from start to finish."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          1,
+          2
+        ],
+        "de": {
+          "pair": [
+            "Bewerbungen sichten",
+            "Passende Kandidatin zum Gespräch einladen"
+          ],
+          "rationale": "Objektiv falsch – die passende Kandidatin ergibt sich erst aus dem Sichten –, wirkt aber effizient.",
+          "wrongThought": "Vielversprechende Kandidatinnen lade ich sofort ein – gründlich sichten kann ich die restlichen Bewerbungen später."
+        },
+        "en": {
+          "pair": [
+            "Review the applications",
+            "Invite the right candidate to an interview"
+          ],
+          "rationale": "Objectively wrong — the right candidate only emerges from reviewing — but it feels efficient.",
+          "wrongThought": "I'll invite promising candidates right away — I can review the remaining applications thoroughly later."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Stellenanzeige veröffentlichen",
+            "thought": "Ohne Anzeige gibt es keine Bewerbungen – damit fängt alles an."
+          },
+          "en": {
+            "text": "Post the job ad",
+            "thought": "No ad, no applications — that's where it all starts."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Bewerbungen sichten",
+            "thought": "Jetzt schaue ich mir an, wer sich beworben hat."
+          },
+          "en": {
+            "text": "Review the applications",
+            "thought": "Now I take a look at who applied."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Passende Kandidatin zum Gespräch einladen",
+            "thought": "Die beste Bewerbung ist gefunden – die Kandidatin lade ich ein."
+          },
+          "en": {
+            "text": "Invite the right candidate to an interview",
+            "thought": "The best application is found — I invite that candidate."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Vorstellungsgespräch führen",
+            "thought": "Beim Termin lernen wir uns im Gespräch kennen."
+          },
+          "en": {
+            "text": "Hold the interview",
+            "thought": "At the meeting we get to know each other."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Arbeitsvertrag unterschreiben",
+            "thought": "Das Gespräch war überzeugend – jetzt wird der Vertrag unterschrieben."
+          },
+          "en": {
+            "text": "Sign the employment contract",
+            "thought": "The interview was convincing — now the contract gets signed."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Erster Arbeitstag",
+            "thought": "Mit Vertrag in der Tasche startet sie in ihren ersten Arbeitstag."
+          },
+          "en": {
+            "text": "First day at work",
+            "thought": "Contract in hand, she starts her first day."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A03",
+      "de": {
+        "title": "Endlich Urlaub",
+        "description": "Sie möchten zwei Wochen an den Strand. Bitte ordnen Sie die Schritte Ihres Urlaubsantrags chronologisch."
+      },
+      "en": {
+        "title": "Vacation at Last",
+        "description": "You want two weeks at the beach. Please order the steps of your vacation request chronologically."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Genehmigung erhalten",
+            "Abwesenheitsnotiz mit den genehmigten Daten einrichten"
+          ],
+          "rationale": "Objektiv falsch (genehmigte Daten existieren erst nach der Genehmigung), aber im Alltag wird die Notiz oft früh eingerichtet.",
+          "wrongThought": "Die Abwesenheitsnotiz richte ich direkt mit ein, dann ist das erledigt – die Genehmigung ist ja reine Formsache."
+        },
+        "en": {
+          "pair": [
+            "Receive approval",
+            "Set up an out-of-office note with the approved dates"
+          ],
+          "rationale": "Objectively wrong (approved dates only exist after approval), but in daily life the note often gets set up early.",
+          "wrongThought": "I'll set up the out-of-office note right away, then it's done — the approval is just a formality anyway."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Urlaubsantrag ausfüllen",
+            "thought": "Zuerst fülle ich den Antrag mit meinen Wunschdaten aus."
+          },
+          "en": {
+            "text": "Fill out the vacation request",
+            "thought": "First I fill in the request with my preferred dates."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Antrag bei der Chefin einreichen",
+            "thought": "Der fertige Antrag geht zur Chefin."
+          },
+          "en": {
+            "text": "Submit the request to your manager",
+            "thought": "The completed request goes to my manager."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Genehmigung erhalten",
+            "thought": "Jetzt heißt es warten, bis die Genehmigung da ist."
+          },
+          "en": {
+            "text": "Receive approval",
+            "thought": "Now I wait for the approval to come through."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Abwesenheitsnotiz mit den genehmigten Daten einrichten",
+            "thought": "Mit den genehmigten Daten richte ich meine Abwesenheitsnotiz ein."
+          },
+          "en": {
+            "text": "Set up an out-of-office note with the approved dates",
+            "thought": "With the approved dates I set up my out-of-office note."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Urlaub antreten",
+            "thought": "Alles geregelt – der Urlaub kann beginnen."
+          },
+          "en": {
+            "text": "Start the vacation",
+            "thought": "Everything's sorted — the vacation can begin."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Erholt ins Büro zurückkehren",
+            "thought": "Nach zwei Wochen Strand geht es erholt zurück ins Büro."
+          },
+          "en": {
+            "text": "Return to the office refreshed",
+            "thought": "After two weeks at the beach, back to the office feeling refreshed."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A04",
+      "de": {
+        "title": "Die große Kaffeerunde",
+        "description": "Sie sind heute mit dem Kaffeeholen für das Team dran. Bitte bringen Sie die Schritte in die richtige Reihenfolge."
+      },
+      "en": {
+        "title": "The Big Coffee Run",
+        "description": "It's your turn to grab coffee for the team today. Please put the steps in the right order."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Kaffee bestellen",
+            "Fertige Becher entgegennehmen"
+          ],
+          "rationale": "Physisch unmöglich, aber beide Schritte spielen am Tresen und verschwimmen beim schnellen Lesen.",
+          "wrongThought": "Am Tresen stehen oft schon fertige Becher bereit – die nehme ich direkt mit und bestelle den Rest dazu."
+        },
+        "en": {
+          "pair": [
+            "Order the coffees",
+            "Pick up the finished cups"
+          ],
+          "rationale": "Physically impossible, but both steps happen at the counter and blur together when read quickly.",
+          "wrongThought": "There are often finished cups already sitting at the counter — I'll grab those and order the rest on top."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Bestellungen der Kollegen notieren",
+            "thought": "Zuerst notiere ich, was alle trinken wollen."
+          },
+          "en": {
+            "text": "Note down the colleagues' orders",
+            "thought": "First I write down what everyone wants."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Mit der Bestellliste zum Café gehen",
+            "thought": "Mit der Liste in der Hand mache ich mich auf den Weg."
+          },
+          "en": {
+            "text": "Head to the café with the order list",
+            "thought": "List in hand, I set off."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Kaffee bestellen",
+            "thought": "Am Tresen gebe ich die Bestellung auf."
+          },
+          "en": {
+            "text": "Order the coffees",
+            "thought": "At the counter I place the order."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Fertige Becher entgegennehmen",
+            "thought": "Die fertigen Becher nehme ich entgegen."
+          },
+          "en": {
+            "text": "Pick up the finished cups",
+            "thought": "I collect the finished cups."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Becher ins Büro tragen",
+            "thought": "Vorsichtig balanciere ich alles zurück ins Büro."
+          },
+          "en": {
+            "text": "Carry the cups back to the office",
+            "thought": "Carefully I balance everything back to the office."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Kaffee an die Kollegen verteilen",
+            "thought": "Jeder bekommt seinen Kaffee – Mission erfüllt."
+          },
+          "en": {
+            "text": "Hand out the coffees to the colleagues",
+            "thought": "Everyone gets their coffee — mission accomplished."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A05",
+      "de": {
+        "title": "Bildschirm bleibt schwarz",
+        "description": "Ihr Monitor bleibt dunkel. Bitte ordnen Sie den Weg durch den IT-Support chronologisch."
+      },
+      "en": {
+        "title": "Screen Stays Black",
+        "description": "Your monitor stays dark. Please order the path through IT support chronologically."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Terminvorschlag der IT erhalten",
+            "Termin bestätigen"
+          ],
+          "rationale": "Objektiv falsch (man kann keinen Termin bestätigen, der noch nicht vorgeschlagen wurde), aber beide Kacheln sind kurze Termin-Schritte.",
+          "wrongThought": "Ich bestätige am besten sofort meine Verfügbarkeit – dann kann die IT ihren Terminvorschlag direkt daran ausrichten."
+        },
+        "en": {
+          "pair": [
+            "Receive a proposed appointment from IT",
+            "Confirm the appointment"
+          ],
+          "rationale": "Objectively wrong (you can't confirm an appointment that hasn't been proposed yet), but both tiles are short appointment steps.",
+          "wrongThought": "I'd better confirm my availability right away — then IT can line up its proposed time to match it."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Defekt am Monitor bemerken",
+            "thought": "Der Monitor bleibt schwarz – da stimmt etwas nicht."
+          },
+          "en": {
+            "text": "Notice the monitor is broken",
+            "thought": "The monitor stays black — something's wrong here."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Ticket bei der IT erstellen",
+            "thought": "Dafür ist die IT zuständig – ich erstelle ein Ticket."
+          },
+          "en": {
+            "text": "Create a ticket with IT",
+            "thought": "That's IT's job — I'll create a ticket."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Terminvorschlag der IT erhalten",
+            "thought": "Die IT meldet sich mit einem Terminvorschlag."
+          },
+          "en": {
+            "text": "Receive a proposed appointment from IT",
+            "thought": "IT gets back to me with a proposed time."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Termin bestätigen",
+            "thought": "Der Vorschlag passt – ich bestätige den Termin."
+          },
+          "en": {
+            "text": "Confirm the appointment",
+            "thought": "The time works — I confirm the appointment."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Monitor reparieren lassen",
+            "thought": "Zum Termin wird der Monitor repariert."
+          },
+          "en": {
+            "text": "Have the monitor repaired",
+            "thought": "At the appointment the monitor gets fixed."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Reparatur testen und Ticket schließen",
+            "thought": "Alles funktioniert wieder – ich teste kurz und schließe das Ticket."
+          },
+          "en": {
+            "text": "Test the repair and close the ticket",
+            "thought": "Everything works again — I do a quick test and close the ticket."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A06",
+      "de": {
+        "title": "Das Taxi zahlt die Firma",
+        "description": "Nach der Dienstreise möchten Sie Ihre Auslagen zurück. Bitte ordnen Sie die Schritte der Spesenabrechnung."
+      },
+      "en": {
+        "title": "The Company Pays for the Taxi",
+        "description": "After the business trip you want your expenses back. Please order the steps of the expense claim."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          1,
+          2
+        ],
+        "de": {
+          "pair": [
+            "Quittung einscannen",
+            "Scan an das Spesenformular anhängen"
+          ],
+          "rationale": "Objektiv falsch (der Scan existiert vor dem Anhängen), aber beide Schritte betreffen den Scan und verschwimmen beim schnellen Lesen.",
+          "wrongThought": "Ich bereite erst das Formular mit allen Anhängen vor und scanne die Quittung dann in einem Rutsch dazu."
+        },
+        "en": {
+          "pair": [
+            "Scan the receipt",
+            "Attach the scan to the expense form"
+          ],
+          "rationale": "Objectively wrong (the scan exists before it can be attached), but both steps involve the scan and blur together when read quickly.",
+          "wrongThought": "I'll prep the form with all its attachments first and scan the receipt straight into it in one go."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Taxi-Quittung erhalten",
+            "thought": "Die Taxi-Quittung hebe ich gut auf."
+          },
+          "en": {
+            "text": "Receive the taxi receipt",
+            "thought": "I keep the taxi receipt safe."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Quittung einscannen",
+            "thought": "Die Quittung scanne ich als Erstes ein."
+          },
+          "en": {
+            "text": "Scan the receipt",
+            "thought": "First thing, I scan the receipt."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Scan an das Spesenformular anhängen",
+            "thought": "Den Scan hänge ich an das Spesenformular an."
+          },
+          "en": {
+            "text": "Attach the scan to the expense form",
+            "thought": "I attach the scan to the expense form."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Abrechnung einreichen",
+            "thought": "Das vollständige Formular reiche ich ein."
+          },
+          "en": {
+            "text": "Submit the claim",
+            "thought": "I submit the completed form."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Genehmigung erhalten",
+            "thought": "Die Abrechnung wird genehmigt."
+          },
+          "en": {
+            "text": "Receive approval",
+            "thought": "The claim gets approved."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Erstattung auf dem Konto sehen",
+            "thought": "Das Geld ist auf dem Konto – erledigt."
+          },
+          "en": {
+            "text": "See the reimbursement in your account",
+            "thought": "The money's in the account — done."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A07",
+      "de": {
+        "title": "Alle an einen Tisch",
+        "description": "Sie organisieren das Quartalsmeeting. Bitte bringen Sie die Schritte in die richtige Reihenfolge."
+      },
+      "en": {
+        "title": "Everyone Around the Table",
+        "description": "You're organizing the quarterly meeting. Please put the steps in the right order."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          0,
+          1
+        ],
+        "de": {
+          "pair": [
+            "Verfügbarkeiten im Team abfragen",
+            "Termin anhand der Rückmeldungen festlegen"
+          ],
+          "rationale": "Objektiv falsch (die Rückmeldungen existieren erst nach der Abfrage), aber Termin-zuerst ist verbreitete Praxis und wird leicht durchgewinkt.",
+          "wrongThought": "Ich setze einfach einen Termin – wer nicht kann, meldet sich schon. Das spart eine ganze Abfragerunde."
+        },
+        "en": {
+          "pair": [
+            "Ask the team for their availability",
+            "Set the date based on the responses"
+          ],
+          "rationale": "Objectively wrong (the responses only exist after asking), but date-first is common practice and easily waved through.",
+          "wrongThought": "I'll just set a date — whoever can't make it will speak up. That saves a whole round of asking."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Verfügbarkeiten im Team abfragen",
+            "thought": "Zuerst frage ich, wann alle Zeit haben."
+          },
+          "en": {
+            "text": "Ask the team for their availability",
+            "thought": "First I ask when everyone's free."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Termin anhand der Rückmeldungen festlegen",
+            "thought": "Aus den Rückmeldungen ergibt sich der beste Termin."
+          },
+          "en": {
+            "text": "Set the date based on the responses",
+            "thought": "The responses point to the best date."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Einladungen verschicken",
+            "thought": "Der Termin steht – die Einladungen gehen raus."
+          },
+          "en": {
+            "text": "Send out the invitations",
+            "thought": "The date's set — invitations go out."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Zusagen sammeln",
+            "thought": "Jetzt sammle ich die Zusagen ein."
+          },
+          "en": {
+            "text": "Collect the confirmations",
+            "thought": "Now I gather the confirmations."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Meeting durchführen",
+            "thought": "Alle sind da – das Meeting läuft."
+          },
+          "en": {
+            "text": "Hold the meeting",
+            "thought": "Everyone's here — the meeting's on."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Protokoll versenden",
+            "thought": "Zum Abschluss verschicke ich das Protokoll."
+          },
+          "en": {
+            "text": "Send out the minutes",
+            "thought": "To wrap up, I send out the minutes."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A08",
+      "de": {
+        "title": "Der große Auftritt",
+        "description": "Nächste Woche präsentieren Sie vor dem Kunden. Bitte ordnen Sie die Schritte der Vorbereitung und Durchführung."
+      },
+      "en": {
+        "title": "The Big Presentation",
+        "description": "Next week you're presenting to the client. Please order the steps of preparation and delivery."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          0,
+          1
+        ],
+        "de": {
+          "pair": [
+            "Thema recherchieren",
+            "Folien aus den Rechercheergebnissen erstellen"
+          ],
+          "rationale": "Objektiv falsch (die Folien bauen auf den Rechercheergebnissen auf), aber mit Folien zu starten ist gängige Praxis.",
+          "wrongThought": "Ich lege direkt mit den Folien los – das Grundgerüst steht ja, die Details recherchiere ich nebenbei."
+        },
+        "en": {
+          "pair": [
+            "Research the topic",
+            "Build the slides from the research findings"
+          ],
+          "rationale": "Objectively wrong (the slides build on the research findings), but starting with slides is common practice.",
+          "wrongThought": "I'll dive straight into the slides — the framework's there, and I can research the details along the way."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Thema recherchieren",
+            "thought": "Zuerst brauche ich Fakten – also recherchieren."
+          },
+          "en": {
+            "text": "Research the topic",
+            "thought": "First I need facts — so, research."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Folien aus den Rechercheergebnissen erstellen",
+            "thought": "Aus den Ergebnissen baue ich die Folien."
+          },
+          "en": {
+            "text": "Build the slides from the research findings",
+            "thought": "From the findings I build the slides."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Probelauf vor Kollegen halten",
+            "thought": "Vor den Kollegen probe ich den Auftritt."
+          },
+          "en": {
+            "text": "Do a dry run in front of colleagues",
+            "thought": "I rehearse the whole thing for colleagues."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Feedback aus dem Probelauf einarbeiten",
+            "thought": "Ihr Feedback arbeite ich in die Folien ein."
+          },
+          "en": {
+            "text": "Work in the feedback from the dry run",
+            "thought": "I fold their feedback into the slides."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Präsentation beim Kunden halten",
+            "thought": "Jetzt bin ich bereit für den Kunden."
+          },
+          "en": {
+            "text": "Deliver the presentation to the client",
+            "thought": "Now I'm ready for the client."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Folien im Nachgang an den Kunden verschicken",
+            "thought": "Im Nachgang schicke ich dem Kunden die Folien."
+          },
+          "en": {
+            "text": "Send the slides to the client afterwards",
+            "thought": "Afterwards I send the client the slides."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A09",
+      "de": {
+        "title": "Überraschung in der Küche",
+        "description": "Ihre Kollegin hat Geburtstag. Bitte ordnen Sie die Schritte der Büro-Überraschung chronologisch."
+      },
+      "en": {
+        "title": "Surprise in the Kitchen",
+        "description": "Your colleague has a birthday. Please order the steps of the office surprise chronologically."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          4,
+          5
+        ],
+        "de": {
+          "pair": [
+            "Kuchen anschneiden",
+            "Kuchenstücke an die Kollegen verteilen"
+          ],
+          "rationale": "Physisch unmöglich (Stücke existieren erst nach dem Anschneiden), aber beide Kacheln sind Kuchen-Schritte und verschwimmen.",
+          "wrongThought": "Beim Verteilen schneide ich einfach Stück für Stück ab – das spart einen extra Schritt."
+        },
+        "en": {
+          "pair": [
+            "Cut the cake",
+            "Hand out the cake slices to the colleagues"
+          ],
+          "rationale": "Physically impossible (slices only exist after cutting), but both tiles are cake steps and blur together.",
+          "wrongThought": "As I hand it out I'll just slice off piece by piece — that saves an extra step."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Geburtstag im Kalender entdecken",
+            "thought": "Im Kalender sehe ich: Sie hat Geburtstag!"
+          },
+          "en": {
+            "text": "Spot the birthday in the calendar",
+            "thought": "The calendar shows it: it's her birthday!"
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Zutaten für den Kuchen einkaufen",
+            "thought": "Für den Kuchen kaufe ich die Zutaten ein."
+          },
+          "en": {
+            "text": "Buy the ingredients for the cake",
+            "thought": "For the cake I buy the ingredients."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Kuchen backen",
+            "thought": "Zu Hause wird gebacken."
+          },
+          "en": {
+            "text": "Bake the cake",
+            "thought": "Back home, baking time."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Kuchen ins Büro bringen",
+            "thought": "Den fertigen Kuchen bringe ich ins Büro."
+          },
+          "en": {
+            "text": "Bring the cake to the office",
+            "thought": "I bring the finished cake to the office."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Kuchen anschneiden",
+            "thought": "In der Küche schneide ich ihn an."
+          },
+          "en": {
+            "text": "Cut the cake",
+            "thought": "In the kitchen I cut it."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Kuchenstücke an die Kollegen verteilen",
+            "thought": "Die Stücke verteile ich an die Kollegen."
+          },
+          "en": {
+            "text": "Hand out the cake slices to the colleagues",
+            "thought": "I hand the slices out to the colleagues."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A10",
+      "de": {
+        "title": "Das Firmenfahrzeug",
+        "description": "Für einen Auswärtstermin benötigen Sie das Firmenfahrzeug. Bitte ordnen Sie die Schritte chronologisch."
+      },
+      "en": {
+        "title": "The Company Car",
+        "description": "You need the company car for an off-site appointment. Please order the steps chronologically."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          0,
+          1
+        ],
+        "de": {
+          "pair": [
+            "Firmenfahrzeug im Buchungssystem reservieren",
+            "Schlüssel zur Reservierung am Empfang abholen"
+          ],
+          "rationale": "Objektiv falsch (der Empfang gibt den Schlüssel nur gegen eine bestehende Reservierung heraus), wirkt aber pragmatisch.",
+          "wrongThought": "Ich schnappe mir erst den Schlüssel, solange das Auto frei ist – die Buchung trage ich danach im System nach."
+        },
+        "en": {
+          "pair": [
+            "Reserve the company car in the booking system",
+            "Pick up the key for the reservation at reception"
+          ],
+          "rationale": "Objectively wrong (reception only hands out the key against an existing reservation), but it feels pragmatic.",
+          "wrongThought": "I'll grab the key first while the car's free — I can log the booking in the system afterwards."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Firmenfahrzeug im Buchungssystem reservieren",
+            "thought": "Ohne Reservierung kein Auto – ich buche im System."
+          },
+          "en": {
+            "text": "Reserve the company car in the booking system",
+            "thought": "No reservation, no car — I book it in the system."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Schlüssel zur Reservierung am Empfang abholen",
+            "thought": "Mit der Reservierung hole ich den Schlüssel am Empfang."
+          },
+          "en": {
+            "text": "Pick up the key for the reservation at reception",
+            "thought": "With the reservation I pick up the key at reception."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Zum Auswärtstermin fahren",
+            "thought": "Jetzt fahre ich los zum Termin."
+          },
+          "en": {
+            "text": "Drive to the off-site appointment",
+            "thought": "Now I set off for the appointment."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Termin wahrnehmen",
+            "thought": "Vor Ort nehme ich den Termin wahr."
+          },
+          "en": {
+            "text": "Attend the appointment",
+            "thought": "On site I attend the appointment."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Zurück zur Firma fahren",
+            "thought": "Danach geht es zurück zur Firma."
+          },
+          "en": {
+            "text": "Drive back to the company",
+            "thought": "Then it's back to the company."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Schlüssel am Empfang abgeben",
+            "thought": "Den Schlüssel gebe ich am Empfang ab."
+          },
+          "en": {
+            "text": "Return the key at reception",
+            "thought": "I hand the key back at reception."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A11",
+      "de": {
+        "title": "Der erste Tag",
+        "description": "Eine neue Kollegin hat heute ihren ersten Arbeitstag. Bitte bringen Sie ihren Vormittag in die richtige Reihenfolge."
+      },
+      "en": {
+        "title": "The First Day",
+        "description": "A new colleague is having her first day today. Please put her morning in the right order."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          4,
+          5
+        ],
+        "de": {
+          "pair": [
+            "Willkommensmail des Teams lesen",
+            "Willkommensmail beantworten"
+          ],
+          "rationale": "Logisch unmöglich (antworten setzt Lesen voraus), aber beide Kacheln betreffen dieselbe Mail und verschwimmen beim schnellen Lesen.",
+          "wrongThought": "Kurz freundlich zurückschreiben geht sofort – den Inhalt in Ruhe lesen kann sie danach."
+        },
+        "en": {
+          "pair": [
+            "Read the team's welcome email",
+            "Reply to the welcome email"
+          ],
+          "rationale": "Logically impossible (replying presupposes reading), but both tiles involve the same email and blur together when read quickly.",
+          "wrongThought": "A quick friendly reply can go out right away — she can read the whole thing properly afterwards."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Bürogebäude betreten",
+            "thought": "Sie betritt zum ersten Mal das Bürogebäude."
+          },
+          "en": {
+            "text": "Enter the office building",
+            "thought": "She walks into the office building for the first time."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Laptop von der IT entgegennehmen",
+            "thought": "Bei der IT wartet ihr neuer Laptop."
+          },
+          "en": {
+            "text": "Pick up the laptop from IT",
+            "thought": "Her new laptop is waiting at IT."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Erst-Passwort ändern",
+            "thought": "Als Erstes muss das Erst-Passwort geändert werden."
+          },
+          "en": {
+            "text": "Change the initial password",
+            "thought": "First thing, the initial password has to be changed."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "E-Mail-Postfach öffnen",
+            "thought": "Mit dem neuen Passwort öffnet sie ihr Postfach."
+          },
+          "en": {
+            "text": "Open the email inbox",
+            "thought": "With the new password she opens her inbox."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Willkommensmail des Teams lesen",
+            "thought": "Dort wartet die Willkommensmail des Teams."
+          },
+          "en": {
+            "text": "Read the team's welcome email",
+            "thought": "The team's welcome email is waiting there."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Willkommensmail beantworten",
+            "thought": "Auf die nette Mail antwortet sie natürlich."
+          },
+          "en": {
+            "text": "Reply to the welcome email",
+            "thought": "She replies to the nice email, of course."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A12",
+      "de": {
+        "title": "Eine Rechnung flattert rein",
+        "description": "In der Buchhaltung landet eine neue Eingangsrechnung. Bitte ordnen Sie die Bearbeitungsschritte."
+      },
+      "en": {
+        "title": "An Invoice Lands on Your Desk",
+        "description": "A new incoming invoice arrives in accounting. Please order the processing steps."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          1,
+          2
+        ],
+        "de": {
+          "pair": [
+            "Rechnung inhaltlich prüfen",
+            "Geprüfte Rechnung zur Freigabe vorlegen"
+          ],
+          "rationale": "Objektiv falsch (nur eine geprüfte Rechnung kann vorgelegt werden), aber Freigabe-vor-Prüfung ist der klassische Stempel-Fehler.",
+          "wrongThought": "Ich hole die Freigabe schon mal ein, dann verliert der Vorgang keine Zeit – prüfen kann ich parallel."
+        },
+        "en": {
+          "pair": [
+            "Check the invoice for accuracy",
+            "Submit the checked invoice for approval"
+          ],
+          "rationale": "Objectively wrong (only a checked invoice can be submitted), but approval-before-checking is the classic rubber-stamp mistake.",
+          "wrongThought": "I'll get the approval going already so the case doesn't lose time — I can check it in parallel."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Rechnung per Post erhalten",
+            "thought": "Die Rechnung liegt auf dem Tisch – los geht's."
+          },
+          "en": {
+            "text": "Receive the invoice by mail",
+            "thought": "The invoice is on the desk — let's get going."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Rechnung inhaltlich prüfen",
+            "thought": "Erst prüfe ich, ob alles stimmt."
+          },
+          "en": {
+            "text": "Check the invoice for accuracy",
+            "thought": "First I check whether everything's correct."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Geprüfte Rechnung zur Freigabe vorlegen",
+            "thought": "Die geprüfte Rechnung lege ich zur Freigabe vor."
+          },
+          "en": {
+            "text": "Submit the checked invoice for approval",
+            "thought": "I submit the checked invoice for approval."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Betrag überweisen",
+            "thought": "Nach der Freigabe überweise ich den Betrag."
+          },
+          "en": {
+            "text": "Transfer the amount",
+            "thought": "Once approved, I transfer the amount."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Zahlungsbestätigung erhalten",
+            "thought": "Die Zahlungsbestätigung kommt herein."
+          },
+          "en": {
+            "text": "Receive the payment confirmation",
+            "thought": "The payment confirmation comes in."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Vorgang archivieren",
+            "thought": "Der Vorgang wandert ins Archiv."
+          },
+          "en": {
+            "text": "Archive the case",
+            "thought": "The case goes into the archive."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A13",
+      "de": {
+        "title": "Vom Angebot zum Auftrag",
+        "description": "Ein Interessent möchte mit Ihrer Firma zusammenarbeiten. Bitte ordnen Sie den Weg vom ersten Kontakt zum Auftrag."
+      },
+      "en": {
+        "title": "From Quote to Order",
+        "description": "A prospect wants to work with your company. Please order the path from first contact to the order."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          3,
+          4
+        ],
+        "de": {
+          "pair": [
+            "Rückfragen des Kunden zum Angebot klären",
+            "Auftrag erhalten"
+          ],
+          "rationale": "Objektiv falsch (Rückfragen zum Angebot sind nach der Auftragserteilung gegenstandslos), wirkt aber kundenfreundlich-pragmatisch.",
+          "wrongThought": "Hauptsache, der Auftrag ist erst mal unter Dach und Fach – offene Fragen zum Angebot klären wir danach in Ruhe."
+        },
+        "en": {
+          "pair": [
+            "Clarify the customer's questions about the quote",
+            "Receive the order"
+          ],
+          "rationale": "Objectively wrong (questions about the quote are moot once the order is placed), but it feels customer-friendly and pragmatic.",
+          "wrongThought": "The main thing is getting the order locked in first — we can sort out any open questions about the quote afterwards."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Kundenanfrage erhalten",
+            "thought": "Eine Anfrage – da will jemand mit uns arbeiten."
+          },
+          "en": {
+            "text": "Receive the customer inquiry",
+            "thought": "An inquiry — someone wants to work with us."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Angebot kalkulieren",
+            "thought": "Ich kalkuliere ein passendes Angebot."
+          },
+          "en": {
+            "text": "Calculate the quote",
+            "thought": "I calculate a fitting quote."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Angebot verschicken",
+            "thought": "Das Angebot geht raus an den Kunden."
+          },
+          "en": {
+            "text": "Send the quote",
+            "thought": "The quote goes out to the customer."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Rückfragen des Kunden zum Angebot klären",
+            "thought": "Seine Rückfragen zum Angebot kläre ich."
+          },
+          "en": {
+            "text": "Clarify the customer's questions about the quote",
+            "thought": "I clear up their questions about the quote."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Auftrag erhalten",
+            "thought": "Überzeugt – der Auftrag kommt herein."
+          },
+          "en": {
+            "text": "Receive the order",
+            "thought": "Convinced — the order comes in."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Auftragsbestätigung senden",
+            "thought": "Ich bestätige den Auftrag schriftlich."
+          },
+          "en": {
+            "text": "Send the order confirmation",
+            "thought": "I confirm the order in writing."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A14",
+      "de": {
+        "title": "Ab zum Kundentermin",
+        "description": "Der wichtige Termin findet in einer anderen Stadt statt. Bitte ordnen Sie die Schritte der Dienstreise."
+      },
+      "en": {
+        "title": "Off to the Client Meeting",
+        "description": "The important meeting is in another city. Please order the steps of the business trip."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          1,
+          2
+        ],
+        "de": {
+          "pair": [
+            "Genehmigung erhalten",
+            "Zug und Hotel verbindlich buchen"
+          ],
+          "rationale": "Objektiv falsch (verbindliche Buchung vor Genehmigung verstößt gegen den Prozess), aber ein häufiger Alltagsverstoß mit hoher Durchwink-Chance.",
+          "wrongThought": "Die guten Verbindungen sind schnell weg – ich buche lieber sofort, die Genehmigung kommt erfahrungsgemäß sowieso."
+        },
+        "en": {
+          "pair": [
+            "Receive approval",
+            "Book the train and hotel firmly"
+          ],
+          "rationale": "Objectively wrong (firm booking before approval breaks the process), but a common everyday violation with a high chance of being waved through.",
+          "wrongThought": "The good connections sell out fast — I'd rather book right away; the approval always comes through anyway."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Dienstreise beantragen",
+            "thought": "Zuerst beantrage ich die Dienstreise."
+          },
+          "en": {
+            "text": "Request the business trip",
+            "thought": "First I request the business trip."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Genehmigung erhalten",
+            "thought": "Die Genehmigung kommt herein."
+          },
+          "en": {
+            "text": "Receive approval",
+            "thought": "The approval comes in."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Zug und Hotel verbindlich buchen",
+            "thought": "Jetzt darf ich verbindlich buchen: Zug und Hotel."
+          },
+          "en": {
+            "text": "Book the train and hotel firmly",
+            "thought": "Now I can firmly book the train and hotel."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Reise antreten",
+            "thought": "Koffer gepackt – die Reise beginnt."
+          },
+          "en": {
+            "text": "Set off on the trip",
+            "thought": "Bags packed — the trip begins."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Kundentermin wahrnehmen",
+            "thought": "Vor Ort nehme ich den Kundentermin wahr."
+          },
+          "en": {
+            "text": "Attend the client meeting",
+            "thought": "On site I attend the client meeting."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Heimreise antreten",
+            "thought": "Danach trete ich die Heimreise an."
+          },
+          "en": {
+            "text": "Head back home",
+            "thought": "Then I head back home."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A15",
+      "de": {
+        "title": "Passwort? Vergessen!",
+        "description": "Nach dem Urlaub fällt Ihnen Ihr Passwort nicht mehr ein. Bitte ordnen Sie die Schritte bis zum erfolgreichen Login."
+      },
+      "en": {
+        "title": "Password? Forgotten!",
+        "description": "After your vacation you can't remember your password. Please order the steps to a successful login."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Reset-Link per E-Mail erhalten",
+            "Reset-Link öffnen"
+          ],
+          "rationale": "Logisch unmöglich, aber beide Kacheln beginnen mit „Reset-Link“ und verschwimmen beim schnellen Lesen.",
+          "wrongThought": "Den Link klicke ich sofort an – solche Reset-Links laufen schnell ab, da zählt jede Minute."
+        },
+        "en": {
+          "pair": [
+            "Receive the reset link by email",
+            "Open the reset link"
+          ],
+          "rationale": "Logically impossible, but both tiles start with 'reset link' and blur together when read quickly.",
+          "wrongThought": "I'll click the link right away — reset links like this expire fast, so every minute counts."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Login-Seite öffnen",
+            "thought": "Ich öffne die Login-Seite wie immer."
+          },
+          "en": {
+            "text": "Open the login page",
+            "thought": "I open the login page as usual."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Auf „Passwort vergessen“ klicken",
+            "thought": "Ohne Passwort hilft nur: „Passwort vergessen“ klicken."
+          },
+          "en": {
+            "text": "Click 'Forgot password'",
+            "thought": "No password — the only way is 'Forgot password'."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Reset-Link per E-Mail erhalten",
+            "thought": "Der Reset-Link landet in meinem Postfach."
+          },
+          "en": {
+            "text": "Receive the reset link by email",
+            "thought": "The reset link lands in my inbox."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Reset-Link öffnen",
+            "thought": "Ich öffne den Link aus der Mail."
+          },
+          "en": {
+            "text": "Open the reset link",
+            "thought": "I open the link from the email."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Neues Passwort vergeben",
+            "thought": "Jetzt vergebe ich ein neues Passwort."
+          },
+          "en": {
+            "text": "Set a new password",
+            "thought": "Now I set a new password."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Mit dem neuen Passwort einloggen",
+            "thought": "Mit dem neuen Passwort klappt der Login."
+          },
+          "en": {
+            "text": "Log in with the new password",
+            "thought": "With the new password the login works."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A16",
+      "de": {
+        "title": "Der Tacker ist leer",
+        "description": "Das Büromaterial geht zur Neige. Bitte ordnen Sie die Schritte der Nachbestellung."
+      },
+      "en": {
+        "title": "The Stapler Is Empty",
+        "description": "Office supplies are running low. Please order the steps of the reorder."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          4,
+          5
+        ],
+        "de": {
+          "pair": [
+            "Pakete auspacken",
+            "Material im Schrank einräumen"
+          ],
+          "rationale": "Physisch unmöglich (eingeräumt werden kann nur Ausgepacktes), aber beide Kacheln sind Handgriffe nach der Lieferung.",
+          "wrongThought": "Ich stelle die Pakete direkt in den Schrank – ausgepackt wird bei Bedarf, das spart jetzt Zeit."
+        },
+        "en": {
+          "pair": [
+            "Unpack the parcels",
+            "Put the supplies away in the cabinet"
+          ],
+          "rationale": "Physically impossible (only unpacked items can be put away), but both tiles are handling steps after the delivery.",
+          "wrongThought": "I'll just put the parcels straight in the cabinet — I can unpack them when needed, that saves time now."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Fehlendes Büromaterial bemerken",
+            "thought": "Der Tacker ist leer – mir fällt auf, was alles fehlt."
+          },
+          "en": {
+            "text": "Notice which office supplies are missing",
+            "thought": "The stapler's empty — I notice what's all missing."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Fehlende Artikel auf die Bestellliste setzen",
+            "thought": "Die fehlenden Artikel setze ich auf die Bestellliste."
+          },
+          "en": {
+            "text": "Add the missing items to the order list",
+            "thought": "I put the missing items on the order list."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Bestellung im Onlineshop aufgeben",
+            "thought": "Die Liste bestelle ich im Onlineshop."
+          },
+          "en": {
+            "text": "Place the order in the online shop",
+            "thought": "I order the list from the online shop."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Lieferung annehmen",
+            "thought": "Ein paar Tage später nehme ich die Lieferung an."
+          },
+          "en": {
+            "text": "Accept the delivery",
+            "thought": "A few days later I accept the delivery."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Pakete auspacken",
+            "thought": "Ich packe die Pakete aus."
+          },
+          "en": {
+            "text": "Unpack the parcels",
+            "thought": "I unpack the parcels."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Material im Schrank einräumen",
+            "thought": "Alles wandert ordentlich in den Schrank."
+          },
+          "en": {
+            "text": "Put the supplies away in the cabinet",
+            "thought": "Everything goes neatly into the cabinet."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A17",
+      "de": {
+        "title": "Scannen statt stapeln",
+        "description": "Der Papierstapel auf Ihrem Schreibtisch soll digital werden. Bitte bringen Sie die Schritte in die richtige Reihenfolge."
+      },
+      "en": {
+        "title": "Scan Instead of Stack",
+        "description": "The stack of paper on your desk needs to go digital. Please put the steps in the right order."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "PDF auf dem Laufwerk speichern",
+            "E-Mail verfassen und PDF anhängen"
+          ],
+          "rationale": "Objektiv falsch (angehängt werden kann nur ein gespeichertes PDF), wirkt aber wie effizientes Parallelarbeiten.",
+          "wrongThought": "Die Mail tippe ich schon, während der Scan läuft – anhängen und speichern erledige ich dann in einem Schritt."
+        },
+        "en": {
+          "pair": [
+            "Save the PDF to the drive",
+            "Write the email and attach the PDF"
+          ],
+          "rationale": "Objectively wrong (only a saved PDF can be attached), but it feels like efficient parallel work.",
+          "wrongThought": "I'll type the email while the scan runs — attaching and saving I'll then handle in one step."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Dokument in den Einzug legen",
+            "thought": "Das Dokument lege ich in den Einzug."
+          },
+          "en": {
+            "text": "Place the document in the feeder",
+            "thought": "I place the document in the feeder."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Scan starten",
+            "thought": "Ich starte den Scan."
+          },
+          "en": {
+            "text": "Start the scan",
+            "thought": "I start the scan."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "PDF auf dem Laufwerk speichern",
+            "thought": "Das PDF speichere ich auf dem Laufwerk."
+          },
+          "en": {
+            "text": "Save the PDF to the drive",
+            "thought": "I save the PDF to the drive."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "E-Mail verfassen und PDF anhängen",
+            "thought": "Ich verfasse die E-Mail und hänge das PDF an."
+          },
+          "en": {
+            "text": "Write the email and attach the PDF",
+            "thought": "I write the email and attach the PDF."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "E-Mail an das Team senden",
+            "thought": "Die Mail geht raus ans Team."
+          },
+          "en": {
+            "text": "Send the email to the team",
+            "thought": "The email goes out to the team."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Lesebestätigung des Teams erhalten",
+            "thought": "Die Lesebestätigungen trudeln ein – erledigt."
+          },
+          "en": {
+            "text": "Receive the team's read receipts",
+            "thought": "The read receipts trickle in — done."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A18",
+      "de": {
+        "title": "Große Bühne im Videocall",
+        "description": "Sie präsentieren heute remote vor dem gesamten Bereich. Bitte ordnen Sie den Ablauf des Videocalls."
+      },
+      "en": {
+        "title": "Center Stage on the Video Call",
+        "description": "You're presenting remotely to the whole department today. Please order the flow of the video call."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Im Vorschaufenster Kamera und Mikrofon testen",
+            "Dem Call beitreten"
+          ],
+          "rationale": "Objektiv falsch (das Vorschaufenster erscheint vor dem Beitritt), aber Beitreten-dann-Testen ist verbreitete (schlechte) Praxis.",
+          "wrongThought": "Ich trete lieber sofort bei, um pünktlich zu sein – Kamera und Mikro teste ich dann schnell im Call."
+        },
+        "en": {
+          "pair": [
+            "Test camera and mic in the preview window",
+            "Join the call"
+          ],
+          "rationale": "Objectively wrong (the preview window appears before joining), but joining-then-testing is common (bad) practice.",
+          "wrongThought": "I'd rather join right away to be on time — I can quickly test camera and mic once I'm in the call."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Einladungslink erhalten",
+            "thought": "Der Einladungslink liegt in meinem Postfach."
+          },
+          "en": {
+            "text": "Receive the invitation link",
+            "thought": "The invitation link is in my inbox."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Einladungslink anklicken",
+            "thought": "Kurz vor dem Termin klicke ich den Link an."
+          },
+          "en": {
+            "text": "Click the invitation link",
+            "thought": "Just before the meeting I click the link."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Im Vorschaufenster Kamera und Mikrofon testen",
+            "thought": "Im Vorschaufenster teste ich Kamera und Mikrofon."
+          },
+          "en": {
+            "text": "Test camera and mic in the preview window",
+            "thought": "In the preview window I test camera and mic."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Dem Call beitreten",
+            "thought": "Alles läuft – ich trete dem Call bei."
+          },
+          "en": {
+            "text": "Join the call",
+            "thought": "All good — I join the call."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Bildschirm mit der Präsentation teilen",
+            "thought": "Ich teile den Bildschirm mit meiner Präsentation."
+          },
+          "en": {
+            "text": "Share your screen with the presentation",
+            "thought": "I share my screen with the presentation."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Call beenden",
+            "thought": "Nach der letzten Frage beende ich den Call."
+          },
+          "en": {
+            "text": "End the call",
+            "thought": "After the last question I end the call."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A19",
+      "de": {
+        "title": "Heute leider krank",
+        "description": "Sie wachen mit Fieber auf und benötigen eine Krankschreibung. Bitte ordnen Sie die Schritte chronologisch."
+      },
+      "en": {
+        "title": "Off Sick Today",
+        "description": "You wake up with a fever and need a doctor's note. Please order the steps chronologically."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Krankschreibung erhalten",
+            "Krankschreibung einscannen"
+          ],
+          "rationale": "Logisch unmöglich, aber beide Kacheln beginnen mit „Krankschreibung“ und verschwimmen beim schnellen Lesen.",
+          "wrongThought": "Das Einscannen erledige ich am besten direkt in der Praxis – dann ist alles durch, bevor ich das Original überhaupt einstecke."
+        },
+        "en": {
+          "pair": [
+            "Receive the doctor's note",
+            "Scan the doctor's note"
+          ],
+          "rationale": "Logically impossible, but both tiles start with 'doctor's note' and blur together when read quickly.",
+          "wrongThought": "I'll do the scanning right there at the office — then it's all through before I even pocket the original."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Mit Fieber aufwachen",
+            "thought": "Fieber – heute geht gar nichts."
+          },
+          "en": {
+            "text": "Wake up with a fever",
+            "thought": "A fever — nothing's happening today."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Arztpraxis aufsuchen",
+            "thought": "Ich schleppe mich in die Arztpraxis."
+          },
+          "en": {
+            "text": "Go to the doctor's office",
+            "thought": "I drag myself to the doctor's office."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Krankschreibung erhalten",
+            "thought": "Die Ärztin stellt die Krankschreibung aus."
+          },
+          "en": {
+            "text": "Receive the doctor's note",
+            "thought": "The doctor issues the note."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Krankschreibung einscannen",
+            "thought": "Zu Hause scanne ich die Krankschreibung ein."
+          },
+          "en": {
+            "text": "Scan the doctor's note",
+            "thought": "Back home I scan the doctor's note."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Scan an die Personalabteilung schicken",
+            "thought": "Den Scan schicke ich an die Personalabteilung."
+          },
+          "en": {
+            "text": "Send the scan to HR",
+            "thought": "I send the scan to HR."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Nach der Genesung ins Büro zurückkehren",
+            "thought": "Wieder gesund geht es zurück ins Büro."
+          },
+          "en": {
+            "text": "Return to the office once recovered",
+            "thought": "Healthy again, back to the office."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A20",
+      "de": {
+        "title": "Das geheimnisvolle Einschreiben",
+        "description": "Im Firmenbriefkasten liegt eine Benachrichtigungskarte der Post. Bitte ordnen Sie die Schritte bis zur Ablage."
+      },
+      "en": {
+        "title": "The Mysterious Registered Letter",
+        "description": "A pickup slip from the post office is in the company mailbox. Please order the steps up to filing it."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Ausweis vorzeigen",
+            "Einschreiben entgegennehmen"
+          ],
+          "rationale": "Objektiv falsch (ohne Ausweis keine Herausgabe), aber beide Schritte passieren am Schalter und verschwimmen im Gedächtnis.",
+          "wrongThought": "Am Schalter bekomme ich das Einschreiben meist direkt in die Hand – der Ausweis wird eher beiläufig danach kontrolliert."
+        },
+        "en": {
+          "pair": [
+            "Show your ID",
+            "Collect the registered letter"
+          ],
+          "rationale": "Objectively wrong (no handover without ID), but both steps happen at the counter and blur together in memory.",
+          "wrongThought": "At the counter they usually hand me the letter straight away — the ID check tends to happen casually afterwards."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Benachrichtigungskarte finden",
+            "thought": "Im Briefkasten liegt eine Benachrichtigungskarte."
+          },
+          "en": {
+            "text": "Find the pickup slip",
+            "thought": "There's a pickup slip in the mailbox."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Zur Postfiliale gehen",
+            "thought": "Also auf zur Postfiliale."
+          },
+          "en": {
+            "text": "Go to the post office",
+            "thought": "So, off to the post office."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Ausweis vorzeigen",
+            "thought": "Am Schalter zeige ich meinen Ausweis vor."
+          },
+          "en": {
+            "text": "Show your ID",
+            "thought": "At the counter I show my ID."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Einschreiben entgegennehmen",
+            "thought": "Dann bekomme ich das Einschreiben ausgehändigt."
+          },
+          "en": {
+            "text": "Collect the registered letter",
+            "thought": "Then I'm handed the registered letter."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Umschlag öffnen",
+            "thought": "Zurück im Büro öffne ich den Umschlag."
+          },
+          "en": {
+            "text": "Open the envelope",
+            "thought": "Back at the office I open the envelope."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Inhalt im Ordner abheften",
+            "thought": "Der Inhalt wird ordentlich abgeheftet."
+          },
+          "en": {
+            "text": "File the contents in the binder",
+            "thought": "The contents get filed away neatly."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A21",
+      "de": {
+        "title": "Probealarm",
+        "description": "Im Bürogebäude ertönt der Feueralarm. Bitte ordnen Sie die Schritte der Evakuierungsübung."
+      },
+      "en": {
+        "title": "Fire Drill",
+        "description": "The fire alarm goes off in the office building. Please order the steps of the evacuation drill."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          3,
+          4
+        ],
+        "de": {
+          "pair": [
+            "Am Sammelpunkt melden",
+            "Entwarnung abwarten"
+          ],
+          "rationale": "Objektiv falsch (Entwarnung gibt es erst, wenn alle am Sammelpunkt erfasst sind), aber beide Kacheln sind „Warten im Freien“.",
+          "wrongThought": "Ich warte erst mal in Ruhe die Entwarnung ab – melden kann ich mich dann beim Reingehen am Sammelpunkt."
+        },
+        "en": {
+          "pair": [
+            "Check in at the assembly point",
+            "Wait for the all-clear"
+          ],
+          "rationale": "Objectively wrong (the all-clear only comes once everyone is accounted for at the assembly point), but both tiles are 'waiting outside'.",
+          "wrongThought": "I'll just wait for the all-clear first — I can check in at the assembly point on my way back in."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Alarm ertönt",
+            "thought": "Der Alarm ertönt im ganzen Gebäude."
+          },
+          "en": {
+            "text": "The alarm goes off",
+            "thought": "The alarm goes off across the whole building."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Arbeit unterbrechen",
+            "thought": "Ich unterbreche sofort meine Arbeit."
+          },
+          "en": {
+            "text": "Stop working",
+            "thought": "I stop working immediately."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Über das Treppenhaus evakuieren",
+            "thought": "Über das Treppenhaus geht es nach draußen."
+          },
+          "en": {
+            "text": "Evacuate via the stairwell",
+            "thought": "Out through the stairwell it is."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Am Sammelpunkt melden",
+            "thought": "Am Sammelpunkt melde ich mich, damit alle erfasst sind."
+          },
+          "en": {
+            "text": "Check in at the assembly point",
+            "thought": "At the assembly point I check in so everyone's accounted for."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Entwarnung abwarten",
+            "thought": "Jetzt heißt es warten auf die Entwarnung."
+          },
+          "en": {
+            "text": "Wait for the all-clear",
+            "thought": "Now it's waiting for the all-clear."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "An den Arbeitsplatz zurückkehren",
+            "thought": "Entwarnung – zurück an den Arbeitsplatz."
+          },
+          "en": {
+            "text": "Return to your workstation",
+            "thought": "All-clear — back to my workstation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A22",
+      "de": {
+        "title": "Der Newsletter muss raus",
+        "description": "Der Monats-Newsletter steht an. Bitte bringen Sie die Schritte in die richtige Reihenfolge."
+      },
+      "en": {
+        "title": "The Newsletter Has to Go Out",
+        "description": "The monthly newsletter is due. Please put the steps in the right order."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Freigabe der Chefin einholen",
+            "Freigegebenen Newsletter im Tool einplanen"
+          ],
+          "rationale": "Objektiv falsch (eingeplant wird nur Freigegebenes), aber Einplanen-vor-Freigabe ist ein typischer Prozess-Shortcut.",
+          "wrongThought": "Ich plane den Versandtermin schon mal fest ein – die Freigabe der Chefin ist erfahrungsgemäß reine Formsache."
+        },
+        "en": {
+          "pair": [
+            "Get the manager's sign-off",
+            "Schedule the approved newsletter in the tool"
+          ],
+          "rationale": "Objectively wrong (only an approved newsletter gets scheduled), but scheduling-before-sign-off is a typical process shortcut.",
+          "wrongThought": "I'll lock in the send time already — the manager's sign-off is a formality anyway."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Themen sammeln",
+            "thought": "Ich sammle Themen für die Ausgabe."
+          },
+          "en": {
+            "text": "Gather the topics",
+            "thought": "I gather topics for the issue."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Entwurf schreiben",
+            "thought": "Daraus schreibe ich den Entwurf."
+          },
+          "en": {
+            "text": "Write the draft",
+            "thought": "From those I write the draft."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Freigabe der Chefin einholen",
+            "thought": "Der Entwurf geht zur Freigabe an die Chefin."
+          },
+          "en": {
+            "text": "Get the manager's sign-off",
+            "thought": "The draft goes to the manager for sign-off."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Freigegebenen Newsletter im Tool einplanen",
+            "thought": "Den freigegebenen Newsletter plane ich im Tool ein."
+          },
+          "en": {
+            "text": "Schedule the approved newsletter in the tool",
+            "thought": "I schedule the approved newsletter in the tool."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Versand wird ausgelöst",
+            "thought": "Zum geplanten Zeitpunkt wird der Versand ausgelöst."
+          },
+          "en": {
+            "text": "The send is triggered",
+            "thought": "At the scheduled time the send is triggered."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Öffnungsrate auswerten",
+            "thought": "Danach werte ich die Öffnungsrate aus."
+          },
+          "en": {
+            "text": "Analyze the open rate",
+            "thought": "Afterwards I analyze the open rate."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A23",
+      "de": {
+        "title": "Umzug ins neue Büro",
+        "description": "Ihre Abteilung zieht ein Stockwerk höher. Bitte ordnen Sie den Umzugstag chronologisch."
+      },
+      "en": {
+        "title": "Moving to the New Office",
+        "description": "Your department is moving up one floor. Please order the moving day chronologically."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          3,
+          4
+        ],
+        "de": {
+          "pair": [
+            "Kartons wieder aufschneiden",
+            "Sachen auspacken und einräumen"
+          ],
+          "rationale": "Physisch unmöglich (aus zugeklebten Kartons kann nichts ausgepackt werden), aber beide Kacheln sind Auspack-Handgriffe.",
+          "wrongThought": "Ich packe direkt aus den Kartons aus – das bisschen Klebeband reißt beim Rausnehmen von selbst auf."
+        },
+        "en": {
+          "pair": [
+            "Cut the boxes back open",
+            "Unpack and put things away"
+          ],
+          "rationale": "Physically impossible (nothing can be unpacked from taped-up boxes), but both tiles are unpacking steps.",
+          "wrongThought": "I'll just unpack straight from the boxes — that bit of tape tears open by itself as I pull things out."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Schreibtischsachen in Kartons packen",
+            "thought": "Alles vom Schreibtisch wandert in Kartons."
+          },
+          "en": {
+            "text": "Pack the desk items into boxes",
+            "thought": "Everything off the desk goes into boxes."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Kartons zukleben",
+            "thought": "Die vollen Kartons klebe ich zu."
+          },
+          "en": {
+            "text": "Tape the boxes shut",
+            "thought": "I tape the full boxes shut."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Kartons ins neue Büro tragen",
+            "thought": "Dann trage ich sie ein Stockwerk höher."
+          },
+          "en": {
+            "text": "Carry the boxes to the new office",
+            "thought": "Then I carry them up one floor."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Kartons wieder aufschneiden",
+            "thought": "Oben schneide ich die Kartons wieder auf."
+          },
+          "en": {
+            "text": "Cut the boxes back open",
+            "thought": "Upstairs I cut the boxes back open."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Sachen auspacken und einräumen",
+            "thought": "Ich packe aus und räume alles ein."
+          },
+          "en": {
+            "text": "Unpack and put things away",
+            "thought": "I unpack and put everything away."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Leere Kartons ins Lager zurückbringen",
+            "thought": "Die leeren Kartons bringe ich ins Lager zurück."
+          },
+          "en": {
+            "text": "Take the empty boxes back to storage",
+            "thought": "The empty boxes go back to storage."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A24",
+      "de": {
+        "title": "Papierstau!",
+        "description": "Der Drucker streikt mal wieder. Bitte ordnen Sie die Schritte bis zum fertigen Ausdruck."
+      },
+      "en": {
+        "title": "Paper Jam!",
+        "description": "The printer is acting up again. Please order the steps to a finished printout."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          3,
+          4
+        ],
+        "de": {
+          "pair": [
+            "Druckerklappe schließen",
+            "Druckauftrag erneut starten"
+          ],
+          "rationale": "Objektiv falsch (Drucker verweigern den Druck bei offener Klappe), aber beide Kacheln wirken wie gleichwertige Abschlusshandgriffe.",
+          "wrongThought": "Ich schicke den Auftrag sofort wieder los – die Klappe schließe ich nebenbei, dann legt der Drucker direkt los."
+        },
+        "en": {
+          "pair": [
+            "Close the printer flap",
+            "Restart the print job"
+          ],
+          "rationale": "Objectively wrong (printers refuse to print with the flap open), but both tiles feel like equivalent finishing touches.",
+          "wrongThought": "I'll send the job again right away — I'll close the flap on the side, then the printer gets straight to it."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Papierstau-Meldung erscheint",
+            "thought": "Der Drucker meldet: Papierstau."
+          },
+          "en": {
+            "text": "The paper jam message appears",
+            "thought": "The printer reports: paper jam."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Druckerklappe öffnen",
+            "thought": "Ich öffne die Druckerklappe."
+          },
+          "en": {
+            "text": "Open the printer flap",
+            "thought": "I open the printer flap."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Verklemmtes Blatt entfernen",
+            "thought": "Vorsichtig ziehe ich das verklemmte Blatt heraus."
+          },
+          "en": {
+            "text": "Remove the jammed sheet",
+            "thought": "Carefully I pull out the jammed sheet."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Druckerklappe schließen",
+            "thought": "Klappe wieder zu."
+          },
+          "en": {
+            "text": "Close the printer flap",
+            "thought": "Flap shut again."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Druckauftrag erneut starten",
+            "thought": "Ich starte den Druckauftrag erneut."
+          },
+          "en": {
+            "text": "Restart the print job",
+            "thought": "I restart the print job."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Ausdruck entnehmen",
+            "thought": "Der Ausdruck liegt im Fach – endlich."
+          },
+          "en": {
+            "text": "Take out the printout",
+            "thought": "The printout's in the tray — finally."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A25",
+      "de": {
+        "title": "Die verärgerte Kundin",
+        "description": "Eine Kundin beschwert sich über eine falsche Lieferung. Bitte ordnen Sie die Schritte der Bearbeitung."
+      },
+      "en": {
+        "title": "The Upset Customer",
+        "description": "A customer complains about a wrong delivery. Please order the steps of handling it."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          1,
+          2
+        ],
+        "de": {
+          "pair": [
+            "Bestellung im System prüfen",
+            "Prüfergebnis mit der Teamleitung abstimmen"
+          ],
+          "rationale": "Objektiv falsch (ohne Prüfung kein Prüfergebnis), aber „erst die Teamleitung fragen“ wirkt vorsichtig statt falsch.",
+          "wrongThought": "Ich hole erst die Teamleitung dazu – dann sind wir bei der Prüfung von Anfang an abgesichert."
+        },
+        "en": {
+          "pair": [
+            "Check the order in the system",
+            "Discuss the findings with the team lead"
+          ],
+          "rationale": "Objectively wrong (no findings without checking first), but 'ask the team lead first' feels cautious rather than wrong.",
+          "wrongThought": "I'll bring the team lead in first — that way we're covered right from the start of the check."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Beschwerde-E-Mail der Kundin erhalten",
+            "thought": "Eine Beschwerde – das hat Priorität."
+          },
+          "en": {
+            "text": "Receive the customer's complaint email",
+            "thought": "A complaint — that takes priority."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Bestellung im System prüfen",
+            "thought": "Ich prüfe die Bestellung im System."
+          },
+          "en": {
+            "text": "Check the order in the system",
+            "thought": "I check the order in the system."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Prüfergebnis mit der Teamleitung abstimmen",
+            "thought": "Das Prüfergebnis bespreche ich mit der Teamleitung."
+          },
+          "en": {
+            "text": "Discuss the findings with the team lead",
+            "thought": "I go over the findings with the team lead."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Kundin die abgestimmte Lösung vorschlagen",
+            "thought": "Der Kundin schlage ich unsere abgestimmte Lösung vor."
+          },
+          "en": {
+            "text": "Propose the agreed solution to the customer",
+            "thought": "I propose our agreed solution to the customer."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Zustimmung der Kundin erhalten",
+            "thought": "Sie stimmt der Lösung zu."
+          },
+          "en": {
+            "text": "Receive the customer's agreement",
+            "thought": "She agrees to the solution."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Gutschrift veranlassen",
+            "thought": "Ich veranlasse die Gutschrift."
+          },
+          "en": {
+            "text": "Issue the credit note",
+            "thought": "I issue the credit note."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A26",
+      "de": {
+        "title": "Der große Deal",
+        "description": "Der Vertrag mit dem Neukunden wird finalisiert. Bitte bringen Sie die Schritte in die richtige Reihenfolge."
+      },
+      "en": {
+        "title": "The Big Deal",
+        "description": "The contract with the new client is being finalized. Please put the steps in the right order."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          1,
+          2
+        ],
+        "de": {
+          "pair": [
+            "Entwurf von der Rechtsabteilung prüfen lassen",
+            "Änderungen aus der Prüfung einarbeiten"
+          ],
+          "rationale": "Objektiv falsch (die Änderungen stammen aus der Prüfung), aber beide Kacheln sind interne Überarbeitungsschritte.",
+          "wrongThought": "Die üblichen Standardänderungen arbeite ich vorab ein – dann hat die Rechtsabteilung weniger zu beanstanden."
+        },
+        "en": {
+          "pair": [
+            "Have Legal review the draft",
+            "Work in the changes from the review"
+          ],
+          "rationale": "Objectively wrong (the changes come out of the review), but both tiles are internal revision steps.",
+          "wrongThought": "I'll work in the usual standard changes up front — then Legal has less to flag in the review."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Vertragsentwurf aufsetzen",
+            "thought": "Ich setze den Vertragsentwurf auf."
+          },
+          "en": {
+            "text": "Draft the contract",
+            "thought": "I draft the contract."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Entwurf von der Rechtsabteilung prüfen lassen",
+            "thought": "Die Rechtsabteilung prüft den Entwurf."
+          },
+          "en": {
+            "text": "Have Legal review the draft",
+            "thought": "Legal reviews the draft."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Änderungen aus der Prüfung einarbeiten",
+            "thought": "Ihre Änderungen arbeite ich ein."
+          },
+          "en": {
+            "text": "Work in the changes from the review",
+            "thought": "I work in their changes."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Vertrag an den Kunden senden",
+            "thought": "Der finale Vertrag geht an den Kunden."
+          },
+          "en": {
+            "text": "Send the contract to the client",
+            "thought": "The final contract goes to the client."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Unterschriebenes Exemplar zurückerhalten",
+            "thought": "Das unterschriebene Exemplar kommt zurück."
+          },
+          "en": {
+            "text": "Receive the signed copy back",
+            "thought": "The signed copy comes back."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Vertrag ablegen",
+            "thought": "Der Vertrag wandert in die Ablage."
+          },
+          "en": {
+            "text": "File the contract",
+            "thought": "The contract goes into the files."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A27",
+      "de": {
+        "title": "Zeit für ein Teamevent",
+        "description": "Das nächste Teamevent will geplant werden. Bitte ordnen Sie die Schritte von der Idee bis zur Erinnerung."
+      },
+      "en": {
+        "title": "Time for a Team Event",
+        "description": "The next team event needs planning. Please order the steps from the idea to the memento."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Gewinner-Idee verbindlich buchen",
+            "Einladung mit Ort und Uhrzeit verschicken"
+          ],
+          "rationale": "Objektiv falsch (Ort und Uhrzeit stehen erst nach der Buchung fest), aber Save-the-Date-vor-Buchung ist verbreitete Praxis.",
+          "wrongThought": "Die Einladung schicke ich direkt raus, damit sich alle den Tag freihalten – Ort und Uhrzeit reiche ich nach der Buchung nach."
+        },
+        "en": {
+          "pair": [
+            "Firmly book the winning idea",
+            "Send the invitation with location and time"
+          ],
+          "rationale": "Objectively wrong (location and time are only fixed after booking), but save-the-date-before-booking is common practice.",
+          "wrongThought": "I'll send the invitation out right away so everyone keeps the day free — location and time I'll add once it's booked."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Ideen im Team sammeln",
+            "thought": "Wir sammeln Ideen im Team."
+          },
+          "en": {
+            "text": "Gather ideas in the team",
+            "thought": "We gather ideas as a team."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Abstimmung durchführen",
+            "thought": "Die Abstimmung kürt den Favoriten."
+          },
+          "en": {
+            "text": "Hold a vote",
+            "thought": "The vote crowns the favorite."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Gewinner-Idee verbindlich buchen",
+            "thought": "Die Gewinner-Idee buche ich verbindlich."
+          },
+          "en": {
+            "text": "Firmly book the winning idea",
+            "thought": "I firmly book the winning idea."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Einladung mit Ort und Uhrzeit verschicken",
+            "thought": "Mit Ort und Uhrzeit verschicke ich die Einladung."
+          },
+          "en": {
+            "text": "Send the invitation with location and time",
+            "thought": "With location and time I send the invitation."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Event feiern",
+            "thought": "Dann wird gefeiert!"
+          },
+          "en": {
+            "text": "Celebrate the event",
+            "thought": "Then it's party time!"
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Fotos im Intranet teilen",
+            "thought": "Die Fotos teile ich im Intranet."
+          },
+          "en": {
+            "text": "Share the photos on the intranet",
+            "thought": "I share the photos on the intranet."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A28",
+      "de": {
+        "title": "Großreinemachen im Kühlschrank",
+        "description": "Der Bürokühlschrank quillt über – Sie übernehmen den Küchendienst. Bitte ordnen Sie die Schritte."
+      },
+      "en": {
+        "title": "Deep Clean in the Fridge",
+        "description": "The office fridge is overflowing — you're on kitchen duty. Please order the steps."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Verwaiste Boxen entsorgen",
+            "Leere Fächer auswischen"
+          ],
+          "rationale": "Objektiv falsch (die Fächer sind erst nach dem Entsorgen leer), aber beide Kacheln sind Putzarbeit und wirken beliebig.",
+          "wrongThought": "Ich wische die Fächer schon mal durch, wo Platz ist – die restlichen Boxen sortiere ich dabei gleich mit aus."
+        },
+        "en": {
+          "pair": [
+            "Throw out the abandoned containers",
+            "Wipe down the empty shelves"
+          ],
+          "rationale": "Objectively wrong (the shelves are only empty after throwing things out), but both tiles are cleaning work and feel arbitrary.",
+          "wrongThought": "I'll wipe down the shelves wherever there's space already — and sort out the remaining containers as I go."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Aushang „Kühlschrank wird geleert“ aufhängen",
+            "thought": "Ich hänge den Aushang auf: Der Kühlschrank wird geleert."
+          },
+          "en": {
+            "text": "Put up a 'fridge will be emptied' notice",
+            "thought": "I put up the notice: the fridge will be emptied."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Frist verstreichen lassen",
+            "thought": "Jetzt lasse ich allen Zeit bis zur Frist."
+          },
+          "en": {
+            "text": "Let the deadline pass",
+            "thought": "Now I give everyone time until the deadline."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Verwaiste Boxen entsorgen",
+            "thought": "Verwaiste Boxen fliegen raus."
+          },
+          "en": {
+            "text": "Throw out the abandoned containers",
+            "thought": "Abandoned containers get tossed."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Leere Fächer auswischen",
+            "thought": "Die leeren Fächer wische ich aus."
+          },
+          "en": {
+            "text": "Wipe down the empty shelves",
+            "thought": "I wipe down the now-empty shelves."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Kühlschrank wieder einräumen",
+            "thought": "Alles Erlaubte kommt zurück in den Kühlschrank."
+          },
+          "en": {
+            "text": "Restock the fridge",
+            "thought": "Everything allowed goes back into the fridge."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Erfolg im Team-Chat verkünden",
+            "thought": "Im Team-Chat verkünde ich den Erfolg."
+          },
+          "en": {
+            "text": "Announce the success in the team chat",
+            "thought": "In the team chat I announce the success."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A29",
+      "de": {
+        "title": "Karte weg!",
+        "description": "Ihre Schlüsselkarte ist verschwunden. Bitte ordnen Sie die Schritte bis zur neuen Karte."
+      },
+      "en": {
+        "title": "Card Gone!",
+        "description": "Your key card has vanished. Please order the steps up to the new card."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          2,
+          3
+        ],
+        "de": {
+          "pair": [
+            "Alte Karte sperren lassen",
+            "Ersatzkarte für die gesperrte Karte beantragen"
+          ],
+          "rationale": "Objektiv falsch (die Ersatzkarte setzt die Sperrung voraus), aber „erst die neue Karte“ wirkt effizient.",
+          "wrongThought": "Ich beantrage zuerst die Ersatzkarte, damit ich schnell wieder reinkomme – gesperrt wird die alte dann im selben Zug."
+        },
+        "en": {
+          "pair": [
+            "Have the old card blocked",
+            "Request a replacement for the blocked card"
+          ],
+          "rationale": "Objectively wrong (the replacement presupposes the block), but 'get the new card first' feels efficient.",
+          "wrongThought": "I'll request the replacement first so I can get back in quickly — the old one gets blocked in the same go."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Verlust der Karte bemerken",
+            "thought": "Meine Schlüsselkarte ist weg!"
+          },
+          "en": {
+            "text": "Notice the card is missing",
+            "thought": "My key card is gone!"
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Verlust am Empfang melden",
+            "thought": "Ich melde den Verlust am Empfang."
+          },
+          "en": {
+            "text": "Report the loss at reception",
+            "thought": "I report the loss at reception."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Alte Karte sperren lassen",
+            "thought": "Die alte Karte wird sofort gesperrt."
+          },
+          "en": {
+            "text": "Have the old card blocked",
+            "thought": "The old card gets blocked right away."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Ersatzkarte für die gesperrte Karte beantragen",
+            "thought": "Für die gesperrte Karte beantrage ich Ersatz."
+          },
+          "en": {
+            "text": "Request a replacement for the blocked card",
+            "thought": "For the blocked card I request a replacement."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Neue Karte abholen",
+            "thought": "Die neue Karte hole ich ab."
+          },
+          "en": {
+            "text": "Pick up the new card",
+            "thought": "I pick up the new card."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Bürotür wieder selbst öffnen",
+            "thought": "Endlich öffne ich die Bürotür wieder selbst."
+          },
+          "en": {
+            "text": "Open the office door yourself again",
+            "thought": "At last I open the office door myself again."
+          }
+        }
+      ]
+    },
+    {
+      "id": "A30",
+      "de": {
+        "title": "Bitte neu starten",
+        "description": "Ein Software-Update kündigt sich an. Bitte ordnen Sie die Schritte bis zum Weiterarbeiten."
+      },
+      "en": {
+        "title": "Please Restart",
+        "description": "A software update is announcing itself. Please order the steps up to getting back to work."
+      },
+      "scriptedError": {
+        "swapKeys": [
+          1,
+          2
+        ],
+        "de": {
+          "pair": [
+            "Offene Dateien vor der Installation speichern",
+            "Installation starten"
+          ],
+          "rationale": "Objektiv falsch (das Speichern ist explizit vor der Installation verankert), aber der vorschnelle Klick auf „Installieren“ passiert real ständig.",
+          "wrongThought": "Ich klicke direkt auf Installieren – während das Update lädt, bleibt noch genug Zeit zum Speichern."
+        },
+        "en": {
+          "pair": [
+            "Save open files before the installation",
+            "Start the installation"
+          ],
+          "rationale": "Objectively wrong (saving is explicitly anchored before the installation), but the hasty click on 'Install' happens all the time in real life.",
+          "wrongThought": "I'll click Install right away — while the update downloads there's still plenty of time to save."
+        }
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Update-Benachrichtigung erhalten",
+            "thought": "Eine Update-Benachrichtigung poppt auf."
+          },
+          "en": {
+            "text": "Receive the update notification",
+            "thought": "An update notification pops up."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Offene Dateien vor der Installation speichern",
+            "thought": "Sicherheitshalber speichere ich alle offenen Dateien."
+          },
+          "en": {
+            "text": "Save open files before the installation",
+            "thought": "Just to be safe, I save all open files."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Installation starten",
+            "thought": "Dann starte ich die Installation."
+          },
+          "en": {
+            "text": "Start the installation",
+            "thought": "Then I start the installation."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Automatischen Neustart abwarten",
+            "thought": "Der Rechner startet automatisch neu – ich warte."
+          },
+          "en": {
+            "text": "Wait for the automatic restart",
+            "thought": "The computer restarts automatically — I wait."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Wieder einloggen",
+            "thought": "Ich logge mich wieder ein."
+          },
+          "en": {
+            "text": "Log back in",
+            "thought": "I log back in."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Gespeicherte Dateien wieder öffnen",
+            "thought": "Meine gespeicherten Dateien öffne ich und arbeite weiter."
+          },
+          "en": {
+            "text": "Reopen the saved files",
+            "thought": "I reopen my saved files and get back to work."
+          }
+        }
+      ]
+    }
+  ]
+}

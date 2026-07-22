@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<!-- `lang` starts at the default and is kept in sync by the switcher (main.js) -->
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BDR x DFKI</title>
+<link rel="stylesheet" href="styles-accessible.css?v=13"/>
+</head>
+<body>
+
+<!-- language switcher — fixed top-right, available on every screen -->
+<div id="lang-switch" role="group" aria-label="Language">
+  <button type="button" class="lang-btn" data-lang="de">DE</button>
+  <button type="button" class="lang-btn" data-lang="en">EN</button>
+</div>
+
+<!-- ════════════ CONSENT ════════════ -->
+<section id="screen-consent" class="screen" hidden>
+  <div class="centered">
+    <h1 class="screen-kicker">BDR x DFKI</h1>
+    <div class="consent-box">
+      <h2 data-i18n="ui.consent.heading"></h2>
+      <p data-i18n="ui.consent.body"></p>
+      <label class="check-row">
+        <input type="checkbox" id="consent-agree"/>
+        <span data-i18n="ui.consent.agree"></span>
+      </label>
+    </div>
+    <div class="resume-note" id="resume-note" hidden></div>
+    <div class="start-row">
+      <button class="btn btn-primary" id="btn-begin" data-i18n="ui.consent.begin" disabled></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ SURVEY (pre & post reuse this screen) ════════════ -->
+<section id="screen-survey" class="screen" hidden>
+  <div class="centered survey-wrap">
+    <h1 class="screen-kicker" id="survey-kicker"></h1>
+    <h2 id="survey-title"></h2>
+    <form id="survey-form" class="survey-form" onsubmit="return false"></form>
+    <div class="survey-footer">
+      <span class="muted" id="survey-note"></span>
+      <button class="btn btn-primary" id="btn-survey-next"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ TASK ════════════ -->
+<section id="screen-task" class="screen screen-task" hidden>
+  <div id="banner">
+    <div class="b-logo">BDR x DFKI</div>
+    <div class="b-div"></div>
+    <div class="b-prox" id="b-prox"></div>
+    <div class="b-badge" id="b-badge" hidden></div>
+  </div>
+
+  <div class="task-brief">
+    <div class="task-title" id="task-title"></div>
+    <div class="task-desc" id="task-desc"></div>
+  </div>
+
+  <div id="main">
+    <div class="col">
+      <div class="col-hd" id="inbox-hd"></div>
+      <div class="scroll" id="inbox"></div>
+    </div>
+    <div class="col">
+      <div class="col-hd" id="ladder-hd"></div>
+      <div class="ladder" id="ladder"></div>
+    </div>
+  </div>
+
+  <div id="footer">
+    <button class="btn" id="btn-explainer"></button>
+    <div class="hint" id="hint"></div>
+
+    <div class="footer-right">
+      <button class="btn btn-primary" id="btn-confirm" disabled></button>
+    </div>
+  </div>
+
+  <!-- explainer tile (shown at task start; reopened via the bottom-left Explainer button) -->
+  <div id="explainer-overlay" hidden>
+    <div class="explainer-card">
+      <div class="explainer-title" id="explainer-title"></div>
+      <div class="explainer-body" id="explainer-body"></div>
+      <button class="btn btn-primary" id="explainer-ok"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ DEBRIEF / OVERALL ════════════ -->
+<section id="screen-debrief" class="screen" hidden>
+  <div class="or-header">
+    <h2 id="db-title"></h2>
+    <span class="or-sub" id="db-sub"></span>
+  </div>
+  <div class="db-thanks">
+    <p id="db-thanks"></p>
+    <p class="muted" id="db-sync-note"></p>
+  </div>
+  <div class="or-grid" id="db-grid" hidden></div>
+  <div class="or-footer">
+    <span class="or-note" id="db-note"></span>
+  </div>
+</section>
+
+<!-- ════════════ FLOATING HELPERS (task overlays) ════════════ -->
+<div id="drag-ghost">
+  <div class="card-icon" id="ghost-icon"></div>
+  <div>
+    <div class="card-title" id="ghost-title"></div>
+    <div class="card-detail" id="ghost-detail"></div>
+  </div>
+</div>
+<div id="gravity-ring"></div>
+
+<!-- AI cursor (level 4): pointer + an "AI" tag that travels with it -->
+<div id="ai-cursor">
+  <div class="ai-ring"></div>
+  <svg class="ai-arrow" viewBox="0 0 26 30" width="26" height="30" aria-hidden="true">
+    <path d="M2 2 L2 22 L8 17 L12 25 L15.5 23.5 L11.5 15.5 L19 15.5 Z"
+          fill="#fff" stroke="#1d1d1f" stroke-width="1.6" stroke-linejoin="round"/>
+  </svg>
+  <div class="ai-tag">AI</div>
+</div>
+
+<!-- dev-only skip — prototyping aid, remove before the real study -->
+<button id="dev-skip" type="button" title="Skip to the next stage (dev only)">Skip ▸</button>
+
+<!-- ════════════ SCRIPTS (load order = dependency order) ════════════ -->
+<script src="js/config.js?v=13"></script>
+<script src="js/i18n.js?v=13"></script>
+<script src="js/tasks.js?v=13"></script>
+<script src="js/store.js?v=13"></script>
+<script src="js/survey.js?v=13"></script>
+<script src="js/task.js?v=13"></script>
+<script src="js/results.js?v=13"></script>
+<script src="js/flow.js?v=13"></script>
+<script src="js/main.js?v=13"></script>
+</body>
+</html>

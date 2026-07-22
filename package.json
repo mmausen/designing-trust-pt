@@ -1,0 +1,12 @@
+{
+  "name": "bdr-dfki-triage-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BDR x DFKI ordering-task study prototype + local log collector",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.0.0"
+  }
+}

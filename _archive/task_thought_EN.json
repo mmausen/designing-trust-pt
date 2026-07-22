@@ -1,0 +1,582 @@
+{
+  "meta": {
+    "name": "Sorting Tasks – Category A: Process Sequences",
+    "language": "en",
+    "revision": 4,
+    "variant": "thoughts",
+    "tileCount": 6,
+    "notes": "tiles[].key = correct target position (0–5). In the prototype the tiles are presented in random order. All sequences are strictly forced: each tile logically, physically, or via an explicit textual reference presupposes the previous one. tiles[].thought = a plausible first-person thought justifying the correct placement of the tile. scriptedError.swapKeys names the position pair used for the manipulated recommendation; scriptedError.wrongThought = a convincing-sounding but incorrect justification for the swapped order."
+  },
+  "tasks": [
+    {
+      "id": "A01",
+      "title": "The Mail Has to Go Out",
+      "description": "An important letter to a client needs to go out today. Please put the following steps in the right order.",
+      "tiles": [
+        { "key": 0, "text": "Write the letter on the computer", "thought": "No text, no letter — first I have to write it on the computer." },
+        { "key": 1, "text": "Print the letter", "thought": "I can only print what's been written." },
+        { "key": 2, "text": "Sign the letter", "thought": "The signature goes on the printed page." },
+        { "key": 3, "text": "Put the letter in the envelope", "thought": "The signed letter now goes into the envelope." },
+        { "key": 4, "text": "Seal the envelope", "thought": "Once the letter is inside, I seal the envelope." },
+        { "key": 5, "text": "Drop the letter in the mailbox", "thought": "Sealed and done — off to the mailbox." }
+      ],
+      "scriptedError": {
+        "swapKeys": [3, 4],
+        "pair": ["Put the letter in the envelope", "Seal the envelope"],
+        "rationale": "Physically impossible (putting a letter into a sealed envelope), but both steps involve the envelope and blur together when read quickly.",
+        "wrongThought": "I'll get the envelope fully ready and seal it — then the letter just has to slip in and out later."
+      }
+    },
+    {
+      "id": "A02",
+      "title": "Reinforcements for the Team",
+      "description": "Your team is getting a new colleague. Please order the steps of the hiring process from start to finish.",
+      "tiles": [
+        { "key": 0, "text": "Post the job ad", "thought": "No ad, no applications — that's where it all starts." },
+        { "key": 1, "text": "Review the applications", "thought": "Now I take a look at who applied." },
+        { "key": 2, "text": "Invite the right candidate to an interview", "thought": "The best application is found — I invite that candidate." },
+        { "key": 3, "text": "Hold the interview", "thought": "At the meeting we get to know each other." },
+        { "key": 4, "text": "Sign the employment contract", "thought": "The interview was convincing — now the contract gets signed." },
+        { "key": 5, "text": "First day at work", "thought": "Contract in hand, she starts her first day." }
+      ],
+      "scriptedError": {
+        "swapKeys": [1, 2],
+        "pair": ["Review the applications", "Invite the right candidate to an interview"],
+        "rationale": "Objectively wrong — the right candidate only emerges from reviewing — but it feels efficient.",
+        "wrongThought": "I'll invite promising candidates right away — I can review the remaining applications thoroughly later."
+      }
+    },
+    {
+      "id": "A03",
+      "title": "Vacation at Last",
+      "description": "You want two weeks at the beach. Please order the steps of your vacation request chronologically.",
+      "tiles": [
+        { "key": 0, "text": "Fill out the vacation request", "thought": "First I fill in the request with my preferred dates." },
+        { "key": 1, "text": "Submit the request to your manager", "thought": "The completed request goes to my manager." },
+        { "key": 2, "text": "Receive approval", "thought": "Now I wait for the approval to come through." },
+        { "key": 3, "text": "Set up an out-of-office note with the approved dates", "thought": "With the approved dates I set up my out-of-office note." },
+        { "key": 4, "text": "Start the vacation", "thought": "Everything's sorted — the vacation can begin." },
+        { "key": 5, "text": "Return to the office refreshed", "thought": "After two weeks at the beach, back to the office feeling refreshed." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Receive approval", "Set up an out-of-office note with the approved dates"],
+        "rationale": "Objectively wrong (approved dates only exist after approval), but in daily life the note often gets set up early.",
+        "wrongThought": "I'll set up the out-of-office note right away, then it's done — the approval is just a formality anyway."
+      }
+    },
+    {
+      "id": "A04",
+      "title": "The Big Coffee Run",
+      "description": "It's your turn to grab coffee for the team today. Please put the steps in the right order.",
+      "tiles": [
+        { "key": 0, "text": "Note down the colleagues' orders", "thought": "First I write down what everyone wants." },
+        { "key": 1, "text": "Head to the café with the order list", "thought": "List in hand, I set off." },
+        { "key": 2, "text": "Order the coffees", "thought": "At the counter I place the order." },
+        { "key": 3, "text": "Pick up the finished cups", "thought": "I collect the finished cups." },
+        { "key": 4, "text": "Carry the cups back to the office", "thought": "Carefully I balance everything back to the office." },
+        { "key": 5, "text": "Hand out the coffees to the colleagues", "thought": "Everyone gets their coffee — mission accomplished." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Order the coffees", "Pick up the finished cups"],
+        "rationale": "Physically impossible, but both steps happen at the counter and blur together when read quickly.",
+        "wrongThought": "There are often finished cups already sitting at the counter — I'll grab those and order the rest on top."
+      }
+    },
+    {
+      "id": "A05",
+      "title": "Screen Stays Black",
+      "description": "Your monitor stays dark. Please order the path through IT support chronologically.",
+      "tiles": [
+        { "key": 0, "text": "Notice the monitor is broken", "thought": "The monitor stays black — something's wrong here." },
+        { "key": 1, "text": "Create a ticket with IT", "thought": "That's IT's job — I'll create a ticket." },
+        { "key": 2, "text": "Receive a proposed appointment from IT", "thought": "IT gets back to me with a proposed time." },
+        { "key": 3, "text": "Confirm the appointment", "thought": "The time works — I confirm the appointment." },
+        { "key": 4, "text": "Have the monitor repaired", "thought": "At the appointment the monitor gets fixed." },
+        { "key": 5, "text": "Test the repair and close the ticket", "thought": "Everything works again — I do a quick test and close the ticket." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Receive a proposed appointment from IT", "Confirm the appointment"],
+        "rationale": "Objectively wrong (you can't confirm an appointment that hasn't been proposed yet), but both tiles are short appointment steps.",
+        "wrongThought": "I'd better confirm my availability right away — then IT can line up its proposed time to match it."
+      }
+    },
+    {
+      "id": "A06",
+      "title": "The Company Pays for the Taxi",
+      "description": "After the business trip you want your expenses back. Please order the steps of the expense claim.",
+      "tiles": [
+        { "key": 0, "text": "Receive the taxi receipt", "thought": "I keep the taxi receipt safe." },
+        { "key": 1, "text": "Scan the receipt", "thought": "First thing, I scan the receipt." },
+        { "key": 2, "text": "Attach the scan to the expense form", "thought": "I attach the scan to the expense form." },
+        { "key": 3, "text": "Submit the claim", "thought": "I submit the completed form." },
+        { "key": 4, "text": "Receive approval", "thought": "The claim gets approved." },
+        { "key": 5, "text": "See the reimbursement in your account", "thought": "The money's in the account — done." }
+      ],
+      "scriptedError": {
+        "swapKeys": [1, 2],
+        "pair": ["Scan the receipt", "Attach the scan to the expense form"],
+        "rationale": "Objectively wrong (the scan exists before it can be attached), but both steps involve the scan and blur together when read quickly.",
+        "wrongThought": "I'll prep the form with all its attachments first and scan the receipt straight into it in one go."
+      }
+    },
+    {
+      "id": "A07",
+      "title": "Everyone Around the Table",
+      "description": "You're organizing the quarterly meeting. Please put the steps in the right order.",
+      "tiles": [
+        { "key": 0, "text": "Ask the team for their availability", "thought": "First I ask when everyone's free." },
+        { "key": 1, "text": "Set the date based on the responses", "thought": "The responses point to the best date." },
+        { "key": 2, "text": "Send out the invitations", "thought": "The date's set — invitations go out." },
+        { "key": 3, "text": "Collect the confirmations", "thought": "Now I gather the confirmations." },
+        { "key": 4, "text": "Hold the meeting", "thought": "Everyone's here — the meeting's on." },
+        { "key": 5, "text": "Send out the minutes", "thought": "To wrap up, I send out the minutes." }
+      ],
+      "scriptedError": {
+        "swapKeys": [0, 1],
+        "pair": ["Ask the team for their availability", "Set the date based on the responses"],
+        "rationale": "Objectively wrong (the responses only exist after asking), but date-first is common practice and easily waved through.",
+        "wrongThought": "I'll just set a date — whoever can't make it will speak up. That saves a whole round of asking."
+      }
+    },
+    {
+      "id": "A08",
+      "title": "The Big Presentation",
+      "description": "Next week you're presenting to the client. Please order the steps of preparation and delivery.",
+      "tiles": [
+        { "key": 0, "text": "Research the topic", "thought": "First I need facts — so, research." },
+        { "key": 1, "text": "Build the slides from the research findings", "thought": "From the findings I build the slides." },
+        { "key": 2, "text": "Do a dry run in front of colleagues", "thought": "I rehearse the whole thing for colleagues." },
+        { "key": 3, "text": "Work in the feedback from the dry run", "thought": "I fold their feedback into the slides." },
+        { "key": 4, "text": "Deliver the presentation to the client", "thought": "Now I'm ready for the client." },
+        { "key": 5, "text": "Send the slides to the client afterwards", "thought": "Afterwards I send the client the slides." }
+      ],
+      "scriptedError": {
+        "swapKeys": [0, 1],
+        "pair": ["Research the topic", "Build the slides from the research findings"],
+        "rationale": "Objectively wrong (the slides build on the research findings), but starting with slides is common practice.",
+        "wrongThought": "I'll dive straight into the slides — the framework's there, and I can research the details along the way."
+      }
+    },
+    {
+      "id": "A09",
+      "title": "Surprise in the Kitchen",
+      "description": "Your colleague has a birthday. Please order the steps of the office surprise chronologically.",
+      "tiles": [
+        { "key": 0, "text": "Spot the birthday in the calendar", "thought": "The calendar shows it: it's her birthday!" },
+        { "key": 1, "text": "Buy the ingredients for the cake", "thought": "For the cake I buy the ingredients." },
+        { "key": 2, "text": "Bake the cake", "thought": "Back home, baking time." },
+        { "key": 3, "text": "Bring the cake to the office", "thought": "I bring the finished cake to the office." },
+        { "key": 4, "text": "Cut the cake", "thought": "In the kitchen I cut it." },
+        { "key": 5, "text": "Hand out the cake slices to the colleagues", "thought": "I hand the slices out to the colleagues." }
+      ],
+      "scriptedError": {
+        "swapKeys": [4, 5],
+        "pair": ["Cut the cake", "Hand out the cake slices to the colleagues"],
+        "rationale": "Physically impossible (slices only exist after cutting), but both tiles are cake steps and blur together.",
+        "wrongThought": "As I hand it out I'll just slice off piece by piece — that saves an extra step."
+      }
+    },
+    {
+      "id": "A10",
+      "title": "The Company Car",
+      "description": "You need the company car for an off-site appointment. Please order the steps chronologically.",
+      "tiles": [
+        { "key": 0, "text": "Reserve the company car in the booking system", "thought": "No reservation, no car — I book it in the system." },
+        { "key": 1, "text": "Pick up the key for the reservation at reception", "thought": "With the reservation I pick up the key at reception." },
+        { "key": 2, "text": "Drive to the off-site appointment", "thought": "Now I set off for the appointment." },
+        { "key": 3, "text": "Attend the appointment", "thought": "On site I attend the appointment." },
+        { "key": 4, "text": "Drive back to the company", "thought": "Then it's back to the company." },
+        { "key": 5, "text": "Return the key at reception", "thought": "I hand the key back at reception." }
+      ],
+      "scriptedError": {
+        "swapKeys": [0, 1],
+        "pair": ["Reserve the company car in the booking system", "Pick up the key for the reservation at reception"],
+        "rationale": "Objectively wrong (reception only hands out the key against an existing reservation), but it feels pragmatic.",
+        "wrongThought": "I'll grab the key first while the car's free — I can log the booking in the system afterwards."
+      }
+    },
+    {
+      "id": "A11",
+      "title": "The First Day",
+      "description": "A new colleague is having her first day today. Please put her morning in the right order.",
+      "tiles": [
+        { "key": 0, "text": "Enter the office building", "thought": "She walks into the office building for the first time." },
+        { "key": 1, "text": "Pick up the laptop from IT", "thought": "Her new laptop is waiting at IT." },
+        { "key": 2, "text": "Change the initial password", "thought": "First thing, the initial password has to be changed." },
+        { "key": 3, "text": "Open the email inbox", "thought": "With the new password she opens her inbox." },
+        { "key": 4, "text": "Read the team's welcome email", "thought": "The team's welcome email is waiting there." },
+        { "key": 5, "text": "Reply to the welcome email", "thought": "She replies to the nice email, of course." }
+      ],
+      "scriptedError": {
+        "swapKeys": [4, 5],
+        "pair": ["Read the team's welcome email", "Reply to the welcome email"],
+        "rationale": "Logically impossible (replying presupposes reading), but both tiles involve the same email and blur together when read quickly.",
+        "wrongThought": "A quick friendly reply can go out right away — she can read the whole thing properly afterwards."
+      }
+    },
+    {
+      "id": "A12",
+      "title": "An Invoice Lands on Your Desk",
+      "description": "A new incoming invoice arrives in accounting. Please order the processing steps.",
+      "tiles": [
+        { "key": 0, "text": "Receive the invoice by mail", "thought": "The invoice is on the desk — let's get going." },
+        { "key": 1, "text": "Check the invoice for accuracy", "thought": "First I check whether everything's correct." },
+        { "key": 2, "text": "Submit the checked invoice for approval", "thought": "I submit the checked invoice for approval." },
+        { "key": 3, "text": "Transfer the amount", "thought": "Once approved, I transfer the amount." },
+        { "key": 4, "text": "Receive the payment confirmation", "thought": "The payment confirmation comes in." },
+        { "key": 5, "text": "Archive the case", "thought": "The case goes into the archive." }
+      ],
+      "scriptedError": {
+        "swapKeys": [1, 2],
+        "pair": ["Check the invoice for accuracy", "Submit the checked invoice for approval"],
+        "rationale": "Objectively wrong (only a checked invoice can be submitted), but approval-before-checking is the classic rubber-stamp mistake.",
+        "wrongThought": "I'll get the approval going already so the case doesn't lose time — I can check it in parallel."
+      }
+    },
+    {
+      "id": "A13",
+      "title": "From Quote to Order",
+      "description": "A prospect wants to work with your company. Please order the path from first contact to the order.",
+      "tiles": [
+        { "key": 0, "text": "Receive the customer inquiry", "thought": "An inquiry — someone wants to work with us." },
+        { "key": 1, "text": "Calculate the quote", "thought": "I calculate a fitting quote." },
+        { "key": 2, "text": "Send the quote", "thought": "The quote goes out to the customer." },
+        { "key": 3, "text": "Clarify the customer's questions about the quote", "thought": "I clear up their questions about the quote." },
+        { "key": 4, "text": "Receive the order", "thought": "Convinced — the order comes in." },
+        { "key": 5, "text": "Send the order confirmation", "thought": "I confirm the order in writing." }
+      ],
+      "scriptedError": {
+        "swapKeys": [3, 4],
+        "pair": ["Clarify the customer's questions about the quote", "Receive the order"],
+        "rationale": "Objectively wrong (questions about the quote are moot once the order is placed), but it feels customer-friendly and pragmatic.",
+        "wrongThought": "The main thing is getting the order locked in first — we can sort out any open questions about the quote afterwards."
+      }
+    },
+    {
+      "id": "A14",
+      "title": "Off to the Client Meeting",
+      "description": "The important meeting is in another city. Please order the steps of the business trip.",
+      "tiles": [
+        { "key": 0, "text": "Request the business trip", "thought": "First I request the business trip." },
+        { "key": 1, "text": "Receive approval", "thought": "The approval comes in." },
+        { "key": 2, "text": "Book the train and hotel firmly", "thought": "Now I can firmly book the train and hotel." },
+        { "key": 3, "text": "Set off on the trip", "thought": "Bags packed — the trip begins." },
+        { "key": 4, "text": "Attend the client meeting", "thought": "On site I attend the client meeting." },
+        { "key": 5, "text": "Head back home", "thought": "Then I head back home." }
+      ],
+      "scriptedError": {
+        "swapKeys": [1, 2],
+        "pair": ["Receive approval", "Book the train and hotel firmly"],
+        "rationale": "Objectively wrong (firm booking before approval breaks the process), but a common everyday violation with a high chance of being waved through.",
+        "wrongThought": "The good connections sell out fast — I'd rather book right away; the approval always comes through anyway."
+      }
+    },
+    {
+      "id": "A15",
+      "title": "Password? Forgotten!",
+      "description": "After your vacation you can't remember your password. Please order the steps to a successful login.",
+      "tiles": [
+        { "key": 0, "text": "Open the login page", "thought": "I open the login page as usual." },
+        { "key": 1, "text": "Click 'Forgot password'", "thought": "No password — the only way is 'Forgot password'." },
+        { "key": 2, "text": "Receive the reset link by email", "thought": "The reset link lands in my inbox." },
+        { "key": 3, "text": "Open the reset link", "thought": "I open the link from the email." },
+        { "key": 4, "text": "Set a new password", "thought": "Now I set a new password." },
+        { "key": 5, "text": "Log in with the new password", "thought": "With the new password the login works." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Receive the reset link by email", "Open the reset link"],
+        "rationale": "Logically impossible, but both tiles start with 'reset link' and blur together when read quickly.",
+        "wrongThought": "I'll click the link right away — reset links like this expire fast, so every minute counts."
+      }
+    },
+    {
+      "id": "A16",
+      "title": "The Stapler Is Empty",
+      "description": "Office supplies are running low. Please order the steps of the reorder.",
+      "tiles": [
+        { "key": 0, "text": "Notice which office supplies are missing", "thought": "The stapler's empty — I notice what's all missing." },
+        { "key": 1, "text": "Add the missing items to the order list", "thought": "I put the missing items on the order list." },
+        { "key": 2, "text": "Place the order in the online shop", "thought": "I order the list from the online shop." },
+        { "key": 3, "text": "Accept the delivery", "thought": "A few days later I accept the delivery." },
+        { "key": 4, "text": "Unpack the parcels", "thought": "I unpack the parcels." },
+        { "key": 5, "text": "Put the supplies away in the cabinet", "thought": "Everything goes neatly into the cabinet." }
+      ],
+      "scriptedError": {
+        "swapKeys": [4, 5],
+        "pair": ["Unpack the parcels", "Put the supplies away in the cabinet"],
+        "rationale": "Physically impossible (only unpacked items can be put away), but both tiles are handling steps after the delivery.",
+        "wrongThought": "I'll just put the parcels straight in the cabinet — I can unpack them when needed, that saves time now."
+      }
+    },
+    {
+      "id": "A17",
+      "title": "Scan Instead of Stack",
+      "description": "The stack of paper on your desk needs to go digital. Please put the steps in the right order.",
+      "tiles": [
+        { "key": 0, "text": "Place the document in the feeder", "thought": "I place the document in the feeder." },
+        { "key": 1, "text": "Start the scan", "thought": "I start the scan." },
+        { "key": 2, "text": "Save the PDF to the drive", "thought": "I save the PDF to the drive." },
+        { "key": 3, "text": "Write the email and attach the PDF", "thought": "I write the email and attach the PDF." },
+        { "key": 4, "text": "Send the email to the team", "thought": "The email goes out to the team." },
+        { "key": 5, "text": "Receive the team's read receipts", "thought": "The read receipts trickle in — done." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Save the PDF to the drive", "Write the email and attach the PDF"],
+        "rationale": "Objectively wrong (only a saved PDF can be attached), but it feels like efficient parallel work.",
+        "wrongThought": "I'll type the email while the scan runs — attaching and saving I'll then handle in one step."
+      }
+    },
+    {
+      "id": "A18",
+      "title": "Center Stage on the Video Call",
+      "description": "You're presenting remotely to the whole department today. Please order the flow of the video call.",
+      "tiles": [
+        { "key": 0, "text": "Receive the invitation link", "thought": "The invitation link is in my inbox." },
+        { "key": 1, "text": "Click the invitation link", "thought": "Just before the meeting I click the link." },
+        { "key": 2, "text": "Test camera and mic in the preview window", "thought": "In the preview window I test camera and mic." },
+        { "key": 3, "text": "Join the call", "thought": "All good — I join the call." },
+        { "key": 4, "text": "Share your screen with the presentation", "thought": "I share my screen with the presentation." },
+        { "key": 5, "text": "End the call", "thought": "After the last question I end the call." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Test camera and mic in the preview window", "Join the call"],
+        "rationale": "Objectively wrong (the preview window appears before joining), but joining-then-testing is common (bad) practice.",
+        "wrongThought": "I'd rather join right away to be on time — I can quickly test camera and mic once I'm in the call."
+      }
+    },
+    {
+      "id": "A19",
+      "title": "Off Sick Today",
+      "description": "You wake up with a fever and need a doctor's note. Please order the steps chronologically.",
+      "tiles": [
+        { "key": 0, "text": "Wake up with a fever", "thought": "A fever — nothing's happening today." },
+        { "key": 1, "text": "Go to the doctor's office", "thought": "I drag myself to the doctor's office." },
+        { "key": 2, "text": "Receive the doctor's note", "thought": "The doctor issues the note." },
+        { "key": 3, "text": "Scan the doctor's note", "thought": "Back home I scan the doctor's note." },
+        { "key": 4, "text": "Send the scan to HR", "thought": "I send the scan to HR." },
+        { "key": 5, "text": "Return to the office once recovered", "thought": "Healthy again, back to the office." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Receive the doctor's note", "Scan the doctor's note"],
+        "rationale": "Logically impossible, but both tiles start with 'doctor's note' and blur together when read quickly.",
+        "wrongThought": "I'll do the scanning right there at the office — then it's all through before I even pocket the original."
+      }
+    },
+    {
+      "id": "A20",
+      "title": "The Mysterious Registered Letter",
+      "description": "A pickup slip from the post office is in the company mailbox. Please order the steps up to filing it.",
+      "tiles": [
+        { "key": 0, "text": "Find the pickup slip", "thought": "There's a pickup slip in the mailbox." },
+        { "key": 1, "text": "Go to the post office", "thought": "So, off to the post office." },
+        { "key": 2, "text": "Show your ID", "thought": "At the counter I show my ID." },
+        { "key": 3, "text": "Collect the registered letter", "thought": "Then I'm handed the registered letter." },
+        { "key": 4, "text": "Open the envelope", "thought": "Back at the office I open the envelope." },
+        { "key": 5, "text": "File the contents in the binder", "thought": "The contents get filed away neatly." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Show your ID", "Collect the registered letter"],
+        "rationale": "Objectively wrong (no handover without ID), but both steps happen at the counter and blur together in memory.",
+        "wrongThought": "At the counter they usually hand me the letter straight away — the ID check tends to happen casually afterwards."
+      }
+    },
+    {
+      "id": "A21",
+      "title": "Fire Drill",
+      "description": "The fire alarm goes off in the office building. Please order the steps of the evacuation drill.",
+      "tiles": [
+        { "key": 0, "text": "The alarm goes off", "thought": "The alarm goes off across the whole building." },
+        { "key": 1, "text": "Stop working", "thought": "I stop working immediately." },
+        { "key": 2, "text": "Evacuate via the stairwell", "thought": "Out through the stairwell it is." },
+        { "key": 3, "text": "Check in at the assembly point", "thought": "At the assembly point I check in so everyone's accounted for." },
+        { "key": 4, "text": "Wait for the all-clear", "thought": "Now it's waiting for the all-clear." },
+        { "key": 5, "text": "Return to your workstation", "thought": "All-clear — back to my workstation." }
+      ],
+      "scriptedError": {
+        "swapKeys": [3, 4],
+        "pair": ["Check in at the assembly point", "Wait for the all-clear"],
+        "rationale": "Objectively wrong (the all-clear only comes once everyone is accounted for at the assembly point), but both tiles are 'waiting outside'.",
+        "wrongThought": "I'll just wait for the all-clear first — I can check in at the assembly point on my way back in."
+      }
+    },
+    {
+      "id": "A22",
+      "title": "The Newsletter Has to Go Out",
+      "description": "The monthly newsletter is due. Please put the steps in the right order.",
+      "tiles": [
+        { "key": 0, "text": "Gather the topics", "thought": "I gather topics for the issue." },
+        { "key": 1, "text": "Write the draft", "thought": "From those I write the draft." },
+        { "key": 2, "text": "Get the manager's sign-off", "thought": "The draft goes to the manager for sign-off." },
+        { "key": 3, "text": "Schedule the approved newsletter in the tool", "thought": "I schedule the approved newsletter in the tool." },
+        { "key": 4, "text": "The send is triggered", "thought": "At the scheduled time the send is triggered." },
+        { "key": 5, "text": "Analyze the open rate", "thought": "Afterwards I analyze the open rate." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Get the manager's sign-off", "Schedule the approved newsletter in the tool"],
+        "rationale": "Objectively wrong (only an approved newsletter gets scheduled), but scheduling-before-sign-off is a typical process shortcut.",
+        "wrongThought": "I'll lock in the send time already — the manager's sign-off is a formality anyway."
+      }
+    },
+    {
+      "id": "A23",
+      "title": "Moving to the New Office",
+      "description": "Your department is moving up one floor. Please order the moving day chronologically.",
+      "tiles": [
+        { "key": 0, "text": "Pack the desk items into boxes", "thought": "Everything off the desk goes into boxes." },
+        { "key": 1, "text": "Tape the boxes shut", "thought": "I tape the full boxes shut." },
+        { "key": 2, "text": "Carry the boxes to the new office", "thought": "Then I carry them up one floor." },
+        { "key": 3, "text": "Cut the boxes back open", "thought": "Upstairs I cut the boxes back open." },
+        { "key": 4, "text": "Unpack and put things away", "thought": "I unpack and put everything away." },
+        { "key": 5, "text": "Take the empty boxes back to storage", "thought": "The empty boxes go back to storage." }
+      ],
+      "scriptedError": {
+        "swapKeys": [3, 4],
+        "pair": ["Cut the boxes back open", "Unpack and put things away"],
+        "rationale": "Physically impossible (nothing can be unpacked from taped-up boxes), but both tiles are unpacking steps.",
+        "wrongThought": "I'll just unpack straight from the boxes — that bit of tape tears open by itself as I pull things out."
+      }
+    },
+    {
+      "id": "A24",
+      "title": "Paper Jam!",
+      "description": "The printer is acting up again. Please order the steps to a finished printout.",
+      "tiles": [
+        { "key": 0, "text": "The paper jam message appears", "thought": "The printer reports: paper jam." },
+        { "key": 1, "text": "Open the printer flap", "thought": "I open the printer flap." },
+        { "key": 2, "text": "Remove the jammed sheet", "thought": "Carefully I pull out the jammed sheet." },
+        { "key": 3, "text": "Close the printer flap", "thought": "Flap shut again." },
+        { "key": 4, "text": "Restart the print job", "thought": "I restart the print job." },
+        { "key": 5, "text": "Take out the printout", "thought": "The printout's in the tray — finally." }
+      ],
+      "scriptedError": {
+        "swapKeys": [3, 4],
+        "pair": ["Close the printer flap", "Restart the print job"],
+        "rationale": "Objectively wrong (printers refuse to print with the flap open), but both tiles feel like equivalent finishing touches.",
+        "wrongThought": "I'll send the job again right away — I'll close the flap on the side, then the printer gets straight to it."
+      }
+    },
+    {
+      "id": "A25",
+      "title": "The Upset Customer",
+      "description": "A customer complains about a wrong delivery. Please order the steps of handling it.",
+      "tiles": [
+        { "key": 0, "text": "Receive the customer's complaint email", "thought": "A complaint — that takes priority." },
+        { "key": 1, "text": "Check the order in the system", "thought": "I check the order in the system." },
+        { "key": 2, "text": "Discuss the findings with the team lead", "thought": "I go over the findings with the team lead." },
+        { "key": 3, "text": "Propose the agreed solution to the customer", "thought": "I propose our agreed solution to the customer." },
+        { "key": 4, "text": "Receive the customer's agreement", "thought": "She agrees to the solution." },
+        { "key": 5, "text": "Issue the credit note", "thought": "I issue the credit note." }
+      ],
+      "scriptedError": {
+        "swapKeys": [1, 2],
+        "pair": ["Check the order in the system", "Discuss the findings with the team lead"],
+        "rationale": "Objectively wrong (no findings without checking first), but 'ask the team lead first' feels cautious rather than wrong.",
+        "wrongThought": "I'll bring the team lead in first — that way we're covered right from the start of the check."
+      }
+    },
+    {
+      "id": "A26",
+      "title": "The Big Deal",
+      "description": "The contract with the new client is being finalized. Please put the steps in the right order.",
+      "tiles": [
+        { "key": 0, "text": "Draft the contract", "thought": "I draft the contract." },
+        { "key": 1, "text": "Have Legal review the draft", "thought": "Legal reviews the draft." },
+        { "key": 2, "text": "Work in the changes from the review", "thought": "I work in their changes." },
+        { "key": 3, "text": "Send the contract to the client", "thought": "The final contract goes to the client." },
+        { "key": 4, "text": "Receive the signed copy back", "thought": "The signed copy comes back." },
+        { "key": 5, "text": "File the contract", "thought": "The contract goes into the files." }
+      ],
+      "scriptedError": {
+        "swapKeys": [1, 2],
+        "pair": ["Have Legal review the draft", "Work in the changes from the review"],
+        "rationale": "Objectively wrong (the changes come out of the review), but both tiles are internal revision steps.",
+        "wrongThought": "I'll work in the usual standard changes up front — then Legal has less to flag in the review."
+      }
+    },
+    {
+      "id": "A27",
+      "title": "Time for a Team Event",
+      "description": "The next team event needs planning. Please order the steps from the idea to the memento.",
+      "tiles": [
+        { "key": 0, "text": "Gather ideas in the team", "thought": "We gather ideas as a team." },
+        { "key": 1, "text": "Hold a vote", "thought": "The vote crowns the favorite." },
+        { "key": 2, "text": "Firmly book the winning idea", "thought": "I firmly book the winning idea." },
+        { "key": 3, "text": "Send the invitation with location and time", "thought": "With location and time I send the invitation." },
+        { "key": 4, "text": "Celebrate the event", "thought": "Then it's party time!" },
+        { "key": 5, "text": "Share the photos on the intranet", "thought": "I share the photos on the intranet." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Firmly book the winning idea", "Send the invitation with location and time"],
+        "rationale": "Objectively wrong (location and time are only fixed after booking), but save-the-date-before-booking is common practice.",
+        "wrongThought": "I'll send the invitation out right away so everyone keeps the day free — location and time I'll add once it's booked."
+      }
+    },
+    {
+      "id": "A28",
+      "title": "Deep Clean in the Fridge",
+      "description": "The office fridge is overflowing — you're on kitchen duty. Please order the steps.",
+      "tiles": [
+        { "key": 0, "text": "Put up a 'fridge will be emptied' notice", "thought": "I put up the notice: the fridge will be emptied." },
+        { "key": 1, "text": "Let the deadline pass", "thought": "Now I give everyone time until the deadline." },
+        { "key": 2, "text": "Throw out the abandoned containers", "thought": "Abandoned containers get tossed." },
+        { "key": 3, "text": "Wipe down the empty shelves", "thought": "I wipe down the now-empty shelves." },
+        { "key": 4, "text": "Restock the fridge", "thought": "Everything allowed goes back into the fridge." },
+        { "key": 5, "text": "Announce the success in the team chat", "thought": "In the team chat I announce the success." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Throw out the abandoned containers", "Wipe down the empty shelves"],
+        "rationale": "Objectively wrong (the shelves are only empty after throwing things out), but both tiles are cleaning work and feel arbitrary.",
+        "wrongThought": "I'll wipe down the shelves wherever there's space already — and sort out the remaining containers as I go."
+      }
+    },
+    {
+      "id": "A29",
+      "title": "Card Gone!",
+      "description": "Your key card has vanished. Please order the steps up to the new card.",
+      "tiles": [
+        { "key": 0, "text": "Notice the card is missing", "thought": "My key card is gone!" },
+        { "key": 1, "text": "Report the loss at reception", "thought": "I report the loss at reception." },
+        { "key": 2, "text": "Have the old card blocked", "thought": "The old card gets blocked right away." },
+        { "key": 3, "text": "Request a replacement for the blocked card", "thought": "For the blocked card I request a replacement." },
+        { "key": 4, "text": "Pick up the new card", "thought": "I pick up the new card." },
+        { "key": 5, "text": "Open the office door yourself again", "thought": "At last I open the office door myself again." }
+      ],
+      "scriptedError": {
+        "swapKeys": [2, 3],
+        "pair": ["Have the old card blocked", "Request a replacement for the blocked card"],
+        "rationale": "Objectively wrong (the replacement presupposes the block), but 'get the new card first' feels efficient.",
+        "wrongThought": "I'll request the replacement first so I can get back in quickly — the old one gets blocked in the same go."
+      }
+    },
+    {
+      "id": "A30",
+      "title": "Please Restart",
+      "description": "A software update is announcing itself. Please order the steps up to getting back to work.",
+      "tiles": [
+        { "key": 0, "text": "Receive the update notification", "thought": "An update notification pops up." },
+        { "key": 1, "text": "Save open files before the installation", "thought": "Just to be safe, I save all open files." },
+        { "key": 2, "text": "Start the installation", "thought": "Then I start the installation." },
+        { "key": 3, "text": "Wait for the automatic restart", "thought": "The computer restarts automatically — I wait." },
+        { "key": 4, "text": "Log back in", "thought": "I log back in." },
+        { "key": 5, "text": "Reopen the saved files", "thought": "I reopen my saved files and get back to work." }
+      ],
+      "scriptedError": {
+        "swapKeys": [1, 2],
+        "pair": ["Save open files before the installation", "Start the installation"],
+        "rationale": "Objectively wrong (saving is explicitly anchored before the installation), but the hasty click on 'Install' happens all the time in real life.",
+        "wrongThought": "I'll click Install right away — while the update downloads there's still plenty of time to save."
+      }
+    }
+  ]
+}

@@ -1,0 +1,235 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ACCESSIBLE THEME — larger type, higher contrast, tile-style cards,
+   prominent autopilot controls.
+   The original look is preserved untouched in styles.css (backup);
+   swap the <link> in index.html to revert.
+   ═══════════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fff;--border:#cfcfcf;--txt:#0a0a0a;--txt2:#383838;--muted:#565656;
+  --accent:#111;--accent-l:#eceff3;
+  --danger:#b00020;--purple:#5b21b6;--purple-l:#f3effd;--purple-b:#c4b5fd;
+  --gravity:#5b21b6;
+  --ok:#157f3b;
+  font-size:15px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--txt);height:100vh;overflow:hidden;line-height:1.5;
+  -webkit-user-select:none;user-select:none}
+input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
+
+/* ── screen machine ── */
+.screen{height:100vh;display:flex;flex-direction:column;overflow-y:auto}
+.screen-task{overflow:hidden;position:relative}
+[hidden]{display:none!important}
+.centered{margin:auto;width:min(620px,92vw);display:flex;flex-direction:column;gap:26px;padding:48px 0}
+.screen-kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.muted{color:var(--muted)}
+.row-gap{display:flex;gap:10px;align-items:center}
+
+/* ── explainer tile ── */
+#explainer-overlay{position:absolute;inset:0;z-index:8000;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.80);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  transition:opacity .26s ease}
+.explainer-card{background:#fff;border:1px solid var(--border);border-radius:14px;
+  box-shadow:0 14px 46px rgba(0,0,0,.2);padding:30px 32px;max-width:480px;width:90%;
+  display:flex;flex-direction:column;gap:16px;
+  transform-origin:center center;will-change:transform,opacity;
+  transition:transform .34s cubic-bezier(.34,1.18,.42,1),opacity .26s ease}
+.explainer-title{font-size:19px;font-weight:700}
+.explainer-body{font-size:15.5px;color:var(--txt2);line-height:1.65}
+.explainer-card .btn-primary{align-self:flex-start;margin-top:6px}
+
+/* ── consent ── */
+.consent-box{border:1px solid var(--border);border-radius:10px;padding:26px 28px;display:flex;flex-direction:column;gap:14px}
+.consent-box h2{font-size:18px;font-weight:700}
+.consent-box p{font-size:14.5px;color:var(--txt2);line-height:1.65}
+.check-row{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;cursor:pointer;margin-top:6px}
+.check-row input{margin-top:3px;width:18px;height:18px}
+.resume-note{font-size:14px;color:var(--txt2);background:var(--purple-l);border:1px solid var(--purple-b);
+  border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.start-row{display:flex;align-items:center;gap:16px}
+
+/* ── survey ── */
+.survey-wrap h2{font-size:19px;font-weight:700}
+.survey-form{display:flex;flex-direction:column;gap:26px}
+.q{display:flex;flex-direction:column;gap:10px}
+.q-label{font-size:14.5px;font-weight:600}
+.q-text{border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-size:14.5px;outline:none;resize:vertical}
+.q-text:focus{border-color:var(--muted)}
+.likert{display:flex;gap:16px}
+.likert-opt{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--txt2);font-weight:600}
+.likert-opt input{width:20px;height:20px;cursor:pointer}
+.likert-anchors{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);max-width:320px}
+.survey-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:10px}
+
+/* ── task banner ── */
+#banner{border-bottom:1px solid var(--border);padding:14px 30px;display:flex;align-items:center;gap:18px;flex-shrink:0}
+.b-logo{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.b-div{width:1px;height:16px;background:var(--border)}
+.b-prox{font-size:16px;font-weight:600;flex:1}
+.b-meta{font-size:13px;color:var(--muted)}
+.b-badge{font-size:12px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.04em;
+  background:var(--purple-l);color:var(--purple);border:1px solid var(--purple-b)}
+
+/* ── task layout ── */
+#main{display:grid;grid-template-columns:1fr 1fr;flex:1;overflow:hidden}
+.col{display:flex;flex-direction:column;overflow:hidden;padding:22px 26px;gap:0}
+.col+.col{border-left:1px solid var(--border)}
+.col-hd{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-bottom:14px;flex-shrink:0}
+/* task brief (title + description) — full-width band above both tile columns,
+   so the left (inbox) and right (ladder) sections start at the same height */
+.task-brief{flex-shrink:0;padding:16px 30px;border-bottom:1px solid var(--border)}
+.task-title{font-size:19px;font-weight:800;letter-spacing:-.01em;line-height:1.25;color:var(--txt)}
+.task-desc{font-size:14px;color:var(--txt2);margin-top:6px;line-height:1.55;max-width:900px}
+.task-title:empty,.task-desc:empty{display:none}
+.scroll{display:flex;flex-direction:column;overflow-y:auto;flex:1;padding:2px 8px 2px 2px}
+.scroll::-webkit-scrollbar{width:7px}
+.scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* ── card tile (movable) ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;margin-bottom:11px;display:flex;align-items:flex-start;gap:13px;
+  cursor:grab;box-shadow:0 1px 2px rgba(0,0,0,.06),0 3px 8px rgba(0,0,0,.07);
+  transition:box-shadow .12s,transform .08s,background .08s,opacity .1s;position:relative}
+.card:hover{box-shadow:0 3px 8px rgba(0,0,0,.1),0 8px 20px rgba(0,0,0,.12);transform:translateY(-1px)}
+.card:active{cursor:grabbing}
+.card.ghost{opacity:.25}
+.card-icon{font-size:17px;font-weight:800;flex-shrink:0;line-height:1.1;width:26px;text-align:center;color:var(--txt)}
+.card-txt{flex:1;min-width:0}
+.card-title{font-size:15px;font-weight:700}
+.card-detail{font-size:13.5px;color:var(--txt2);margin-top:3px;line-height:1.5}
+.card-grip{color:#9a9a9a;font-size:15px;flex-shrink:0;align-self:center}
+
+/* ── ladder + inbox share one row layout so a tile sits at the same height
+      and width no matter which side it is on ── */
+.ladder{display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:2px 8px 2px 2px}
+.slot,.inbox-slot{border-bottom:1px solid var(--border);min-height:72px;display:flex;align-items:center;transition:background .08s;position:relative}
+.slot:last-child,.inbox-slot:last-child{border-bottom:none}
+.slot.drop-target{background:var(--accent-l)}
+.slot.gravity-hint{background:#f6f1ff;border-bottom-color:#d8c8f5}
+.slot.gravity-target{background:var(--purple-l);border-bottom-color:#b79df0}
+/* the slot the AI suggests, highlighted while a step is picked up (c2 + c3) */
+.slot.slot-hint{background:var(--purple-l);border-bottom-color:#b79df0;box-shadow:inset 3px 0 0 var(--purple)}
+/* the AI's reasoning (c3), anchored over its suggested slot — free to grow
+   downward over the next row so long sentences are never clipped */
+.slot-thought{position:absolute;left:0;right:0;top:0;min-height:100%;z-index:5;
+  display:flex;align-items:center;gap:10px;padding:11px 16px 11px 34px;
+  background:#f7f4fe;border:1px solid var(--purple-b);border-radius:10px;
+  box-shadow:0 8px 24px rgba(91,33,182,.16);pointer-events:none}
+.slot-thought .st-tag{font-size:10.5px;font-weight:800;letter-spacing:.07em;color:#fff;background:var(--purple);
+  padding:2px 7px;border-radius:999px;flex-shrink:0;align-self:flex-start;margin-top:1px}
+.slot-thought .st-txt{font-size:13.5px;line-height:1.5;color:var(--txt2)}
+.slot-num{font-size:14px;font-weight:700;color:var(--muted);width:32px;text-align:center;flex-shrink:0}
+.slot-lbl{font-size:13px;color:var(--muted);padding:0 8px;letter-spacing:.03em}
+.slot .card{flex:1;margin:9px 10px 9px 2px}
+/* inbox tile: same card, but left-padded to line up with the numbered slots */
+.inbox-slot .card{flex:1;margin:9px 10px 9px 34px}
+
+/* ── floating drag ghost ── */
+#drag-ghost{position:fixed;pointer-events:none;z-index:9000;background:#fff;border:1px solid var(--border);border-radius:10px;
+  padding:14px 16px;display:none;align-items:flex-start;gap:12px;box-shadow:0 10px 32px rgba(0,0,0,.22);max-width:360px}
+#drag-ghost .card-icon{font-size:17px;font-weight:800;flex-shrink:0}
+#drag-ghost .card-title{font-size:15px;font-weight:700}
+#drag-ghost .card-detail{font-size:13.5px;color:var(--txt2);margin-top:3px;line-height:1.5}
+
+/* ── gravity indicator ── */
+#gravity-ring{position:fixed;pointer-events:none;z-index:8999;display:none;border:2px solid var(--gravity);border-radius:50%;opacity:0;transition:opacity .2s}
+
+/* ── AI cursor (level 4): pointer + an "AI" tag that travels with it, in the
+      prototype's purple. Positioned purely by transform, so the arrow tip
+      sits on (x, y). ── */
+#ai-cursor{position:fixed;left:0;top:0;width:26px;height:30px;pointer-events:none;z-index:9999;
+  display:none;opacity:0;will-change:transform,opacity}
+#ai-cursor .ai-arrow{position:relative;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
+#ai-cursor .ai-tag{position:absolute;left:19px;top:23px;font-size:11px;font-weight:800;letter-spacing:.07em;
+  color:#fff;background:var(--purple);padding:2px 7px;border-radius:999px;white-space:nowrap;
+  box-shadow:0 2px 8px rgba(91,33,182,.45)}
+#ai-cursor .ai-ring{position:absolute;left:-9px;top:-9px;width:22px;height:22px;border:2px solid var(--purple);border-radius:50%;opacity:0}
+#ai-cursor.clicking .ai-ring{animation:aiClickRing .4s ease}
+@keyframes aiClickRing{from{opacity:.75;transform:scale(.4)}to{opacity:0;transform:scale(1.8)}}
+/* hide the real pointer while the AI is driving */
+#main.ai-driving,#main.ai-driving *{cursor:none!important}
+
+/* ── language switcher (fixed top-right, on every screen) ── */
+#lang-switch{position:fixed;top:12px;right:16px;z-index:10001;display:flex;gap:2px;
+  background:#fff;border:1px solid var(--border);border-radius:999px;padding:3px}
+.lang-btn{font-family:inherit;font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  padding:4px 11px;border:none;border-radius:999px;background:transparent;color:var(--muted);
+  cursor:pointer;transition:background .12s,color .12s}
+.lang-btn:hover{color:var(--txt)}
+.lang-btn.active{background:var(--accent);color:#fff}
+/* keep the task banner's badge clear of the switcher */
+#banner{padding-right:112px}
+
+/* ── task footer ── */
+#footer{border-top:1px solid var(--border);padding:12px 30px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:14px}
+#footer .hint{font-size:13.5px;color:var(--txt2);flex:1;line-height:1.5}
+.footer-right{display:flex;gap:10px;align-items:center;flex-shrink:0}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── buttons ── */
+.btn{padding:8px 18px;border-radius:7px;border:1px solid var(--border);font-size:13.5px;font-weight:600;cursor:pointer;
+  background:#fff;color:var(--txt);transition:background .1s,border-color .1s;letter-spacing:.01em}
+.btn:hover:not(:disabled){background:var(--accent-l);border-color:var(--muted)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover:not(:disabled){background:#000;border-color:#000}
+.btn-primary:disabled{background:#cfcfcf;border-color:#cfcfcf;color:#fff}
+.btn-lg{padding:12px 26px;font-size:15.5px;border-radius:9px;font-weight:700}
+
+.empty-note{font-size:13.5px;color:var(--muted);text-align:center;padding:18px 0}
+
+/* ── per-task results ── */
+.lr-header{border-bottom:1px solid var(--border);padding:22px 44px;display:flex;align-items:baseline;gap:18px;flex-shrink:0}
+.lr-header h2{font-size:19px;font-weight:700}
+.lr-header .lr-sub{font-size:13.5px;color:var(--muted)}
+.lr-body{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1}
+.lr-col{padding:30px 44px;border-right:1px solid var(--border)}
+.lr-col:last-child{border-right:none}
+.lr-col-hd{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:16px}
+.lr-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.lr-row:last-child{border-bottom:none}
+.lr-pos{font-size:13px;font-weight:700;color:var(--muted);width:22px;flex-shrink:0;padding-top:1px}
+.lr-icon{font-size:16px;font-weight:800;color:var(--txt);flex-shrink:0;width:24px;text-align:center}
+.lr-name{font-size:15px;font-weight:700;flex:1}
+.lr-check{font-size:16px;flex-shrink:0;padding-top:1px;font-weight:800}
+.lr-check.ok{color:var(--ok)}
+.lr-check.err{color:var(--danger)}
+.lr-footer{border-top:1px solid var(--border);padding:16px 44px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.lr-footer .lr-note{font-size:13.5px;color:var(--muted)}
+
+/* ── overall / debrief ── */
+.or-header{border-bottom:1px solid var(--border);padding:22px 44px;display:flex;align-items:baseline;gap:18px;flex-shrink:0}
+.or-header h2{font-size:19px;font-weight:700}
+.or-header .or-sub{font-size:13.5px;color:var(--muted)}
+.db-thanks{padding:30px 44px;display:flex;flex-direction:column;gap:10px}
+.db-thanks p{font-size:15.5px;line-height:1.65}
+.db-thanks p.muted{font-size:13.5px}
+.or-grid{display:grid;grid-template-columns:repeat(4,1fr);flex:1}
+.or-col{border-right:1px solid var(--border);padding:24px 22px}
+.or-col:last-child{border-right:none}
+.or-col-hd{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px}
+.or-col-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
+.or-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
+.or-row:last-child{border-bottom:none}
+.or-pos{font-size:12px;font-weight:700;color:var(--muted);width:16px;flex-shrink:0}
+.or-icon{font-size:15px;font-weight:800;color:var(--txt);flex-shrink:0;width:20px;text-align:center}
+.or-name{font-size:13.5px;font-weight:600;flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.or-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.or-dot.ok{background:var(--ok)}
+.or-dot.err{background:var(--danger)}
+.or-score{font-size:12px;color:var(--muted);margin-top:12px}
+.or-score strong{color:var(--txt);font-size:14px}
+.or-footer{border-top:1px solid var(--border);padding:16px 44px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.or-footer .or-note{font-size:13.5px;color:var(--muted)}
+
+/* ── dev-only Skip button (prototyping aid — remove before the real study) ── */
+#dev-skip{position:fixed;right:16px;bottom:14px;z-index:10000;
+  font:inherit;font-size:12.5px;font-weight:700;letter-spacing:.02em;
+  color:#9a3412;background:#fff;border:1.5px dashed #e0913f;border-radius:999px;
+  padding:7px 15px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.14);opacity:.9}
+#dev-skip:hover{opacity:1;background:#fff7ed;border-color:#c2410c}
+/* lift it clear of the task footer's Confirm button while a task is showing */
+#screen-task:not([hidden]) ~ #dev-skip{bottom:70px}

@@ -1,0 +1,6 @@
+# Never commit participant data.
+*.json
+*.jsonl
+*.tmp
+!.gitignore
+!README.md
