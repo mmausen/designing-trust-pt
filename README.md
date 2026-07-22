@@ -40,6 +40,7 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 | `js/config.js` | **Study settings** — conditions, task assignment, seed, endpoint |
 | `js/i18n.js` | Active language + string lookup with cross-language fallback |
 | `js/tasks.js` | Holds both languages; builds cards, correct order, AI suggestion, seeded shuffle |
+| `js/hints.js` | Registry of AI-hint designs; `js/hint_*.js` is one variant each |
 | `js/store.js` | Session state, localStorage autosave, remote-POST stub |
 | `js/flow.js` | The linear step machine |
 | `js/survey.js` | Renders/validates the pre & post questionnaires |
@@ -58,14 +59,46 @@ Everything you'd normally change lives in `js/config.js`.
 | `ai` | What the participant sees |
 |---|---|
 | `solo` | No assistance. Establishes that they understood the task. |
-| `hint` | Picking up a step highlights the slot the AI suggests. |
-| `thought` | The same highlight, plus the AI's reasoning shown at that slot. |
+| `hint` | The AI suggests where a step goes; `hint:` names which design does it (below). |
 | `autopilot` | An AI cursor sorts all six steps; the participant then reviews and may rearrange. |
 | `gravity` | Supported but unused — the drag is pulled toward the suggested slot. |
 
 The AI never blocks the participant: in every condition the final order is theirs to
 set, and `Confirm ranking` is the only way forward. Autopilot cannot be interrupted
 mid-run (by design), but everything is editable once it finishes.
+
+### Hint variants (A/B testing a design)
+
+Competing hint designs live side by side so you can compare them without a branch,
+and drop the loser without leftovers. Each variant is **one self-contained file**
+registered by name; `task.js` calls the active one through a fixed interface and
+never names a variant.
+
+| Variant | File | Behaviour |
+|---|---|---|
+| `slot` | `js/hint_slot.js` | Highlights the slot the AI suggests |
+| `slot-reasoning` | `js/hint_slot_reasoning.js` | That, plus the AI's stated reasoning |
+
+A stage picks one in `CONDITIONS`, so swapping designs is a one-value change:
+
+```js
+2: { key: "c2", ai: "hint", hint: "slot" },
+3: { key: "c3", ai: "hint", hint: "slot-reasoning" },
+```
+
+**Add** a variant: create `js/hint_<name>.js` calling `Hints.register(name, {...})`,
+add its `<script>` tag, point a condition at it. The contract (`onPickUp`, optional
+`onMove`/`onDrop`, required `clear`, plus its own `badgeKey`/`hintKey`) is documented
+at the top of `js/hints.js`. The `ctx` it receives exposes the AI's suggestion — which
+already carries any scripted error — but **never show `ctx.trueSlot`**: that's the
+answer, and it exists for logging only.
+
+**Remove** a variant: delete its file, its `<script>` tag, and any config naming it.
+Nothing else refers to it. A stage pointing at a missing variant warns in the console
+and simply renders no hint — it does not break the task.
+
+The active variant is recorded on `task_start`, on each result (`hintVariant`), and on
+every `hint_shown` event, so runs stay attributable to the design they used.
 
 Autopilot behaviour is tuned by `AUTO` at the top of `js/task.js`. Two behaviours are
 implemented but **switched off** for the study — set either to `true` to restore it:

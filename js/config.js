@@ -26,10 +26,16 @@ window.Config = (function () {
 
   // The four study conditions. `ai` drives the interaction mechanic:
   //   solo      — no assistance at all
-  //   hint      — picking up a step highlights the slot the AI suggests
-  //   thought   — same highlight, plus the AI's reasoning for that slot
+  //   hint      — the AI suggests where a step goes; `hint` names WHICH
+  //               design does the suggesting (see below)
   //   autopilot — the AI places every step itself while the participant watches
   //   gravity   — (still supported, unused) drag is pulled toward the suggestion
+  //
+  // For ai:"hint", `hint` selects a variant registered in js/hints.js:
+  //   "slot"            — highlight the suggested slot            (js/hint_slot.js)
+  //   "slot-reasoning"  — that, plus the AI's stated reasoning     (js/hint_slot_reasoning.js)
+  // Swap the value to A/B a different design; each variant is one file and
+  // is referenced nowhere else, so dropping one leaves nothing behind.
   //
   // Their label / banner / explainer text lives in strings.json under
   // conditions.<key>, in both languages — look it up via I18n, e.g.
@@ -38,8 +44,8 @@ window.Config = (function () {
   // is the participant's responsibility.
   const CONDITIONS = {
     1: { key: "c1", ai: "solo" },
-    2: { key: "c2", ai: "hint" },
-    3: { key: "c3", ai: "thought" },
+    2: { key: "c2", ai: "hint", hint: "slot" },
+    3: { key: "c3", ai: "hint", hint: "slot-reasoning" },
     4: { key: "c4", ai: "autopilot" },
   };
 

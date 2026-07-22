@@ -74,8 +74,26 @@ window.Task = (function () {
   // cached overlay elements (set in wire())
   let ghost, gravRing, aiCursor;
 
-  const showsHint = () => aiMode === "hint" || aiMode === "thought";
-  const showsThought = () => aiMode === "thought";
+  // The active hint variant for this stage (see js/hints.js), or null.
+  // task.js deliberately never names a variant — the stage picks one by
+  // name in CONDITIONS, so variants can be added or deleted in isolation.
+  let hintImpl = null;
+
+  /* Everything a hint variant is allowed to see. Built here so a variant
+     never reaches into task state, which is what keeps them swappable. */
+  function hintContext(cardId) {
+    const aiSlot = (aiMode === "solo") ? -1 : aiRanking.indexOf(cardId);
+    const trueSlot = byId[cardId] ? byId[cardId].rank - 1 : -1;
+    return {
+      cardId, aiSlot, trueSlot,
+      isWrongHint: aiSlot >= 0 && aiSlot !== trueSlot,
+      taskId, aiError, lang: I18n.get(),
+      reasoning: () => Tasks.thoughtFor(taskId, cardId, aiError),
+      slotEl: i => document.querySelector(`#ladder [data-slot="${i}"]`),
+      ladderEl: () => $("ladder"),
+      card: () => document.querySelector(`[data-id="${cardId}"]`),
+    };
+  }
 
   const lerp = (a, b, t) => a + (b - a) * t;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -109,6 +127,7 @@ window.Task = (function () {
     aiError = !!step.aiError;      // this stage's AI suggestion is scripted-wrong
     cond = Config.CONDITIONS[level];
     aiMode = cond.ai;
+    hintImpl = (aiMode === "hint") ? Hints.get(cond.hint) : null;
     taskDef = Tasks.get(taskId);
 
     cards = Tasks.inboxCardsFor(taskId, Config.SHUFFLE_SEED); // deterministic per task
@@ -123,7 +142,8 @@ window.Task = (function () {
     firstActionAt = null; autopilotStartedAt = null; autopilotMs = null; autopilotDoneAt = null;
 
     Store.log("task_start", {
-      level, condition: cond.key, aiMode, taskId, aiError, lang: I18n.get(),
+      level, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
+      taskId, aiError, lang: I18n.get(),
       inboxOrder: cards.map(c => c.id),
       aiSuggestion: [...aiRanking],
       aiSwappedKeys: aiError ? Tasks.scriptedSwapKeys(taskId) : null,
@@ -234,14 +254,19 @@ window.Task = (function () {
     $("task-title").textContent = taskDef ? (taskDef.title || "") : "";
     $("task-desc").textContent = taskDef ? (taskDef.description || "") : "";
 
+    // A hint variant supplies its own badge + footer wording, so competing
+    // variants can be told apart on screen without task.js knowing them.
+    const hintKey = hintImpl ? hintImpl.hintKey : `ui.task.hints.${aiMode}`;
+    const badgeKey = hintImpl ? hintImpl.badgeKey : `ui.task.badges.${aiMode}`;
+
     // While the autopilot is finished, keep its review prompt instead of the
     // "AI is sorting" line.
     $("hint").textContent = (aiMode === "autopilot" && autopilotState === "done")
       ? I18n.t("ui.task.autopilotDone")
-      : I18n.t(`ui.task.hints.${aiMode}`);
+      : I18n.t(hintKey);
 
     const badge = $("b-badge");
-    const badgeTxt = (aiMode === "solo") ? null : I18n.t(`ui.task.badges.${aiMode}`);
+    const badgeTxt = (aiMode === "solo") ? null : I18n.t(badgeKey);
     if (badgeTxt) { badge.hidden = false; badge.textContent = badgeTxt; }
     else badge.hidden = true;
 
@@ -369,39 +394,28 @@ window.Task = (function () {
       const slotEl = document.querySelector(`[data-slot="${aiSlot}"]`);
       if (slotEl) slotEl.classList.add("gravity-hint");
     }
-    // HINT (c2) / HINT + REASONING (c3): mark the slot the AI suggests the
-    // moment the step is picked up. `aiRanking` already carries any scripted
-    // error, so a wrong stage hints — and explains — the wrong slot.
-    if (showsHint() && aiSlot >= 0) {
-      const slotEl = document.querySelector(`#ladder [data-slot="${aiSlot}"]`);
-      if (slotEl) {
-        slotEl.classList.add("slot-hint");
-        if (showsThought()) showThoughtIn(slotEl, drag.id);
+    // Hand off to whichever hint variant this stage selected. `aiRanking`
+    // already carries any scripted error, so a wrong stage hints — and
+    // explains — the wrong slot, whatever the variant.
+    if (hintImpl) {
+      const ctx = hintContext(drag.id);
+      try { hintImpl.onPickUp(ctx); }
+      catch (e) { console.error(`hint "${hintImpl.name}".onPickUp failed`, e); }
+      if (ctx.aiSlot >= 0) {
+        Store.log("hint_shown", {
+          cardId: drag.id, hintSlot: ctx.aiSlot, hintVariant: hintImpl.name,
+          withThought: !!hintImpl.showsReasoning, isWrongHint: ctx.isWrongHint,
+        });
       }
-      Store.log("hint_shown", {
-        cardId: drag.id, hintSlot: aiSlot,
-        withThought: showsThought(), isWrongHint: byId[drag.id].rank !== aiSlot + 1,
-      });
     }
     if (firstActionAt == null) firstActionAt = performance.now();
     Store.log("drag_start", { cardId: drag.id, from: drag.from });
   }
 
-  // The AI's reasoning, anchored over its suggested slot (c3 only).
-  function showThoughtIn(slotEl, cardId) {
-    const text = Tasks.thoughtFor(taskId, cardId, aiError);
-    if (!text) return;
-    const box = document.createElement("div");
-    box.className = "slot-thought";
-    box.innerHTML = `<span class="st-tag">AI</span><span class="st-txt"></span>`;
-    box.querySelector(".st-txt").textContent = text;
-    slotEl.appendChild(box);
-  }
-
   function clearSlotMarks() {
     document.querySelectorAll(".slot").forEach(s =>
-      s.classList.remove("gravity-target", "gravity-hint", "slot-hint", "drop-target"));
-    document.querySelectorAll(".slot-thought").forEach(n => n.remove());
+      s.classList.remove("gravity-target", "gravity-hint", "drop-target"));
+    Hints.clearAll();   // each variant removes its own traces
   }
 
   /* ── the floating ghost, shared by the participant's drag and the AI carry ── */
@@ -451,6 +465,13 @@ window.Task = (function () {
         s.classList.toggle("drop-target",
           e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
       });
+    }
+
+    // Optional hook: a variant that reacts to pointer movement (proximity
+    // cues, live confidence, …) implements onMove; the current two don't.
+    if (hintImpl && hintImpl.onMove) {
+      try { hintImpl.onMove(hintContext(drag.id), e.clientX, e.clientY); }
+      catch (err) { console.error(`hint "${hintImpl.name}".onMove failed`, err); }
     }
 
     ghost.style.left = gx + "px";
@@ -837,7 +858,8 @@ window.Task = (function () {
       });
     }
     const result = {
-      level, condition: cond.key, aiMode, taskId, aiError, lang: I18n.get(),
+      level, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
+      taskId, aiError, lang: I18n.get(),
       ranking: [...slots],
       score: scoreRanking(slots),   // vs. the true order — unaffected by aiError
       overrides: countOverrides(),
