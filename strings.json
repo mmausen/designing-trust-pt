@@ -1,12 +1,12 @@
 {
   "_comment": "All interface text, both languages side by side so gaps are obvious. Keys must stay identical in de/en — a missing key falls back to the other language. {curly} tokens are filled in at runtime. Survey question ids are DATA KEYS: never translate or renumber them.",
-
   "de": {
-    "meta": { "name": "Deutsch", "short": "DE" },
-
+    "meta": {
+      "name": "Deutsch",
+      "short": "DE"
+    },
     "ui": {
       "langLabel": "Sprache",
-
       "consent": {
         "heading": "Einwilligungserklärung (Platzhalter)",
         "body": "Platzhalter-Text zur Einwilligung. Ersetzen Sie diesen Abschnitt durch die von Ihrer Ethikkommission freigegebene Fassung: worum es in der Studie geht, dass die Teilnahme freiwillig ist, wie die Daten gespeichert und verwendet werden und an wen Sie sich bei Fragen wenden können. Der Übergang zur Studie wird protokolliert.",
@@ -16,7 +16,6 @@
         "resume": "Fortsetzen",
         "startNew": "Neu starten"
       },
-
       "task": {
         "inboxHd": "Eingang — offene Schritte ({n} übrig)",
         "ladderHd": "Richtige Reihenfolge — Schritte hierher ziehen",
@@ -32,24 +31,29 @@
           "hint": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde. Sie entscheiden, wo er landet.",
           "thought": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde, und erklärt warum. Sie entscheiden, wo er landet.",
           "gravity": "Ziehen Sie die Schritte in die Reihenfolge. Die KI zieht jeden Schritt sanft zu ihrer vorgeschlagenen Position — Sie entscheiden, wo er landet.",
-          "autopilot": "Die KI sortiert die Schritte. Sobald sie fertig ist, können Sie alles umstellen."
+          "autopilot": "Die KI sortiert die Schritte. Sobald sie fertig ist, können Sie alles umstellen.",
+          "handoff": "Ordnen Sie die Schritte. Wenn Sie kurz nichts tun, übernimmt die KI den Zeiger und macht weiter — bewegen Sie die Maus, um wieder zu übernehmen.",
+          "handoff-thoughts": "Ordnen Sie die Schritte. Wenn Sie kurz nichts tun, übernimmt die KI und erklärt dabei, was sie gerade denkt — bewegen Sie die Maus, um wieder zu übernehmen."
         },
         "autopilotDone": "Die KI ist fertig. Sehen Sie die Reihenfolge in Ruhe durch und ziehen Sie jeden Schritt, den Sie ändern möchten — bestätigen Sie dann.",
         "badges": {
           "hint": "KI-Hinweis",
           "thought": "KI-Hinweis + Begründung",
           "gravity": "KI-Sog",
-          "autopilot": "KI-Autopilot"
-        }
+          "autopilot": "KI-Autopilot",
+          "handoff": "KI übernimmt bei Pause",
+          "handoff-thoughts": "KI übernimmt + Begründung"
+        },
+        "handoffDone": "Alle Schritte sind platziert. Sehen Sie die Reihenfolge in Ruhe durch und ziehen Sie jeden Schritt, den Sie ändern möchten — bestätigen Sie dann.",
+        "speedLabel": "Tempo der KI",
+        "thoughtLabel": "denkt:"
       },
-
       "survey": {
         "continue": "Weiter",
         "required": "Bitte beantworten Sie alle Pflichtfragen (*).",
         "likertLow": "Stimme gar nicht zu",
         "likertHigh": "Stimme voll zu"
       },
-
       "debrief": {
         "title": "Sitzung abgeschlossen",
         "sub": "ID {id} · {n} Aufgaben abgeschlossen",
@@ -61,7 +65,6 @@
         "note": "Grün = richtige Position. Rot = Abweichung von der richtigen Reihenfolge."
       }
     },
-
     "conditions": {
       "c1": {
         "label": "Bedingung 1 — allein (ohne Unterstützung)",
@@ -69,14 +72,14 @@
         "explainer": "Willkommen! Links finden Sie sechs Schritte eines alltäglichen Ablaufs — allerdings in der falschen Reihenfolge. Ziehen Sie die Schritte nacheinander in die rechte Spalte und bringen Sie sie in die richtige Reihenfolge: der erste Schritt nach oben, der letzte nach unten. Lassen Sie sich so viel Zeit, wie Sie brauchen. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
       },
       "c2": {
-        "label": "Bedingung 2 — KI-Hinweis",
+        "label": "Bedingung 2 — KI übernimmt bei Pause",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Diesmal steht Ihnen eine KI zur Seite. Sobald Sie einen Schritt aufnehmen, hebt sie die Position hervor, die sie dafür wählen würde. Das ist nur ein Vorschlag — Sie können ihm folgen oder den Schritt an eine ganz andere Stelle setzen. Die endgültige Reihenfolge entscheiden Sie: Setzen Sie jeden Schritt dorthin, wo er Ihrer Meinung nach hingehört, und klicken Sie dann auf „Reihenfolge bestätigen“."
+        "explainer": "Diesmal teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Schritte wie gewohnt selbst. Wenn Sie einen Moment nichts tun, übernimmt die KI den Zeiger und sortiert weiter — sobald Sie die Maus bewegen, haben Sie sofort wieder die Kontrolle. Sie können die KI arbeiten lassen oder alles selbst machen; die endgültige Reihenfolge entscheiden Sie. Wenn sie für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
       },
       "c3": {
-        "label": "Bedingung 3 — KI-Hinweis + Begründung",
+        "label": "Bedingung 3 — KI übernimmt + Begründung",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Ihre KI ist jetzt etwas gesprächiger. Wenn Sie einen Schritt aufnehmen, hebt sie die vorgeschlagene Position hervor und erklärt Ihnen ihre Überlegung dazu. Lesen Sie die Begründung, wenn sie Ihnen hilft — die Entscheidung bleibt aber bei Ihnen, und Sie können den Schritt setzen, wohin Sie möchten. Ordnen Sie alle sechs Schritte und klicken Sie dann auf „Reihenfolge bestätigen“."
+        "explainer": "Wie zuvor teilen Sie sich den Mauszeiger mit einer KI: Wenn Sie einen Moment nichts tun, übernimmt sie und sortiert weiter, und sobald Sie die Maus bewegen, haben Sie sofort wieder die Kontrolle. Diesmal zeigt die KI dabei an, was sie gerade denkt. Lesen Sie mit, wenn es Ihnen hilft — entscheiden müssen Sie. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
       },
       "c4": {
         "label": "Bedingung 4 — KI-Autopilot",
@@ -84,16 +87,30 @@
         "explainer": "Diesmal sortiert die KI die Schritte selbst. Lehnen Sie sich zurück und sehen Sie ihr dabei zu, wie sie alle sechs Schritte einsortiert. Danach liegt die Reihenfolge in Ihrer Hand: Sehen Sie sie in Ruhe durch und ziehen Sie jeden Schritt an eine andere Position, wenn Sie etwas ändern möchten. Sie geben die endgültige Reihenfolge frei — prüfen Sie sie also, bevor Sie auf „Reihenfolge bestätigen“ klicken."
       }
     },
-
     "surveys": {
       "pre": {
         "kicker": "Bevor es losgeht",
         "title": "Fragebogen vor der Aufgabe (Platzhalter)",
         "note": "Platzhalter — ersetzen Sie dies durch Ihre echten Fragen.",
         "questions": [
-          { "id": "pre_q1", "type": "text",   "required": true, "label": "Platzhalter offene Frage (z. B. Hintergrund der teilnehmenden Person)" },
-          { "id": "pre_q2", "type": "likert", "required": true, "label": "Platzhalter Likert: Ich vertraue automatisierten Systemen grundsätzlich." },
-          { "id": "pre_q3", "type": "likert", "required": true, "label": "Platzhalter Likert: Ich habe Erfahrung mit dieser Art von Aufgabe." }
+          {
+            "id": "pre_q1",
+            "type": "text",
+            "required": true,
+            "label": "Platzhalter offene Frage (z. B. Hintergrund der teilnehmenden Person)"
+          },
+          {
+            "id": "pre_q2",
+            "type": "likert",
+            "required": true,
+            "label": "Platzhalter Likert: Ich vertraue automatisierten Systemen grundsätzlich."
+          },
+          {
+            "id": "pre_q3",
+            "type": "likert",
+            "required": true,
+            "label": "Platzhalter Likert: Ich habe Erfahrung mit dieser Art von Aufgabe."
+          }
         ]
       },
       "post": {
@@ -101,20 +118,35 @@
         "title": "Fragebogen nach der Aufgabe (Platzhalter)",
         "note": "Platzhalter — ersetzen Sie dies durch Ihre echten Fragen.",
         "questions": [
-          { "id": "post_q1", "type": "likert", "required": true,  "label": "Platzhalter Likert: Ich habe den Vorschlägen der KI vertraut." },
-          { "id": "post_q2", "type": "likert", "required": true,  "label": "Platzhalter Likert: Ich hatte die Kontrolle über die endgültige Reihenfolge." },
-          { "id": "post_q3", "type": "text",   "required": false, "label": "Platzhalter offene Frage: Haben Sie noch Anmerkungen?" }
+          {
+            "id": "post_q1",
+            "type": "likert",
+            "required": true,
+            "label": "Platzhalter Likert: Ich habe den Vorschlägen der KI vertraut."
+          },
+          {
+            "id": "post_q2",
+            "type": "likert",
+            "required": true,
+            "label": "Platzhalter Likert: Ich hatte die Kontrolle über die endgültige Reihenfolge."
+          },
+          {
+            "id": "post_q3",
+            "type": "text",
+            "required": false,
+            "label": "Platzhalter offene Frage: Haben Sie noch Anmerkungen?"
+          }
         ]
       }
     }
   },
-
   "en": {
-    "meta": { "name": "English", "short": "EN" },
-
+    "meta": {
+      "name": "English",
+      "short": "EN"
+    },
     "ui": {
       "langLabel": "Language",
-
       "consent": {
         "heading": "Consent (placeholder)",
         "body": "Placeholder consent text. Replace this with your IRB / ethics-approved wording: what the study involves, that participation is voluntary, how data is stored and used, and whom to contact. This screen is logged when the participant proceeds.",
@@ -124,7 +156,6 @@
         "resume": "Resume",
         "startNew": "Start new"
       },
-
       "task": {
         "inboxHd": "Inbox — incoming steps ({n} remaining)",
         "ladderHd": "Correct order — drag the steps here",
@@ -140,24 +171,29 @@
           "hint": "Pick up a step and the AI highlights where it would put it — you decide where it lands.",
           "thought": "Pick up a step and the AI highlights where it would put it and explains why — you decide where it lands.",
           "gravity": "Drag steps into the order. The AI gently pulls each one toward its suggested slot — you decide where they land.",
-          "autopilot": "The AI is sorting the steps. You can rearrange anything once it has finished."
+          "autopilot": "The AI is sorting the steps. You can rearrange anything once it has finished.",
+          "handoff": "Sort the steps. If you pause, the AI takes the cursor and carries on — move the mouse to take over again.",
+          "handoff-thoughts": "Sort the steps. If you pause, the AI takes over and tells you what it is thinking — move the mouse to take over again."
         },
         "autopilotDone": "The AI has finished. Look the order over and drag any step you'd like to move, then press Confirm ranking.",
         "badges": {
           "hint": "AI Hint",
           "thought": "AI Hint + Reasoning",
           "gravity": "AI Gravity",
-          "autopilot": "AI Autopilot"
-        }
+          "autopilot": "AI Autopilot",
+          "handoff": "AI steps in when you pause",
+          "handoff-thoughts": "AI steps in + reasoning"
+        },
+        "handoffDone": "All steps are placed. Look the order over and drag any step you'd like to move, then confirm.",
+        "speedLabel": "AI speed",
+        "thoughtLabel": "is thinking:"
       },
-
       "survey": {
         "continue": "Continue",
         "required": "Please answer all required (*) questions.",
         "likertLow": "Strongly disagree",
         "likertHigh": "Strongly agree"
       },
-
       "debrief": {
         "title": "Session complete",
         "sub": "ID {id} · {n} tasks completed",
@@ -169,7 +205,6 @@
         "note": "Green = correct position. Red = deviation from the correct order."
       }
     },
-
     "conditions": {
       "c1": {
         "label": "Condition 1 — solo (no assistance)",
@@ -177,14 +212,14 @@
         "explainer": "Welcome! On the left you'll find six steps of an everyday process, in the wrong order. Drag them one by one into the column on the right to build the correct sequence — the first step at the top, the last step at the bottom. Take all the time you need. When you're happy with the order, press “Confirm ranking”."
       },
       "c2": {
-        "label": "Condition 2 — AI hint",
+        "label": "Condition 2 — AI steps in when you pause",
         "banner": "Everyday process · sorting task",
-        "explainer": "This time you have an assistant. As soon as you pick up a step, it highlights the position it would choose for it. That's only a suggestion — you can follow it or place the step somewhere else entirely. The final order is yours to decide, so put each step where you think it belongs, then press “Confirm ranking”."
+        "explainer": "This time you share the mouse cursor with an AI. Sort the steps yourself as usual. If you pause for a moment, the AI takes the cursor and carries on — and as soon as you move the mouse, you have control back immediately. You can let it work or do everything yourself; the final order is your decision. When it looks right to you, press “Confirm ranking”."
       },
       "c3": {
-        "label": "Condition 3 — AI hint + reasoning",
+        "label": "Condition 3 — AI steps in + reasoning",
         "banner": "Everyday process · sorting task",
-        "explainer": "Your assistant is a little more talkative now. When you pick up a step, it highlights the position it would choose and tells you why. Read its reasoning if you find it useful — but the decision stays with you, and you can place the step wherever you like. Arrange all six steps, then press “Confirm ranking”."
+        "explainer": "As before you share the cursor with an AI: pause for a moment and it takes over, move the mouse and you have control back immediately. This time it also shows you what it is thinking as it works. Read along if you find it useful — the decision is still yours. When the order looks right to you, press “Confirm ranking”."
       },
       "c4": {
         "label": "Condition 4 — AI autopilot",
@@ -192,16 +227,30 @@
         "explainer": "This time your assistant sorts the steps on its own. Sit back and watch it work through all six. Once it's finished, the order is in your hands: take a moment to look it over and drag any step to a different position if you'd like to change something. You're the one signing off on the final sequence, so review it before you press “Confirm ranking”."
       }
     },
-
     "surveys": {
       "pre": {
         "kicker": "Before you begin",
         "title": "Pre-task questionnaire (placeholder)",
         "note": "Placeholder — replace with your real pre-survey items.",
         "questions": [
-          { "id": "pre_q1", "type": "text",   "required": true, "label": "Placeholder open question (e.g. participant background)" },
-          { "id": "pre_q2", "type": "likert", "required": true, "label": "Placeholder Likert: I generally trust automated systems." },
-          { "id": "pre_q3", "type": "likert", "required": true, "label": "Placeholder Likert: I am experienced with this kind of task." }
+          {
+            "id": "pre_q1",
+            "type": "text",
+            "required": true,
+            "label": "Placeholder open question (e.g. participant background)"
+          },
+          {
+            "id": "pre_q2",
+            "type": "likert",
+            "required": true,
+            "label": "Placeholder Likert: I generally trust automated systems."
+          },
+          {
+            "id": "pre_q3",
+            "type": "likert",
+            "required": true,
+            "label": "Placeholder Likert: I am experienced with this kind of task."
+          }
         ]
       },
       "post": {
@@ -209,9 +258,24 @@
         "title": "Post-task questionnaire (placeholder)",
         "note": "Placeholder — replace with your real post-survey items.",
         "questions": [
-          { "id": "post_q1", "type": "likert", "required": true,  "label": "Placeholder Likert: I trusted the AI's suggestions." },
-          { "id": "post_q2", "type": "likert", "required": true,  "label": "Placeholder Likert: I felt in control of the final ranking." },
-          { "id": "post_q3", "type": "text",   "required": false, "label": "Placeholder open question: any comments?" }
+          {
+            "id": "post_q1",
+            "type": "likert",
+            "required": true,
+            "label": "Placeholder Likert: I trusted the AI's suggestions."
+          },
+          {
+            "id": "post_q2",
+            "type": "likert",
+            "required": true,
+            "label": "Placeholder Likert: I felt in control of the final ranking."
+          },
+          {
+            "id": "post_q3",
+            "type": "text",
+            "required": false,
+            "label": "Placeholder open question: any comments?"
+          }
         ]
       }
     }

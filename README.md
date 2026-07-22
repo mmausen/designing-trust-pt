@@ -60,8 +60,34 @@ Everything you'd normally change lives in `js/config.js`.
 |---|---|
 | `solo` | No assistance. Establishes that they understood the task. |
 | `hint` | The AI suggests where a step goes; `hint:` names which design does it (below). |
-| `autopilot` | An AI cursor sorts all six steps; the participant then reviews and may rearrange. |
+| `handoff` | **Shared cursor.** The participant works normally, but after `idleMs` of no input the AI takes the cursor and carries on; any input hands it straight back. Add `thoughts: true` to narrate its reasoning as it acts. |
+| `autopilot` | An AI cursor sorts all six steps uninterrupted; the participant then reviews and may rearrange. |
 | `gravity` | Supported but unused — the drag is pulled toward the suggested slot. |
+
+### AI cursor settings (`Config.AI_CURSOR`)
+
+Shared by `handoff` and `autopilot`. Any condition can override a value inline,
+e.g. `{ ai: "handoff", speed: 40, hesitate: true }`.
+
+| Key | Meaning |
+|---|---|
+| `speed` | 0–100 → cursor travel speed (maps to 230–3200 px/s) |
+| `hesitate` | Thinking pauses and second-guess approach curves — makes the AI look deliberative |
+| `idleMs` | `handoff` only: no input for this long → the AI steps in |
+| `userSpeedControl` | Show the **participant** a speed slider in the footer |
+
+> **On `userSpeedControl`:** good for accessibility — fast cursor motion is genuinely
+> disorienting for some people — but it makes AI speed a participant-controlled
+> variable, so `workMs` stops being comparable across people and it may interact with
+> perceived agency. Every change is logged (`ai_speed_changed`), and the value in force
+> is stored on each result as `cursorSpeed`. Consider setting it `false` for the real
+> study once piloting is done.
+
+The two designs are **not** the same abstraction: a hint is a suggestion at pick-up
+time, a handoff is shared control. That's why handoff is a mechanic rather than a hint
+variant — forcing it into the `onPickUp` contract would have made that contract
+meaningless. To A/B the two designs, swap the `ai:` value in `CONDITIONS`; both remain
+fully working.
 
 The AI never blocks the participant: in every condition the final order is theirs to
 set, and `Confirm ranking` is the only way forward. Autopilot cannot be interrupted
@@ -251,16 +277,22 @@ reload. `Store.download()` exports it as JSON from the console.
 - `lang` — the language the session ran in (last selected)
 - `surveys` — pre/post answers
 - `results` — per task: `ranking`, `score` (/6, vs. the true order), `overrides`
-  (deviations from the AI), `aiError`, `lang`, plus the timing block below
+  (deviations from the AI), `aiError`, `lang`, `hintVariant`, the shared-control
+  counts (`aiTakeovers`, `userTakebacks`, `placedByAi`, `cursorSpeed`,
+  `cursorHesitate`), plus the timing block below
 - `events` — timestamped log (`ts` absolute, `tRel` ms since page load):
   - session — `session_start`, `consent`, `session_resumed`, `session_end`, `dev_skip`,
     `language_switch` (which language, and at which step)
   - task — `task_start` (incl. `inboxOrder`, `aiSuggestion`, `aiSwappedKeys`), `task_confirm`
   - interaction — `drag_start`, `drag_drop`, `explainer_shown`, `explainer_dismissed`
-  - AI — `hint_shown` (per pickup: which slot was hinted, whether reasoning was shown,
-    and `isWrongHint`), `autopilot_start`, `ai_placement`, `autopilot_done`, `takeover`
-    (only if `AUTO.allowTakeover` is on), and `ai_override` (per tile the participant
-    moved away from the AI's suggestion — the key measure when `aiError` is on)
+  - AI (hint) — `hint_shown` (which slot was hinted, the variant, whether reasoning
+    was shown, `isWrongHint`)
+  - AI (cursor) — `handoff_armed`, `ai_took_over` / `user_took_back` (each with `nth`
+    and `placedSoFar`, so the whole tug-of-war is reconstructable), `ai_placement`,
+    `ai_thought_shown` (incl. `isWrongThought`), `handoff_done` / `autopilot_done`,
+    `ai_speed_changed`
+  - `ai_override` — per tile the participant moved away from the AI's suggestion; the
+    key measure when `aiError` is on
   - surveys — `survey_view`, `survey_submit`
 
 ### Task timing

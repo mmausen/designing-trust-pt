@@ -24,10 +24,31 @@ window.Config = (function () {
   // absolute URL to point at a hosted collector later.
   const ENDPOINT_URL = "/collect-logs";
 
+  /* AI cursor behaviour, shared by the "handoff" and "autopilot" mechanics.
+     These are study parameters, so they live here rather than in task.js.
+     Any condition may override a value inline, e.g.
+         3: { key: "c3", ai: "handoff", speed: 40, hesitate: true } */
+  const AI_CURSOR = {
+    speed: 28,              // 0–100 → cursor travel speed
+    hesitate: false,        // thinking pauses + second-guess approach curves
+    idleMs: 1000,           // handoff only: no input for this long → the AI steps in
+    userSpeedControl: true, // show the PARTICIPANT a speed slider.
+                            //   ↳ Good for accessibility (fast cursor motion is
+                            //     disorienting for some people), but it makes AI speed
+                            //     a participant-controlled variable: timing stops being
+                            //     comparable across people and it may interact with
+                            //     perceived agency. Every change is logged
+                            //     (ai_speed_changed). Consider false for the real study.
+  };
+
   // The four study conditions. `ai` drives the interaction mechanic:
   //   solo      — no assistance at all
   //   hint      — the AI suggests where a step goes; `hint` names WHICH
   //               design does the suggesting (see below)
+  //   handoff   — shared cursor: the participant works normally, but after
+  //               AI_CURSOR.idleMs of no input the AI takes the cursor and
+  //               carries on. Any input hands control straight back.
+  //               Add `thoughts: true` to show the AI's reasoning while it acts.
   //   autopilot — the AI places every step itself while the participant watches
   //   gravity   — (still supported, unused) drag is pulled toward the suggestion
   //
@@ -42,10 +63,12 @@ window.Config = (function () {
   // I18n.t("conditions.c2.explainer"). The explainers deliberately never
   // mention that the AI can be wrong, but always make clear the final order
   // is the participant's responsibility.
+  // Design B (active): shared cursor. Swap the two commented lines back in to
+  // A/B against design A, the pick-up hints — both designs stay fully working.
   const CONDITIONS = {
     1: { key: "c1", ai: "solo" },
-    2: { key: "c2", ai: "hint", hint: "slot" },
-    3: { key: "c3", ai: "hint", hint: "slot-reasoning" },
+    2: { key: "c2", ai: "handoff" },                    // A: { ai: "hint", hint: "slot" }
+    3: { key: "c3", ai: "handoff", thoughts: true },    // A: { ai: "hint", hint: "slot-reasoning" }
     4: { key: "c4", ai: "autopilot" },
   };
 
@@ -101,5 +124,5 @@ window.Config = (function () {
   // Supported types: "likert" (1–5 radios) and "text" (free text).
   // Question ids are DATA KEYS — keep them identical across languages.
 
-  return { CONFIG, ENDPOINT_URL, SHUFFLE_SEED, CONDITIONS, buildOrder, CONDITION_TASKS, buildTaskPlan };
+  return { CONFIG, ENDPOINT_URL, SHUFFLE_SEED, AI_CURSOR, CONDITIONS, buildOrder, CONDITION_TASKS, buildTaskPlan };
 })();

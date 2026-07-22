@@ -1,12 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════════
    TASK — the ranking interaction for one condition.
 
-   Four mechanics, chosen by CONDITIONS[level].ai:
+   Mechanics, chosen by CONDITIONS[level].ai:
      solo      — no assistance
-     hint      — picking a step up highlights the slot the AI suggests
-     thought   — same highlight, plus the AI's reasoning for that slot
+     hint      — picking a step up cues the slot the AI suggests; the design
+                 doing the cueing is a swappable variant (see js/hints.js)
+     handoff   — shared cursor: the participant works normally, but after
+                 AI_CURSOR.idleMs of no input the AI takes the cursor and
+                 carries on. Any real input hands it straight back. With
+                 `thoughts: true` it also narrates what it is about to do.
      autopilot — a fake cursor places every step while the participant watches
      gravity   — (kept, currently unused) the drag is pulled toward the slot
+
+   `handoff` and `autopilot` share one cursor engine; they differ only in
+   whether it starts dormant and whether input can interrupt it.
 
    The AI's suggestion always comes from `aiRanking`, so a scripted error
    (Config.CONDITION_TASKS → aiError) flows into the hint, the reasoning and
@@ -26,23 +33,31 @@ window.Task = (function () {
   const GRAVITY_RADIUS = 90;     // px from slot centre to feel the pull
   const GRAVITY_STRENGTH = 0.38; // 0–1, how strongly the ghost biases toward the slot
 
-  /* Autopilot behaviour (level 4). `hesitate` and `allowTakeover` are fully
-     implemented but switched OFF for the study: the AI works at a steady pace
-     and cannot be interrupted or taken over — the participant reviews the
-     finished result instead. Flip either to true to bring the behaviour back. */
+  /* Fixed motion constants. The study-facing knobs (speed, hesitate, idleMs,
+     userSpeedControl) live in Config.AI_CURSOR and are resolved per stage
+     into `hcfg` — see resolveCursorCfg(). */
   const AUTO = {
-    hesitate: false,      // thinking pauses + second-guess approach curves
-    allowTakeover: false, // participant input grabs the cursor back mid-run
-    idleMs: 1000,         // (takeover only) idle time before the AI steps in
-    speed: 28,            // 0–100 → travel speed
     speedMin: 230, speedMax: 3200,   // px/sec at slider 0 / 100
     fadeInMs: 420, fadeOutMs: 240, returnMs: 190,
     startDelayMs: 550,    // beat before the first move
   };
+  let hcfg = null;        // this stage's resolved cursor settings
+
+  // Config.AI_CURSOR, with any inline per-condition overrides applied.
+  function resolveCursorCfg(condition) {
+    const base = Object.assign({}, Config.AI_CURSOR);
+    ["speed", "hesitate", "idleMs", "userSpeedControl"].forEach(k => {
+      if (condition && condition[k] !== undefined) base[k] = condition[k];
+    });
+    return base;
+  }
 
   // per-task state
   let level, cond, aiMode, cards, byId, aiRanking, inbox, slots, taskStart;
   let taskId, taskDef, planIndex, aiError;
+  let handoff = false;      // shared-cursor stage: the AI steps in when idle
+  let showThoughts = false; // handoff + reasoning panel while the AI acts
+  let aiTakeovers = 0, userTakebacks = 0, aiPlacedCount = 0;
 
   /* ── timing ──────────────────────────────────────────────────────────
      The explainer opens on top of the task, so raw wall-clock time would
@@ -101,7 +116,7 @@ window.Task = (function () {
   const dist = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by);
   const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   const easeOutBack = (t, s) => { s = s == null ? 1.1 : s; return 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2); };
-  const speedPPS = () => lerp(AUTO.speedMin, AUTO.speedMax, AUTO.speed / 100);
+  const speedPPS = () => lerp(AUTO.speedMin, AUTO.speedMax, (hcfg ? hcfg.speed : 28) / 100);
 
   /* ── wire footer controls + cache overlays (once) ── */
   function wire() {
@@ -109,13 +124,36 @@ window.Task = (function () {
     $("btn-confirm").addEventListener("click", confirm);
     $("explainer-ok").addEventListener("click", explainerOk);
     $("btn-explainer").addEventListener("click", function () { showExplainer(false); });
-    // Track the real pointer so the AI cursor can appear where the participant
-    // left off (and, if allowTakeover is ever enabled, hand control back).
+
+    /* Real input marks the participant as active. In a handoff stage any of
+       these instantly hands control back; after hcfg.idleMs of none of them,
+       the AI steps in. The AI's own motion is synthetic, so it can never
+       register as activity and interrupt itself. */
     document.addEventListener("mousemove", e => {
       lastPointer = { x: e.clientX, y: e.clientY };
-      lastActivity = performance.now();
-      if (AUTO.allowTakeover && fc && fc.active) autoHandBack();
+      registerActivity();
     }, { passive: true });
+    ["mousedown", "wheel", "keydown"].forEach(evt =>
+      document.addEventListener(evt, e => {
+        if (e.target && e.target.closest && e.target.closest("#ai-speed-ctl")) return; // the slider isn't task activity
+        registerActivity();
+      }, { passive: true }));
+
+    // Participant-facing speed control (Config.AI_CURSOR.userSpeedControl).
+    const speed = $("ai-speed");
+    if (speed) {
+      speed.addEventListener("input", () => { if (hcfg) hcfg.speed = +speed.value; });
+      // Log on release, not on every pixel of drag.
+      speed.addEventListener("change", () => {
+        if (!hcfg) return;
+        Store.log("ai_speed_changed", { speed: hcfg.speed, taskId, condition: cond ? cond.key : null });
+      });
+    }
+  }
+
+  function registerActivity() {
+    lastActivity = performance.now();
+    if (handoff && fc && fc.active) autoHandBack();
   }
 
   /* ── start a condition ── */
@@ -128,6 +166,10 @@ window.Task = (function () {
     cond = Config.CONDITIONS[level];
     aiMode = cond.ai;
     hintImpl = (aiMode === "hint") ? Hints.get(cond.hint) : null;
+    handoff = (aiMode === "handoff");
+    showThoughts = handoff && !!cond.thoughts;
+    hcfg = resolveCursorCfg(cond);
+    aiTakeovers = 0; userTakebacks = 0; aiPlacedCount = 0;
     taskDef = Tasks.get(taskId);
 
     cards = Tasks.inboxCardsFor(taskId, Config.SHUFFLE_SEED); // deterministic per task
@@ -154,7 +196,8 @@ window.Task = (function () {
     render();
 
     // Show the explainer first; autopilot (if any) starts when it's dismissed.
-    pendingAutopilot = (aiMode === "autopilot");
+    // Both cursor mechanics wait for the explainer to be dismissed.
+    pendingAutopilot = (aiMode === "autopilot" || handoff);
     showExplainer(true);
   }
 
@@ -256,8 +299,10 @@ window.Task = (function () {
 
     // A hint variant supplies its own badge + footer wording, so competing
     // variants can be told apart on screen without task.js knowing them.
-    const hintKey = hintImpl ? hintImpl.hintKey : `ui.task.hints.${aiMode}`;
-    const badgeKey = hintImpl ? hintImpl.badgeKey : `ui.task.badges.${aiMode}`;
+    // handoff has two flavours (with/without the reasoning panel).
+    const modeKey = (handoff && showThoughts) ? "handoff-thoughts" : aiMode;
+    const hintKey = hintImpl ? hintImpl.hintKey : `ui.task.hints.${modeKey}`;
+    const badgeKey = hintImpl ? hintImpl.badgeKey : `ui.task.badges.${modeKey}`;
 
     // While the autopilot is finished, keep its review prompt instead of the
     // "AI is sorting" line.
@@ -269,6 +314,27 @@ window.Task = (function () {
     const badgeTxt = (aiMode === "solo") ? null : I18n.t(badgeKey);
     if (badgeTxt) { badge.hidden = false; badge.textContent = badgeTxt; }
     else badge.hidden = true;
+
+    // Reasoning panel: present for the whole stage (so its space is reserved
+    // and nothing shifts when it fills), revealed as the AI acts.
+    const panel = $("ai-thought");
+    if (panel) {
+      panel.hidden = !showThoughts;
+      panel.classList.remove("visible");
+      $("ai-thought-txt").textContent = "";
+      $("ai-thought-label").textContent = I18n.t("ui.task.thoughtLabel");
+    }
+
+    // Participant speed control — only where an AI cursor actually moves.
+    const speedCtl = $("ai-speed-ctl");
+    if (speedCtl) {
+      const show = (handoff || aiMode === "autopilot") && !!hcfg.userSpeedControl;
+      speedCtl.hidden = !show;
+      if (show) {
+        $("ai-speed").value = hcfg.speed;
+        $("ai-speed-label").textContent = I18n.t("ui.task.speedLabel");
+      }
+    }
 
     $("btn-explainer").textContent = I18n.t("ui.task.explainerBtn");
     $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
@@ -587,7 +653,11 @@ window.Task = (function () {
     const cc = tileCenter(target.id);
     const slotIdx = aiRanking.indexOf(target.id);
     if (!cc || slotIdx < 0) { pushPause(300); return; }
-    const hes = AUTO.hesitate;
+    const hes = !!(hcfg && hcfg.hesitate);
+
+    // Say what it's about to do BEFORE it moves, so there is time to read it
+    // while the cursor travels rather than only at the moment of the drop.
+    showThought(target.id);
 
     pushPause(hes ? rand(350, 1000) : rand(120, 260));            // a beat of "thinking"
     if (hes && Math.random() < 0.6) {                             // second-guess approach
@@ -623,7 +693,7 @@ window.Task = (function () {
     const amp = d * fc.seg.curve * (Math.random() < 0.5 ? -1 : 1);
     fc.seg.p0 = p0; fc.seg.p1 = p1;
     fc.seg.ctrl = { x: mx + nx * amp, y: my + ny * amp };
-    fc.seg.dur = clamp(d / speedPPS() * 1000 * (AUTO.hesitate ? 1.22 : 1), 170, 4000);
+    fc.seg.dur = clamp(d / speedPPS() * 1000 * ((hcfg && hcfg.hesitate) ? 1.22 : 1), 170, 4000);
     fc.seg.t = 0;
   }
   function bezier(p0, ctrl, p1, t) {
@@ -672,6 +742,7 @@ window.Task = (function () {
         ghostHide();
         clearSlotMarks();
         clickPulse();
+        aiPlacedCount++;
         Store.log("ai_placement", { cardId: id, slot: s.slot, isError: byId[id].rank !== s.slot + 1 });
         placeCard(id, "inbox", s.slot);
         render();
@@ -688,30 +759,56 @@ window.Task = (function () {
   }
 
   /* ── lifecycle ── */
+  /* Start the cursor engine. In "autopilot" it begins driving immediately; in
+     "handoff" it starts dormant and the drive loop just watches for idle. */
   function autoStart() {
     const main = $("main");
     const r = main.getBoundingClientRect();
     fc = {
-      run: runId, active: true, opacity: 0,
+      run: runId, active: !handoff, done: false, opacity: 0,
       x: lastPointer.x || (r.left + r.width * 0.25),
       y: lastPointer.y || (r.top + r.height * 0.5),
       carrying: null, seg: null, queue: [], returning: false, returnT: 0, returnFrom: { x: 0, y: 0 },
     };
-    autopilotState = "running";
-    main.classList.add("ai-driving");
     aiCursor.style.display = "block";
     aiCursor.style.opacity = "0";
     aiCursor.style.transform = `translate(${fc.x}px,${fc.y}px)`;
-    pushPause(AUTO.startDelayMs);
+    lastActivity = performance.now();
+
+    if (handoff) {
+      autopilotState = "idle";           // the participant has control first
+      Store.log("handoff_armed", { taskId, idleMs: hcfg.idleMs, speed: hcfg.speed, hesitate: !!hcfg.hesitate });
+    } else {
+      autopilotState = "running";
+      main.classList.add("ai-driving");
+      pushPause(AUTO.startDelayMs);
+      autopilotStartedAt = performance.now();
+      Store.log("autopilot_start", { taskId, suggestion: [...aiRanking] });
+    }
     render();
-    autopilotStartedAt = performance.now();
-    Store.log("autopilot_start", { taskId, suggestion: [...aiRanking] });
     driveStart();
+  }
+
+  // The AI steps in after an idle spell (handoff only).
+  function activateFake() {
+    fc.active = true;
+    fc.returning = false;
+    fc.queue.length = 0;
+    fc.seg = null;
+    if (lastPointer.x || lastPointer.y) { fc.x = lastPointer.x; fc.y = lastPointer.y; }
+    autopilotState = "running";
+    aiTakeovers++;
+    $("main").classList.add("ai-driving");
+    Store.log("ai_took_over", {
+      taskId, nth: aiTakeovers, placedSoFar: slots.filter(Boolean).length,
+      idleMs: hcfg.idleMs, speed: hcfg.speed,
+    });
   }
 
   // Everything placed → fade the cursor out and hand the result over for review.
   function autoFinish() {
     fc.active = false;
+    fc.done = true;
     fc.queue.length = 0;
     fc.seg = null;
     fc.carrying = null;
@@ -719,31 +816,62 @@ window.Task = (function () {
     $("main").classList.remove("ai-driving");
     ghostHide();
     clearSlotMarks();
-    $("hint").textContent = I18n.t("ui.task.autopilotDone");
+    hideThought();
+    $("hint").textContent = I18n.t(handoff ? "ui.task.handoffDone" : "ui.task.autopilotDone");
     render();
     autopilotDoneAt = performance.now();
     autopilotMs = autopilotStartedAt != null ? Math.round(autopilotDoneAt - autopilotStartedAt) : null;
-    Store.log("autopilot_done", { taskId, slots: [...slots], autopilotMs });
+    Store.log(handoff ? "handoff_done" : "autopilot_done", {
+      taskId, slots: [...slots], autopilotMs,
+      aiTakeovers, userTakebacks, placedByAi: aiPlacedCount,
+    });
   }
 
-  // Only reachable with AUTO.allowTakeover — kept for the handoff variant.
+  /* The participant moved/clicked/typed: give the cursor straight back.
+     Any step the AI was mid-carry is dropped back into the inbox untouched —
+     it is never half-placed. */
   function autoHandBack() {
     if (!fc || !fc.active) return;
     if (fc.carrying != null) {
       const src = document.querySelector(`#inbox [data-id="${fc.carrying}"]`);
-      if (src) src.classList.remove("ghost");
+      if (src) src.classList.remove("ghost");   // it never left the inbox
       ghostHide();
       fc.carrying = null;
     }
     fc.active = false;
     fc.queue.length = 0;
     fc.seg = null;
+    // Sweep the cursor back to the real pointer before fading — a visible
+    // "here, it's yours again" rather than a blink.
     fc.returning = true; fc.returnT = 0; fc.returnFrom = { x: fc.x, y: fc.y };
-    autopilotState = "done";
+    autopilotState = handoff ? "idle" : "done";
+    userTakebacks++;
     $("main").classList.remove("ai-driving");
     clearSlotMarks();
-    Store.log("takeover", { slotsAtTakeover: [...slots] });
+    hideThought();
+    Store.log("user_took_back", {
+      taskId, nth: userTakebacks, placedSoFar: slots.filter(Boolean).length,
+    });
     render();
+  }
+
+  /* ── the AI's reasoning panel (handoff + thoughts) ──
+     Shown as soon as the AI picks its next step, so it can be read while the
+     cursor travels, and left up until the next one replaces it. */
+  function showThought(cardId) {
+    if (!showThoughts) return;
+    const text = Tasks.thoughtFor(taskId, cardId, aiError);
+    const panel = $("ai-thought");
+    if (!panel || !text) return;
+    $("ai-thought-txt").textContent = text;
+    panel.classList.add("visible");
+    const trueSlot = byId[cardId] ? byId[cardId].rank - 1 : -1;
+    const aiSlot = aiRanking.indexOf(cardId);
+    Store.log("ai_thought_shown", { taskId, cardId, aiSlot, isWrongThought: aiSlot !== trueSlot });
+  }
+  function hideThought() {
+    const panel = $("ai-thought");
+    if (panel) panel.classList.remove("visible");
   }
   function updateReturn(dt) {
     fc.returnT += dt / AUTO.returnMs;
@@ -780,7 +908,11 @@ window.Task = (function () {
     const dt = Math.min(2000, now - prevTs);
     prevTs = now; lastStepTs = now;
 
-    if (fc.active && slots.every(Boolean)) autoFinish();
+    const complete = slots.every(Boolean);
+    if (fc.active && complete) autoFinish();
+    // Handoff: after an idle spell with nobody dragging, the AI steps in.
+    else if (handoff && !complete && !fc.active && !fc.returning && !drag
+             && (now - lastActivity) > hcfg.idleMs) activateFake();
 
     const targetOp = (fc.active || fc.returning) ? 1 : 0;
     const rate = fc.active ? dt / AUTO.fadeInMs : dt / AUTO.fadeOutMs;
@@ -804,10 +936,12 @@ window.Task = (function () {
       const jy = Math.cos(now / 160) * 1.0 + Math.cos(now / 90) * 0.5;
       aiCursor.style.opacity = fc.opacity.toFixed(3);
       aiCursor.style.transform = `translate(${(fc.x + jx).toFixed(1)}px,${(fc.y + jy).toFixed(1)}px)`;
-    } else if (!fc.active) {
-      hideCursor();
-      driveStop();
-      fc = null;
+    } else {
+      aiCursor.style.opacity = "0";
+      // Only tear the engine down once the task is finished. In a handoff
+      // stage the cursor merely goes dormant between takeovers, so the loop
+      // has to keep running to notice the next idle spell.
+      if (fc.done) { hideCursor(); driveStop(); fc = null; }
     }
   }
 
@@ -863,6 +997,10 @@ window.Task = (function () {
       ranking: [...slots],
       score: scoreRanking(slots),   // vs. the true order — unaffected by aiError
       overrides: countOverrides(),
+      // shared-control behaviour (handoff stages; 0/null elsewhere)
+      aiTakeovers, userTakebacks, placedByAi: aiPlacedCount,
+      cursorSpeed: hcfg ? hcfg.speed : null,
+      cursorHesitate: hcfg ? !!hcfg.hesitate : null,
       ...timing,
     };
     Store.log("task_confirm", { level, taskId, finalRanking: [...slots], ...timing });

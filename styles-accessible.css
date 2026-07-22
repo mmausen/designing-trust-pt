@@ -151,6 +151,29 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 /* hide the real pointer while the AI is driving */
 #main.ai-driving,#main.ai-driving *{cursor:none!important}
 
+/* ── AI reasoning panel (handoff + thoughts) ──
+      Always occupies its row once the stage shows it, so filling in the text
+      never shifts the columns underneath. ── */
+#ai-thought{flex-shrink:0;display:flex;align-items:baseline;gap:10px;
+  padding:11px 30px;min-height:52px;border-bottom:1px solid var(--border);
+  background:#f7f4fe;opacity:0;transition:opacity .22s ease}
+#ai-thought.visible{opacity:1}
+#ai-thought .ait-tag{font-size:10.5px;font-weight:800;letter-spacing:.07em;color:#fff;
+  background:var(--purple);padding:2px 7px;border-radius:999px;flex-shrink:0;align-self:flex-start;margin-top:2px}
+#ai-thought .ait-label{font-size:12.5px;font-weight:700;color:var(--purple);flex-shrink:0}
+#ai-thought .ait-txt{font-size:14px;line-height:1.5;color:var(--txt2)}
+
+/* ── participant-facing AI speed slider ── */
+.speed-ctl{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;
+  color:var(--muted);white-space:nowrap;cursor:pointer}
+.speed-ctl input[type=range]{-webkit-appearance:none;appearance:none;width:110px;height:4px;
+  border-radius:4px;background:var(--border);outline:none;cursor:pointer}
+.speed-ctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;
+  border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid #fff;
+  box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.speed-ctl input[type=range]::-moz-range-thumb{width:16px;height:16px;border:2px solid #fff;
+  border-radius:50%;background:var(--accent);cursor:pointer}
+
 /* ── language switcher (fixed top-right, on every screen) ── */
 #lang-switch{position:fixed;top:12px;right:16px;z-index:10001;display:flex;gap:2px;
   background:#fff;border:1px solid var(--border);border-radius:999px;padding:3px}
@@ -163,9 +186,12 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 #banner{padding-right:112px}
 
 /* ── task footer ── */
-#footer{border-top:1px solid var(--border);padding:12px 30px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:14px}
-#footer .hint{font-size:13.5px;color:var(--txt2);flex:1;line-height:1.5}
-.footer-right{display:flex;gap:10px;align-items:center;flex-shrink:0}
+#footer{border-top:1px solid var(--border);padding:12px 30px;display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0;gap:14px;flex-wrap:wrap}
+/* wraps onto its own line rather than being squeezed to a sliver when the
+   footer also carries the speed control */
+#footer .hint{font-size:13.5px;color:var(--txt2);flex:1 1 260px;min-width:200px;line-height:1.5}
+.footer-right{display:flex;gap:16px;align-items:center;flex-shrink:0;margin-left:auto}
 
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
