@@ -158,8 +158,11 @@
     // ── survey continue ──
     $("btn-survey-next").addEventListener("click", () => Survey.submit());
 
-    // ── dev Skip button (prototyping only — remove before the real study) ──
-    $("dev-skip").addEventListener("click", devSkip);
+    // ── dev Skip button — hidden for participants, on via Config.CONFIG.devSkip ──
+    if (Config.CONFIG.devSkip) {
+      $("dev-skip").hidden = false;
+      $("dev-skip").addEventListener("click", devSkip);
+    }
 
     // ── last-gasp save if the tab is closed or backgrounded mid-task ──
     // pagehide is the reliable one on Safari/iOS; visibilitychange covers

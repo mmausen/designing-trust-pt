@@ -322,7 +322,8 @@ accepted the AI's order without inspecting it.
 
 ## Before the real study
 
-- [ ] **Remove the `#dev-skip` button** — `index.html`, its CSS, and the handler in `main.js`
+- [ ] Confirm `CONFIG.devSkip` is `false` — it hides the bottom-right "Skip ▸" button
+      that jumps past stages (already the default)
 - [ ] Replace the placeholder consent text, condition labels/explainers, and both surveys
 - [ ] Set `showCorrectnessFeedback: false` — the debrief currently reveals correct answers,
       a learning confound if participants ever repeat

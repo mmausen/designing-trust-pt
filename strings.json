@@ -64,7 +64,7 @@
       },
       "mobile": {
         "heading": "Bitte am Computer teilnehmen",
-        "body": "Diese Studie lässt sich nur mit Maus oder Trackpad durchführen: Der Mauszeiger ist Teil des Untersuchungsgegenstands, deshalb ist eine Teilnahme auf Smartphone oder Tablet leider nicht möglich.",
+        "body": "Diese Studie lässt sich nur mit Maus oder Trackpad durchführen. Eine Teilnahme auf Smartphone oder Tablet ist leider nicht möglich.",
         "hint": "Öffnen Sie diesen Link bitte an einem Computer, um teilzunehmen. Vielen Dank!"
       },
       "end": {
@@ -212,7 +212,7 @@
       },
       "mobile": {
         "heading": "Please take part on a computer",
-        "body": "This study can only be done with a mouse or trackpad: the cursor is part of what we are studying, so taking part on a phone or tablet is unfortunately not possible.",
+        "body": "This study can only be done with a mouse or trackpad. Taking part on a phone or tablet is unfortunately not possible.",
         "hint": "Please open this link on a computer to take part. Thank you!"
       },
       "end": {
