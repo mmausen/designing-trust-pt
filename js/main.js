@@ -20,6 +20,13 @@
     document.querySelectorAll("[data-i18n]").forEach(el => {
       el.textContent = I18n.t(el.getAttribute("data-i18n"));
     });
+    const endBtn = $("btn-end");
+    if (endBtn) endBtn.textContent = I18n.t("ui.end.button");
+    // keep the terminal screen in sync if the language is switched on it
+    if ($("end-title") && !$("screen-end").hidden) {
+      $("end-title").textContent = I18n.t("ui.end.title");
+      $("end-note").textContent = I18n.t("ui.end.note");
+    }
     document.documentElement.lang = I18n.get();
     document.querySelectorAll("#lang-switch .lang-btn").forEach(b => {
       b.classList.toggle("active", b.dataset.lang === I18n.get());
@@ -33,6 +40,9 @@
      never end up showing a different language than the screen does. */
   function onLanguageChanged() {
     applyStaticText();
+    // Terminal and gate screens sit outside the Flow; re-rendering the step
+    // underneath would yank the participant back to it.
+    if (!$("screen-end").hidden || !$("screen-mobile").hidden) return;
     const cur = Flow.current();
     if (!cur) return;
     if (cur.type === "survey") Survey.relocalize();
@@ -105,6 +115,26 @@
     Flow.next();
   }
 
+  /* ── desktop gate ───────────────────────────────────────────────────
+     The AI is embodied *as a cursor*, so a device without a precise
+     pointer cannot run this study — it is not a layout problem that a
+     responsive tweak could fix. Gate on input capability rather than
+     screen width, so a desktop user with a small window is not blocked.
+     Re-checked on resize/orientation change, which also catches a tablet
+     that starts in a mode reporting a fine pointer. */
+  function isUnsupportedDevice() {
+    if (!window.matchMedia) return false;
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const noHover = window.matchMedia("(hover: none)").matches;
+    return coarse || noHover;
+  }
+
+  function enforceDesktopGate() {
+    if (!isUnsupportedDevice()) return false;
+    Flow.showScreen("screen-mobile");
+    return true;
+  }
+
   function boot() {
     Task.wire();
 
@@ -139,8 +169,34 @@
       if (document.visibilityState === "hidden") Store.flush();
     });
 
+    // ── end button on the debrief → terminal thank-you screen ──
+    $("btn-end").addEventListener("click", endSession);
+
     applyStaticText();
+
+    // Nothing below matters on an unsupported device — show the gate instead.
+    if (enforceDesktopGate()) {
+      window.addEventListener("resize", enforceDesktopGate);
+      window.addEventListener("orientationchange", enforceDesktopGate);
+      return;
+    }
+    window.addEventListener("resize", enforceDesktopGate);
+    window.addEventListener("orientationchange", enforceDesktopGate);
+
     Flow.showScreen("screen-consent");
+  }
+
+  /* Terminal screen. Deliberately has no way forward: the participant should
+     be in no doubt the study is over. A final flush covers anything logged
+     after the debrief's own sync. */
+  function endSession() {
+    if (Store.get()) {
+      Store.log("session_closed", {});
+      Store.sendRemote();
+    }
+    $("end-title").textContent = I18n.t("ui.end.title");
+    $("end-note").textContent = I18n.t("ui.end.note");
+    Flow.showScreen("screen-end");
   }
 
   // Load the interface strings and the bilingual task content, then boot.

@@ -50,7 +50,6 @@ window.Config = (function () {
   //               carries on. Any input hands control straight back.
   //               Add `thoughts: true` to show the AI's reasoning while it acts.
   //   autopilot — the AI places every step itself while the participant watches
-  //   gravity   — (still supported, unused) drag is pulled toward the suggestion
   //
   // For ai:"hint", `hint` selects a variant registered in js/hints.js:
   //   "slot"            — highlight the suggested slot            (js/hint_slot.js)

@@ -30,7 +30,6 @@
           "solo": "Ziehen Sie jeden Schritt in die Reihenfolge, die Sie für richtig halten, und bestätigen Sie dann.",
           "hint": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde. Sie entscheiden, wo er landet.",
           "thought": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde, und erklärt warum. Sie entscheiden, wo er landet.",
-          "gravity": "Ziehen Sie die Schritte in die Reihenfolge. Die KI zieht jeden Schritt sanft zu ihrer vorgeschlagenen Position — Sie entscheiden, wo er landet.",
           "autopilot": "Die KI sortiert die Schritte. Sobald sie fertig ist, können Sie alles umstellen.",
           "handoff": "Ordnen Sie die Schritte. Wenn Sie kurz nichts tun, übernimmt die KI den Zeiger und macht weiter — bewegen Sie die Maus, um wieder zu übernehmen.",
           "handoff-thoughts": "Ordnen Sie die Schritte. Wenn Sie kurz nichts tun, übernimmt die KI und erklärt dabei, was sie gerade denkt — bewegen Sie die Maus, um wieder zu übernehmen."
@@ -39,7 +38,6 @@
         "badges": {
           "hint": "KI-Hinweis",
           "thought": "KI-Hinweis + Begründung",
-          "gravity": "KI-Sog",
           "autopilot": "KI-Autopilot",
           "handoff": "KI übernimmt bei Pause",
           "handoff-thoughts": "KI übernimmt + Begründung"
@@ -63,6 +61,16 @@
         "correct": "{score}/6 richtig",
         "overrides": "{n} Abweichung(en) von der KI",
         "note": "Grün = richtige Position. Rot = Abweichung von der richtigen Reihenfolge."
+      },
+      "mobile": {
+        "heading": "Bitte am Computer teilnehmen",
+        "body": "Diese Studie lässt sich nur mit Maus oder Trackpad durchführen: Der Mauszeiger ist Teil des Untersuchungsgegenstands, deshalb ist eine Teilnahme auf Smartphone oder Tablet leider nicht möglich.",
+        "hint": "Öffnen Sie diesen Link bitte an einem Computer, um teilzunehmen. Vielen Dank!"
+      },
+      "end": {
+        "button": "Studie beenden",
+        "title": "Vielen Dank für Ihre Teilnahme",
+        "note": "Die Sitzung ist abgeschlossen und Ihre Antworten sind gespeichert. Sie können dieses Fenster jetzt schließen."
       }
     },
     "conditions": {
@@ -170,7 +178,6 @@
           "solo": "Drag each step into the order you think is right, then confirm.",
           "hint": "Pick up a step and the AI highlights where it would put it — you decide where it lands.",
           "thought": "Pick up a step and the AI highlights where it would put it and explains why — you decide where it lands.",
-          "gravity": "Drag steps into the order. The AI gently pulls each one toward its suggested slot — you decide where they land.",
           "autopilot": "The AI is sorting the steps. You can rearrange anything once it has finished.",
           "handoff": "Sort the steps. If you pause, the AI takes the cursor and carries on — move the mouse to take over again.",
           "handoff-thoughts": "Sort the steps. If you pause, the AI takes over and tells you what it is thinking — move the mouse to take over again."
@@ -179,7 +186,6 @@
         "badges": {
           "hint": "AI Hint",
           "thought": "AI Hint + Reasoning",
-          "gravity": "AI Gravity",
           "autopilot": "AI Autopilot",
           "handoff": "AI steps in when you pause",
           "handoff-thoughts": "AI steps in + reasoning"
@@ -203,6 +209,16 @@
         "correct": "{score}/6 correct",
         "overrides": "{n} deviation(s) from the AI",
         "note": "Green = correct position. Red = deviation from the correct order."
+      },
+      "mobile": {
+        "heading": "Please take part on a computer",
+        "body": "This study can only be done with a mouse or trackpad: the cursor is part of what we are studying, so taking part on a phone or tablet is unfortunately not possible.",
+        "hint": "Please open this link on a computer to take part. Thank you!"
+      },
+      "end": {
+        "button": "Finish study",
+        "title": "Thank you for participating",
+        "note": "The session is complete and your answers have been saved. You can close this window now."
       }
     },
     "conditions": {

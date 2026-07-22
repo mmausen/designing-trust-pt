@@ -3,7 +3,17 @@
 A within-subjects HCI study prototype. Participants order six process steps per task
 across four conditions, with varying degrees of AI assistance.
 
-Flow: **consent → pre-survey → task × plan → post-survey → debrief**
+Flow: **consent → pre-survey → task × plan → post-survey → debrief → end**
+
+Two screens sit *outside* that flow:
+
+- **Desktop gate** — shown instead of everything else on a touch device. The AI is
+  embodied *as a cursor*, so a phone or tablet cannot run this study at all; this is a
+  capability gate, not a layout problem a responsive tweak could fix. It keys off
+  `(pointer: coarse)` / `(hover: none)` rather than screen width, so a desktop user
+  with a small window is never blocked, and it re-checks on resize/orientation change.
+- **End screen** — a terminal "Thank you for participating" reached by the button on
+  the debrief. It has no way forward, so there is no doubt the session is over.
 
 Plain static HTML/CSS/JS — no build step, no dependencies. Each module is a global
 (`window.Config`, `window.Tasks`, …) loaded in dependency order by `index.html`.
@@ -36,7 +46,6 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 | `styles-accessible.css` | The active stylesheet |
 | `strings.json` | **All interface text + the questionnaires**, `de` and `en` side by side |
 | `task_thought.json` | Task content — 30 bilingual process-ordering tasks (A01–A30) |
-| `_archive/` | The pre-merge single-language task files + the merge script |
 | `js/config.js` | **Study settings** — conditions, task assignment, seed, endpoint |
 | `js/i18n.js` | Active language + string lookup with cross-language fallback |
 | `js/tasks.js` | Holds both languages; builds cards, correct order, AI suggestion, seeded shuffle |
@@ -44,11 +53,9 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 | `js/store.js` | Session state, localStorage autosave, remote-POST stub |
 | `js/flow.js` | The linear step machine |
 | `js/survey.js` | Renders/validates the pre & post questionnaires |
-| `js/task.js` | The ranking interaction: custom drag, AI gravity, autopilot |
+| `js/task.js` | The ranking interaction: custom drag, AI cursor engine (handoff + autopilot) |
 | `js/results.js` | The final debrief grid |
 | `js/main.js` | Boot: fetch content, consent, resume, wiring |
-
-`styles.css` is an unreferenced leftover from an earlier version.
 
 ## Configuring a study
 
@@ -62,7 +69,6 @@ Everything you'd normally change lives in `js/config.js`.
 | `hint` | The AI suggests where a step goes; `hint:` names which design does it (below). |
 | `handoff` | **Shared cursor.** The participant works normally, but after `idleMs` of no input the AI takes the cursor and carries on; any input hands it straight back. Add `thoughts: true` to narrate its reasoning as it acts. |
 | `autopilot` | An AI cursor sorts all six steps uninterrupted; the participant then reviews and may rearrange. |
-| `gravity` | Supported but unused — the drag is pulled toward the suggested slot. |
 
 ### AI cursor settings (`Config.AI_CURSOR`)
 
@@ -125,11 +131,6 @@ and simply renders no hint — it does not break the task.
 
 The active variant is recorded on `task_start`, on each result (`hintVariant`), and on
 every `hint_shown` event, so runs stay attributable to the design they used.
-
-Autopilot behaviour is tuned by `AUTO` at the top of `js/task.js`. Two behaviours are
-implemented but **switched off** for the study — set either to `true` to restore it:
-`hesitate` (thinking pauses and second-guess approach curves) and `allowTakeover`
-(participant input grabs the cursor back mid-run, as in the lab handoff experiment).
 
 **Which task runs in which condition** (`CONDITION_TASKS`):
 

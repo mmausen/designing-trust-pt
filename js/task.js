@@ -10,7 +10,6 @@
                  carries on. Any real input hands it straight back. With
                  `thoughts: true` it also narrates what it is about to do.
      autopilot — a fake cursor places every step while the participant watches
-     gravity   — (kept, currently unused) the drag is pulled toward the slot
 
    `handoff` and `autopilot` share one cursor engine; they differ only in
    whether it starts dormant and whether input can interrupt it.
@@ -30,8 +29,6 @@ window.Task = (function () {
     return "—";
   }
   const DRAG_THRESHOLD = 5;
-  const GRAVITY_RADIUS = 90;     // px from slot centre to feel the pull
-  const GRAVITY_STRENGTH = 0.38; // 0–1, how strongly the ghost biases toward the slot
 
   /* Fixed motion constants. The study-facing knobs (speed, hesitate, idleMs,
      userSpeedControl) live in Config.AI_CURSOR and are resolved per stage
@@ -87,7 +84,7 @@ window.Task = (function () {
   let lastPointer = { x: 0, y: 0 }, lastActivity = 0;
 
   // cached overlay elements (set in wire())
-  let ghost, gravRing, aiCursor;
+  let ghost, aiCursor;
 
   // The active hint variant for this stage (see js/hints.js), or null.
   // task.js deliberately never names a variant — the stage picks one by
@@ -120,7 +117,7 @@ window.Task = (function () {
 
   /* ── wire footer controls + cache overlays (once) ── */
   function wire() {
-    ghost = $("drag-ghost"); gravRing = $("gravity-ring"); aiCursor = $("ai-cursor");
+    ghost = $("drag-ghost"); aiCursor = $("ai-cursor");
     $("btn-confirm").addEventListener("click", confirm);
     $("explainer-ok").addEventListener("click", explainerOk);
     $("btn-explainer").addEventListener("click", function () { showExplainer(false); });
@@ -170,6 +167,7 @@ window.Task = (function () {
     showThoughts = handoff && !!cond.thoughts;
     hcfg = resolveCursorCfg(cond);
     aiTakeovers = 0; userTakebacks = 0; aiPlacedCount = 0;
+    aiHoverCard = null; aiHoverSince = 0;
     taskDef = Tasks.get(taskId);
 
     cards = Tasks.inboxCardsFor(taskId, Config.SHUFFLE_SEED); // deterministic per task
@@ -424,6 +422,9 @@ window.Task = (function () {
       <div class="card-txt"><div class="card-title">${card.title}</div>${detail}</div>
       <div class="card-grip">⠿</div>`;
     div.addEventListener("mousedown", onMouseDown);
+    // c3: hovering a step shows its reasoning, exactly as the AI passing over
+    // it does. No-op unless the stage has the reasoning panel.
+    div.addEventListener("mouseenter", () => showThought(card.id, "user"));
     return div;
   }
 
@@ -455,11 +456,6 @@ window.Task = (function () {
     const src = document.querySelector(`[data-id="${drag.id}"]`);
     if (src) src.classList.add("ghost");
 
-    const aiSlot = (aiMode === "solo") ? -1 : aiRanking.indexOf(drag.id);
-    if (aiMode === "gravity" && aiSlot >= 0) {
-      const slotEl = document.querySelector(`[data-slot="${aiSlot}"]`);
-      if (slotEl) slotEl.classList.add("gravity-hint");
-    }
     // Hand off to whichever hint variant this stage selected. `aiRanking`
     // already carries any scripted error, so a wrong stage hints — and
     // explains — the wrong slot, whatever the variant.
@@ -480,7 +476,7 @@ window.Task = (function () {
 
   function clearSlotMarks() {
     document.querySelectorAll(".slot").forEach(s =>
-      s.classList.remove("gravity-target", "gravity-hint", "drop-target"));
+      s.classList.remove("drop-target"));
     Hints.clearAll();   // each variant removes its own traces
   }
 
@@ -503,35 +499,14 @@ window.Task = (function () {
     if (!drag.started && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
     startDrag();
 
-    let gx = e.clientX - drag.offsetX;
-    let gy = e.clientY - drag.offsetY;
+    const gx = e.clientX - drag.offsetX;
+    const gy = e.clientY - drag.offsetY;
 
-    if (aiMode === "gravity") {
-      const aiSlot = aiRanking.indexOf(drag.id);
-      if (aiSlot >= 0) {
-        const slotEl = document.querySelector(`[data-slot="${aiSlot}"]`);
-        if (slotEl) {
-          const r = slotEl.getBoundingClientRect();
-          const sx = r.left + r.width / 2, sy = r.top + r.height / 2;
-          const dist = Math.hypot(e.clientX - sx, e.clientY - sy);
-          document.querySelectorAll(".slot").forEach(s => s.classList.remove("gravity-target", "drop-target"));
-          if (dist < GRAVITY_RADIUS) {
-            slotEl.classList.add("gravity-target");
-            const factor = GRAVITY_STRENGTH * (1 - dist / GRAVITY_RADIUS);
-            const targetGx = sx - (drag.ghostW || 280) / 2;
-            const targetGy = sy - (drag.ghostH || 58) / 2;
-            gx += (targetGx - gx) * factor;
-            gy += (targetGy - gy) * factor;
-          }
-        }
-      }
-    } else {
-      document.querySelectorAll(".slot").forEach(s => {
-        const r = s.getBoundingClientRect();
-        s.classList.toggle("drop-target",
-          e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
-      });
-    }
+    document.querySelectorAll(".slot").forEach(s => {
+      const r = s.getBoundingClientRect();
+      s.classList.toggle("drop-target",
+        e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
+    });
 
     // Optional hook: a variant that reacts to pointer movement (proximity
     // cues, live confidence, …) implements onMove; the current two don't.
@@ -547,7 +522,6 @@ window.Task = (function () {
   function onMouseUp(e) {
     document.removeEventListener("mousemove", onMouseMove);
     document.removeEventListener("mouseup", onMouseUp);
-    gravRing.style.display = "none";
     clearSlotMarks();
 
     if (!drag) return;
@@ -657,7 +631,7 @@ window.Task = (function () {
 
     // Say what it's about to do BEFORE it moves, so there is time to read it
     // while the cursor travels rather than only at the moment of the drop.
-    showThought(target.id);
+    showThought(target.id, "ai");
 
     pushPause(hes ? rand(350, 1000) : rand(120, 260));            // a beat of "thinking"
     if (hes && Math.random() < 0.6) {                             // second-guess approach
@@ -721,6 +695,13 @@ window.Task = (function () {
       const pos = bezier(s.p0, s.ctrl, s.p1, e);
       fc.x = pos.x; fc.y = pos.y;
       if (fc.carrying != null) { ghostMoveTo(fc.x - 26, fc.y - 20); highlightSlotAt(fc.x, fc.y); }
+      // The AI cursor fires no real hover events, so hit-test what it is over.
+      // While carrying it "holds" that step — show it straight away, since the
+      // grab is deliberate; otherwise require a dwell so transit doesn't flicker.
+      if (showThoughts) {
+        if (fc.carrying != null) showThought(fc.carrying, "ai");
+        else aiHoverThought(cardIdAt(fc.x, fc.y), performance.now());
+      }
       if (s.t >= 1) { fc.x = s.p1.x; fc.y = s.p1.y; fc.seg = null; }
 
     } else if (s.type === "grab") {
@@ -856,22 +837,57 @@ window.Task = (function () {
   }
 
   /* ── the AI's reasoning panel (handoff + thoughts) ──
-     Shown as soon as the AI picks its next step, so it can be read while the
-     cursor travels, and left up until the next one replaces it. */
-  function showThought(cardId) {
-    if (!showThoughts) return;
+     The panel always describes the step under the cursor — whichever cursor
+     that is. The participant hovering a tile shows its reasoning just as the
+     AI passing over one does, so the reasoning is readable on demand rather
+     than only while the AI happens to be working.
+
+     It stays on the last step shown rather than clearing on mouse-out, which
+     would make it flicker as the pointer crosses gaps between tiles. */
+  let shownThoughtFor = null;   // card id currently in the panel
+  /* The AI cursor sweeps across tiles in transit. Swapping the panel for every
+     tile it clips would flicker (~20× a task) and make the text unreadable, so
+     a pass only counts once the cursor has settled on it. A real hover by the
+     participant is deliberate and shows immediately. */
+  const AI_HOVER_DWELL_MS = 220;
+  let aiHoverCard = null, aiHoverSince = 0;
+
+  function aiHoverThought(cardId, now) {
+    if (cardId !== aiHoverCard) { aiHoverCard = cardId; aiHoverSince = now; return; }
+    if (cardId && now - aiHoverSince >= AI_HOVER_DWELL_MS) showThought(cardId, "ai");
+  }
+
+  function showThought(cardId, source) {
+    if (!showThoughts || !cardId) return;
+    if (cardId === shownThoughtFor) return;         // already displayed — no re-render, no re-log
     const text = Tasks.thoughtFor(taskId, cardId, aiError);
     const panel = $("ai-thought");
     if (!panel || !text) return;
+    shownThoughtFor = cardId;
     $("ai-thought-txt").textContent = text;
     panel.classList.add("visible");
     const trueSlot = byId[cardId] ? byId[cardId].rank - 1 : -1;
     const aiSlot = aiRanking.indexOf(cardId);
-    Store.log("ai_thought_shown", { taskId, cardId, aiSlot, isWrongThought: aiSlot !== trueSlot });
+    Store.log("ai_thought_shown", {
+      taskId, cardId, aiSlot, source: source || "ai",
+      isWrongThought: aiSlot >= 0 && aiSlot !== trueSlot,
+    });
   }
   function hideThought() {
     const panel = $("ai-thought");
     if (panel) panel.classList.remove("visible");
+    shownThoughtFor = null;
+  }
+
+  // Which card sits under a viewport point (used for the AI cursor, which
+  // generates no real hover events).
+  function cardIdAt(x, y) {
+    let found = null;
+    document.querySelectorAll("#inbox .card, #ladder .card").forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) found = el.dataset.id;
+    });
+    return found;
   }
   function updateReturn(dt) {
     fc.returnT += dt / AUTO.returnMs;

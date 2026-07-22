@@ -1,15 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════════
-   ACCESSIBLE THEME — larger type, higher contrast, tile-style cards,
-   prominent autopilot controls.
-   The original look is preserved untouched in styles.css (backup);
-   swap the <link> in index.html to revert.
+   THEME — larger type, higher contrast, tile-style cards.
+   The only stylesheet; loaded by index.html.
    ═══════════════════════════════════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#fff;--border:#cfcfcf;--txt:#0a0a0a;--txt2:#383838;--muted:#565656;
   --accent:#111;--accent-l:#eceff3;
   --danger:#b00020;--purple:#5b21b6;--purple-l:#f3effd;--purple-b:#c4b5fd;
-  --gravity:#5b21b6;
   --ok:#157f3b;
   font-size:15px;
 }
@@ -49,6 +46,21 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .resume-note{font-size:14px;color:var(--txt2);background:var(--purple-l);border:1px solid var(--purple-b);
   border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .start-row{display:flex;align-items:center;gap:16px}
+
+/* ── desktop-required gate ── */
+.gate-box{border:1px solid var(--border);border-radius:12px;padding:34px 32px;
+  display:flex;flex-direction:column;gap:14px;text-align:center;align-items:center}
+.gate-icon{font-size:40px;line-height:1}
+.gate-box h2{font-size:20px;font-weight:800}
+.gate-box p{font-size:15px;color:var(--txt2);line-height:1.65;max-width:44ch}
+
+/* ── terminal end screen ── */
+.end-wrap{align-items:center;text-align:center;gap:18px}
+.end-mark{width:64px;height:64px;border-radius:50%;background:var(--purple-l);color:var(--purple);
+  border:1.5px solid var(--purple-b);display:flex;align-items:center;justify-content:center;
+  font-size:30px;font-weight:800}
+#end-title{font-size:26px;font-weight:800;letter-spacing:-.01em}
+#end-note{font-size:15px;line-height:1.65;max-width:46ch}
 
 /* ── survey ── */
 .survey-wrap h2{font-size:19px;font-weight:700}
@@ -107,8 +119,6 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .slot,.inbox-slot{border-bottom:1px solid var(--border);min-height:72px;display:flex;align-items:center;transition:background .08s;position:relative}
 .slot:last-child,.inbox-slot:last-child{border-bottom:none}
 .slot.drop-target{background:var(--accent-l)}
-.slot.gravity-hint{background:#f6f1ff;border-bottom-color:#d8c8f5}
-.slot.gravity-target{background:var(--purple-l);border-bottom-color:#b79df0}
 /* the slot the AI suggests, highlighted while a step is picked up (c2 + c3) */
 .slot.slot-hint{background:var(--purple-l);border-bottom-color:#b79df0;box-shadow:inset 3px 0 0 var(--purple)}
 /* the AI's reasoning (c3), anchored over its suggested slot — free to grow
@@ -132,9 +142,6 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 #drag-ghost .card-icon{font-size:17px;font-weight:800;flex-shrink:0}
 #drag-ghost .card-title{font-size:15px;font-weight:700}
 #drag-ghost .card-detail{font-size:13.5px;color:var(--txt2);margin-top:3px;line-height:1.5}
-
-/* ── gravity indicator ── */
-#gravity-ring{position:fixed;pointer-events:none;z-index:8999;display:none;border:2px solid var(--gravity);border-radius:50%;opacity:0;transition:opacity .2s}
 
 /* ── AI cursor (level 4): pointer + an "AI" tag that travels with it, in the
       prototype's purple. Positioned purely by transform, so the arrow tip
