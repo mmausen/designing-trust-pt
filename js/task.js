@@ -195,6 +195,8 @@ window.Task = (function () {
     workStart = null; explainerOpenedAt = null; explainerMs = 0; explainerOpens = 0;
     firstActionAt = null; autopilotStartedAt = null; autopilotMs = null; autopilotDoneAt = null;
 
+    const newSection = isNewSection(step);
+
     // Multi-step onboarding (currently just condition c1, the very first task):
     // an array of { body, ok } steps shown one at a time in the explainer tile.
     // Re-fetched live (not cached) every time it's needed, so a language
@@ -202,8 +204,12 @@ window.Task = (function () {
     explainerSteps = onboardingStepsFor(cond.key);
     explainerStepIdx = 0;
     resetColumns();                // both columns start from a clean, visible state
+    /* Hide the ladder for the reveal ONLY when the onboarding will actually
+       run. On a repeat of the same condition the explainer never opens, so
+       nothing would ever reveal it again and the participant would be left
+       with nowhere to drop the steps. */
     const colLadder = $("col-ladder");
-    if (colLadder) colLadder.classList.toggle("col-pending-reveal", !!explainerSteps);
+    if (colLadder) colLadder.classList.toggle("col-pending-reveal", !!explainerSteps && newSection);
 
     Store.log("task_start", {
       level, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
