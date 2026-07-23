@@ -80,7 +80,17 @@ e.g. `{ ai: "handoff", speed: 40, hesitate: true }`.
 | `speed` | 0–100 → cursor travel speed (maps to 230–3200 px/s) |
 | `hesitate` | Thinking pauses and second-guess approach curves — makes the AI look deliberative |
 | `idleMs` | `handoff` only: no input for this long → the AI steps in |
+| `startGraceMs` | **Reading window** — the AI stays out for this long after the explainer is dismissed (default 5000) |
 | `userSpeedControl` | Show the **participant** a speed slider in the footer |
+
+> **On `startGraceMs`:** the explainer is dismissed at the same instant the task text
+> first becomes visible, so without a pause the AI would be moving before anyone had
+> read what the task is — and in `autopilot` the participant could miss the task
+> entirely. During the window nothing moves: `handoff` cannot take over however idle
+> the participant is, and `autopilot` has not started (its footer says so, and
+> `autopilotMs` still measures only the sorting). The explainers tell participants the
+> AI will step in "after a few seconds" rather than naming a number, so changing this
+> value keeps them truthful. `0` disables the wait.
 
 > **On `userSpeedControl`:** good for accessibility — fast cursor motion is genuinely
 > disorienting for some people — but it makes AI speed a participant-controlled
@@ -146,8 +156,8 @@ const CONDITION_TASKS = {
 With `aiError`, the AI's suggestion swaps that task's `scriptedError.swapKeys` pair —
 a plausible-but-wrong recommendation, to observe whether participants catch it. It
 flows into whichever mechanic the condition uses: the highlighted slot (`hint`), the
-reasoning text (`thought` — the swapped pair gets the task's `wrongThought`), and the
-places the autopilot drops steps into.
+reasoning text (each swapped tile gets its own `wrongThought`, arguing for the slot the
+AI actually put it in), and the places the autopilot drops steps into.
 
 **Scoring is unaffected**: the original tile order stays ground truth, so accepting a
 bad suggestion verbatim scores 4/6 with 0 overrides, while spotting and fixing it
@@ -208,8 +218,10 @@ itself would differ by language. Neither would raise an error.
   "en": { "title": "The Mail Has to Go Out", "description": "…" },
   "scriptedError": {
     "swapKeys": [3, 4],                    // ← SHARED: the pair swapped when aiError is on
-    "de": { "pair": ["…","…"], "rationale": "…", "wrongThought": "…" },
-    "en": { "pair": ["…","…"], "rationale": "…", "wrongThought": "…" }
+    "de": { "pair": ["…","…"],             // ← both arrays are positional: [key 3, key 4]
+            "rationale": "…",
+            "wrongThought": ["…","…"] },   // ← one per swapped tile
+    "en": { "pair": ["…","…"], "rationale": "…", "wrongThought": ["…","…"] }
   },
   "tiles": [{
     "key": 0,                              // ← SHARED: correct 0-based position
@@ -224,10 +236,26 @@ caches it per language, so the rest of the app never sees the bilingual layout.
 `rationale` is documentation only — it explains why the scripted error is tempting and
 is never shown to participants.
 
+**`pair` and `wrongThought` are positional arrays aligned to `swapKeys`**, so which tile
+a sentence belongs to is fixed by the shared structure and cannot drift between
+languages. `wrongThought` needs **one entry per swapped tile**: the swap moves both of
+them, and each has to argue for *its own* wrong slot. A single shared sentence
+inevitably speaks for the tile that jumps earlier ("I'll set the out-of-office note up
+right away…"), so on the other tile it reads as a non sequitur — and a participant
+reading the AI's reasoning would notice the seam rather than the error. (A plain string
+is still accepted and applies to both tiles, but the two-entry form is the norm.)
+
 `tiles[].key` is the **correct 0-based position** and is the ground truth for all
 scoring. `thought` / `wrongThought` are not surfaced in the UI yet.
 
 ## Saving data
+
+**Master switch: `CONFIG.loggingEnabled`.** With it `false`, no events are recorded and
+nothing leaves the browser — no POST, no `sendBeacon` — so dry runs and demos never land
+in the participant data. The session still runs and still autosaves to localStorage, so
+the flow, resume and the debrief behave normally; the run simply leaves no file, and the
+debrief drops its "uploaded" wording. Boot prints a console warning while it is off.
+**It must be `true` for real runs.**
 
 Two layers, so a single failure never loses a participant:
 
@@ -288,7 +316,9 @@ reload. `Store.download()` exports it as JSON from the console.
   - interaction — `drag_start`, `drag_drop`, `explainer_shown`, `explainer_dismissed`
   - AI (hint) — `hint_shown` (which slot was hinted, the variant, whether reasoning
     was shown, `isWrongHint`)
-  - AI (cursor) — `handoff_armed`, `ai_took_over` / `user_took_back` (each with `nth`
+  - AI (cursor) — `handoff_armed` / `autopilot_armed` (stage ready, AI still holding
+    off for `startGraceMs`), `autopilot_start` (the window has passed — it begins),
+    `ai_took_over` / `user_took_back` (each with `nth`
     and `placedSoFar`, so the whole tug-of-war is reconstructable), `ai_placement`,
     `ai_thought_shown` (incl. `isWrongThought`), `handoff_done` / `autopilot_done`,
     `ai_speed_changed`
@@ -310,7 +340,7 @@ separate clocks:
 | `explainerOpens` | How many times it was opened — `> 1` means they went back to re-read |
 | `workMs` | `elapsedMs − explainerMs` — **actual time on the task** |
 | `timeToFirstActionMs` | First explainer dismissal → first drag (hesitation before acting) |
-| `autopilotMs` | c4 only: how long the AI took to place all six |
+| `autopilotMs` | c4 only: how long the AI took to place all six (the reading window is not counted) |
 | `reviewMs` | c4 only: autopilot finished → Confirm, i.e. **how long they reviewed the AI's result before signing it off** |
 
 `workMs + explainerMs == elapsedMs` always holds. `explainer_shown` / `explainer_dismissed`
@@ -324,6 +354,8 @@ accepted the AI's order without inspecting it.
 
 - [ ] Confirm `CONFIG.devSkip` is `false` — it hides the bottom-right "Skip ▸" button
       that jumps past stages (already the default)
+- [ ] Confirm `CONFIG.loggingEnabled` is `true` — with it off a completed session leaves
+      no file at all (already the default; the console warns on boot when it is off)
 - [ ] Replace the placeholder consent text, condition labels/explainers, and both surveys
 - [ ] Set `showCorrectnessFeedback: false` — the debrief currently reveals correct answers,
       a learning confound if participants ever repeat

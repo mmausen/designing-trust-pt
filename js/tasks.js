@@ -4,8 +4,12 @@
    That file shares its STRUCTURE and splits only its PROSE:
 
      { id, tiles:[{ key, de:{text,thought}, en:{…} }],
-       scriptedError:{ swapKeys, de:{pair,rationale,wrongThought}, en:{…} },
+       scriptedError:{ swapKeys, de:{pair,rationale,wrongThought[2]}, en:{…} },
        de:{title,description}, en:{…} }
+
+   `pair` and `wrongThought` are 2-element arrays positionally aligned to the
+   SHARED swapKeys, so which tile a sentence belongs to cannot diverge between
+   languages either.
 
    `id`, `tiles[].key` and `scriptedError.swapKeys` therefore exist exactly
    once and CANNOT diverge between languages — which is what keeps card ids
@@ -114,6 +118,12 @@ window.Tasks = (function () {
   // With `withError`, the two tiles of the scripted swap instead get the task's
   // `wrongThought` — the plausible-sounding justification for the wrong order,
   // so the explanation matches what the AI is actually suggesting.
+  //
+  // `wrongThought` is a 2-element array positionally aligned to `swapKeys`,
+  // exactly like `pair`: EACH swapped tile argues for its own wrong slot. (One
+  // shared sentence cannot: it is written from the perspective of the tile that
+  // moves earlier, so on the other tile it reads as a non sequitur.) A plain
+  // string is still accepted and means "same justification for both".
   function thoughtFor(id, cardId, withError) {
     const t = get(id);
     if (!t) return "";
@@ -122,7 +132,9 @@ window.Tasks = (function () {
     if (withError) {
       const keys = scriptedSwapKeys(id);
       if (keys && (keys[0] === key || keys[1] === key)) {
-        return (t.scriptedError && t.scriptedError.wrongThought) || "";
+        const wt = (t.scriptedError && t.scriptedError.wrongThought) || "";
+        if (Array.isArray(wt)) return wt[keys[0] === key ? 0 : 1] || "";
+        return wt;
       }
     }
     const tile = (t.tiles || []).find(x => x.key === key);

@@ -43,7 +43,7 @@ window.Task = (function () {
   // Config.AI_CURSOR, with any inline per-condition overrides applied.
   function resolveCursorCfg(condition) {
     const base = Object.assign({}, Config.AI_CURSOR);
-    ["speed", "hesitate", "idleMs", "firstIdleMs", "userSpeedControl"].forEach(k => {
+    ["speed", "hesitate", "idleMs", "startGraceMs", "userSpeedControl"].forEach(k => {
       if (condition && condition[k] !== undefined) base[k] = condition[k];
     });
     return base;
@@ -73,7 +73,7 @@ window.Task = (function () {
     return Math.round(explainerMs + (explainerOpenedAt != null ? performance.now() - explainerOpenedAt : 0));
   }
   let drag = null;
-  let autopilotState = "idle"; // idle | running | done
+  let autopilotState = "idle"; // idle | waiting | running | done
   let pendingAutopilot = false; // autopilot waits until the explainer is dismissed
   let explainerTimer = null;    // pending close-animation cleanup timer
   let explainerSteps = null;    // multi-step onboarding (array) for this stage, or null for the plain single-window explainer
@@ -82,6 +82,15 @@ window.Task = (function () {
                                   // (vs. showing the reopened, combined text) — relocalize() needs this
   let rightColRevealTimer = null; // pending "reveal the ladder column" timer — onboarding only
   let runId = 0;                // invalidates a stale autopilot loop when the task changes
+
+  /* Reading window. Both cursor mechanics start the moment the explainer is
+     dismissed, which is also the moment the participant first sees the task
+     text — so without this the AI would be moving before anyone had read what
+     the task is. Until this timestamp the AI stays out entirely: handoff will
+     not take over however idle the participant is, and autopilot has not
+     started. See hcfg.startGraceMs. */
+  let graceUntil = 0;
+  const inGrace = now => now < graceUntil;
 
   // fake-cursor state (viewport coords); null when the autopilot is not running
   let fc = null;
@@ -223,6 +232,7 @@ window.Task = (function () {
     driveStop();
     fc = null;
     autopilotState = "idle";
+    graceUntil = 0;
     pendingAutopilot = false;
     drag = null;
     const main = $("main");
@@ -393,11 +403,17 @@ window.Task = (function () {
     const hintKey = hintImpl ? hintImpl.hintKey : `ui.task.hints.${modeKey}`;
     const badgeKey = hintImpl ? hintImpl.badgeKey : `ui.task.badges.${modeKey}`;
 
-    // While the autopilot is finished, keep its review prompt instead of the
-    // "AI is sorting" line.
-    $("hint").textContent = (aiMode === "autopilot" && autopilotState === "done")
-      ? I18n.t("ui.task.autopilotDone")
-      : I18n.t(hintKey);
+    /* The autopilot's footer line has three phases: the reading window before
+       it starts, sorting, and the review prompt once it is done. Resolved here
+       (rather than only at each transition) so a language switch mid-stage
+       picks the phase up correctly. */
+    let hintText = I18n.t(hintKey);
+    if (autopilotState === "done" && (handoff || aiMode === "autopilot")) {
+      hintText = I18n.t(handoff ? "ui.task.handoffDone" : "ui.task.autopilotDone");
+    } else if (autopilotState === "waiting") {
+      hintText = I18n.t("ui.task.hints.autopilotWaiting");
+    }
+    $("hint").textContent = hintText;
 
     const badge = $("b-badge");
     const badgeTxt = (aiMode === "solo") ? null : I18n.t(badgeKey);
@@ -470,12 +486,18 @@ window.Task = (function () {
     }
   }
 
+  /* The autopilot owns the board from the start of the stage until it has
+     finished — including the reading window, when it has not moved yet. The
+     participant reviews and edits afterwards, never during. */
+  function autopilotBusy() {
+    return aiMode === "autopilot" && (autopilotState === "waiting" || autopilotState === "running");
+  }
+
   /* ── render ── */
   function render() {
     renderInbox();
     renderLadder();
-    const aiBusy = (aiMode === "autopilot" && autopilotState === "running");
-    $("btn-confirm").disabled = !slots.every(Boolean) || aiBusy;
+    $("btn-confirm").disabled = !slots.every(Boolean) || autopilotBusy();
   }
 
   function renderInbox() {
@@ -540,7 +562,7 @@ window.Task = (function () {
   /* ── custom mouse drag ── */
   function onMouseDown(e) {
     if (e.button !== 0) return;
-    if (aiMode === "autopilot" && autopilotState === "running") return; // hands off while the AI works
+    if (autopilotBusy()) return;   // hands off until the AI has finished
     const card = e.currentTarget;
     const id = card.dataset.id;
     const from = card.dataset.from === "inbox" ? "inbox" : +card.dataset.from;
@@ -854,8 +876,10 @@ window.Task = (function () {
   function autoStart() {
     const main = $("main");
     const r = main.getBoundingClientRect();
+    // Dormant at birth in BOTH mechanics: the cursor only comes alive after the
+    // reading window — by takeover (handoff) or by beginAutopilot().
     fc = {
-      run: runId, active: !handoff, done: false, opacity: 0,
+      run: runId, active: false, done: false, opacity: 0,
       x: lastPointer.x || (r.left + r.width * 0.25),
       y: lastPointer.y || (r.top + r.height * 0.5),
       carrying: null, seg: null, queue: [], returning: false, returnT: 0, returnFrom: { x: 0, y: 0 },
@@ -864,22 +888,38 @@ window.Task = (function () {
     aiCursor.style.opacity = "0";
     aiCursor.style.transform = `translate(${fc.x}px,${fc.y}px)`;
     lastActivity = performance.now();
+    graceUntil = performance.now() + Math.max(0, hcfg.startGraceMs || 0);
 
     if (handoff) {
       autopilotState = "idle";           // the participant has control first
       Store.log("handoff_armed", {
-        taskId, idleMs: hcfg.idleMs, firstIdleMs: hcfg.firstIdleMs,
+        taskId, idleMs: hcfg.idleMs, startGraceMs: hcfg.startGraceMs,
         speed: hcfg.speed, hesitate: !!hcfg.hesitate,
       });
     } else {
-      autopilotState = "running";
-      main.classList.add("ai-driving");
-      pushPause(AUTO.startDelayMs);
-      autopilotStartedAt = performance.now();
-      Store.log("autopilot_start", { taskId, suggestion: [...aiRanking] });
+      /* "waiting", not "running": the board is already the AI's — the
+         participant cannot drag during the grace either — but the cursor has
+         not appeared and nothing is moving yet. step() promotes it to
+         "running" once the reading window is over. */
+      autopilotState = "waiting";
+      // setupChrome() ran before this state existed, so set the phase line here.
+      $("hint").textContent = I18n.t("ui.task.hints.autopilotWaiting");
+      Store.log("autopilot_armed", { taskId, startGraceMs: hcfg.startGraceMs });
     }
     render();
     driveStart();
+  }
+
+  // The reading window is over — the autopilot actually begins. `autopilotMs`
+  // therefore measures sorting, not sorting plus the wait.
+  function beginAutopilot() {
+    autopilotState = "running";
+    fc.active = true;
+    $("main").classList.add("ai-driving");
+    $("hint").textContent = I18n.t("ui.task.hints.autopilot");
+    pushPause(AUTO.startDelayMs);
+    autopilotStartedAt = performance.now();
+    Store.log("autopilot_start", { taskId, suggestion: [...aiRanking], waitedMs: hcfg.startGraceMs });
   }
 
   // The AI steps in after an idle spell (handoff only).
@@ -894,7 +934,7 @@ window.Task = (function () {
     $("main").classList.add("ai-driving");
     Store.log("ai_took_over", {
       taskId, nth: aiTakeovers, placedSoFar: slots.filter(Boolean).length,
-      idleMs: aiTakeovers === 1 ? hcfg.firstIdleMs : hcfg.idleMs, speed: hcfg.speed,
+      idleMs: hcfg.idleMs, speed: hcfg.speed,
     });
   }
 
@@ -1038,13 +1078,15 @@ window.Task = (function () {
 
     const complete = slots.every(Boolean);
     if (fc.active && complete) autoFinish();
+    // Reading window: the AI stays out of it entirely, whichever mechanic.
+    else if (inGrace(now)) { /* nothing — the participant is reading the task */ }
+    // Autopilot: the window has passed, so it starts sorting.
+    else if (!handoff && autopilotState === "waiting") beginAutopilot();
     // Handoff: after an idle spell with nobody dragging, the AI steps in.
-    // The very first activation of a stage waits firstIdleMs instead of idleMs —
-    // longer, deliberately, so the participant has time to read the task/inbox
-    // on the left before the AI ever moves. Every activation after that (within
-    // the same stage) uses the normal, shorter idleMs.
+    // (The initial reading window is handled by the inGrace() guard above,
+    // so the first takeover is delayed too without any special-casing here.)
     else if (handoff && !complete && !fc.active && !fc.returning && !drag
-             && (now - lastActivity) > (aiTakeovers === 0 ? hcfg.firstIdleMs : hcfg.idleMs)) activateFake();
+             && (now - lastActivity) > hcfg.idleMs) activateFake();
 
     const targetOp = (fc.active || fc.returning) ? 1 : 0;
     const rate = fc.active ? dt / AUTO.fadeInMs : dt / AUTO.fadeOutMs;
