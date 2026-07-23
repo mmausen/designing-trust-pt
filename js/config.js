@@ -96,6 +96,10 @@ window.Config = (function () {
   // condition's stage once per id (e.g. 1: ["A01", "A07"] → condition 1 runs
   // twice, first with A01 then with A07). Order within the list is kept.
   //
+  // The explainer opens by itself only on the FIRST stage of a condition, since
+  // it describes the condition rather than the task: repeats go straight to
+  // work. The ⓘ button reopens it at any time.
+  //
   // Two forms per entry:
   //   "A01"                      → the AI suggests the CORRECT order
   //   { id: "A01", aiError: true } → the AI suggests a WRONG order
