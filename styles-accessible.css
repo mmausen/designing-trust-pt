@@ -27,7 +27,11 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 /* ── explainer tile ── */
 #explainer-overlay{position:absolute;inset:0;z-index:8000;display:flex;align-items:center;justify-content:center;
   background:rgba(255,255,255,.80);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
-  transition:opacity .26s ease}
+  transition:opacity .26s ease,background .26s ease,backdrop-filter .26s ease}
+/* Task-1 onboarding: the ladder column is revealed WHILE this tile is open,
+   so the wash needs to be light enough that the reveal is actually visible
+   instead of hidden behind a near-opaque blur. */
+#explainer-overlay.explainer-overlay--light{background:rgba(255,255,255,.38);backdrop-filter:none;-webkit-backdrop-filter:none}
 .explainer-card{background:#fff;border:1px solid var(--border);border-radius:14px;
   box-shadow:0 14px 46px rgba(0,0,0,.2);padding:30px 32px;max-width:480px;width:90%;
   display:flex;flex-direction:column;gap:16px;
@@ -89,6 +93,9 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .col{display:flex;flex-direction:column;overflow:hidden;padding:22px 26px;gap:0}
 .col+.col{border-left:1px solid var(--border)}
 .col-hd{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-bottom:14px;flex-shrink:0}
+/* Very first task only: the right (ladder) column is revealed a few seconds
+   into the onboarding explainer, not shown instantly — see task.js revealRightColumn(). */
+.col-pending-reveal{opacity:0;visibility:hidden;transition:opacity .5s ease}
 /* task brief (title + description) — full-width band above both tile columns,
    so the left (inbox) and right (ladder) sections start at the same height */
 .task-brief{flex-shrink:0;padding:16px 30px;border-bottom:1px solid var(--border)}

@@ -9,7 +9,7 @@ window.Config = (function () {
                                    //   ↳ RECOMMEND setting FALSE for the real study to avoid
                                    //     a learning confound (participants memorising the answer).
     resumeEnabled: true,           // offer to resume an interrupted session from localStorage
-    devSkip: false,                // show the bottom-right "Skip ▸" button that jumps to the
+    devSkip: true,                 // show the bottom-right "Skip ▸" button that jumps to the
                                    // next stage. Prototyping aid only — MUST stay false for
                                    // real participants. Set true to test a later stage quickly.
     loggingEnabled: true,          // MASTER SWITCH for study logging. false → no events are

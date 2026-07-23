@@ -76,6 +76,11 @@ window.Task = (function () {
   let autopilotState = "idle"; // idle | waiting | running | done
   let pendingAutopilot = false; // autopilot waits until the explainer is dismissed
   let explainerTimer = null;    // pending close-animation cleanup timer
+  let explainerSteps = null;    // multi-step onboarding (array) for this stage, or null for the plain single-window explainer
+  let explainerStepIdx = 0;     // which onboarding step is currently showing
+  let explainerAutoFlow = false; // true while the tile is walking through explainerSteps one at a time
+                                  // (vs. showing the reopened, combined text) — relocalize() needs this
+  let rightColRevealTimer = null; // pending "reveal the ladder column" timer — onboarding only
   let runId = 0;                // invalidates a stale autopilot loop when the task changes
 
   /* Reading window. Both cursor mechanics start the moment the explainer is
@@ -190,7 +195,15 @@ window.Task = (function () {
     workStart = null; explainerOpenedAt = null; explainerMs = 0; explainerOpens = 0;
     firstActionAt = null; autopilotStartedAt = null; autopilotMs = null; autopilotDoneAt = null;
 
-    const newSection = isNewSection(step);
+    // Multi-step onboarding (currently just condition c1, the very first task):
+    // an array of { body, ok } steps shown one at a time in the explainer tile.
+    // Re-fetched live (not cached) every time it's needed, so a language
+    // switch mid-onboarding picks up the new translation — see relocalize().
+    explainerSteps = onboardingStepsFor(cond.key);
+    explainerStepIdx = 0;
+    resetColumns();                // both columns start from a clean, visible state
+    const colLadder = $("col-ladder");
+    if (colLadder) colLadder.classList.toggle("col-pending-reveal", !!explainerSteps);
 
     Store.log("task_start", {
       level, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
@@ -240,6 +253,7 @@ window.Task = (function () {
   function stop() {
     runId++;
     if (explainerTimer) { clearTimeout(explainerTimer); explainerTimer = null; }
+    resetColumns();                // never leave a column hidden across a Skip / task switch
     driveStop();
     fc = null;
     autopilotState = "idle";
@@ -265,14 +279,75 @@ window.Task = (function () {
     return `translate(${dx}px, ${dy}px) scale(0.12)`;
   }
 
+  // Look up the onboarding steps fresh (never cached) so a language switch
+  // always sees the current translation — see relocalize().
+  function onboardingStepsFor(condKey) {
+    const v = I18n.t(`conditions.${condKey}.onboarding`);
+    return Array.isArray(v) ? v : null;
+  }
+
+  // Fill in the explainer tile's text for the current explainerStepIdx.
+  // Step 0 carries the "Task N of total" title; later steps don't repeat it.
+  function renderExplainerStep() {
+    const total = (Store.get().plan || []).length;
+    const step = explainerSteps[explainerStepIdx];
+    $("explainer-title").textContent = explainerStepIdx === 0
+      ? I18n.t("ui.task.taskCounter", { n: planIndex + 1, total }) : "";
+    $("explainer-body").textContent = step.body;
+    $("explainer-ok").textContent = step.ok || I18n.t("ui.task.explainerOk");
+  }
+
+  // Guaranteed-clean state: both columns visible, no pending timer. Used at
+  // the top of every start() and as a catch-all on Skip / task switch, so
+  // nothing is ever left hidden by a half-finished onboarding sequence.
+  function resetColumns() {
+    if (rightColRevealTimer) { clearTimeout(rightColRevealTimer); rightColRevealTimer = null; }
+    const colLadder = $("col-ladder"), colInbox = $("col-inbox");
+    if (colLadder) colLadder.classList.remove("col-pending-reveal");
+    if (colInbox) colInbox.classList.remove("col-pending-reveal");
+  }
+
+  // The onboarding "swap": reveal the ladder (right) and hide the inbox
+  // (left) — used both by the timed 3s reveal and when the participant
+  // clicks through step 0 before the timer fires.
+  function revealRightHideLeft() {
+    if (rightColRevealTimer) { clearTimeout(rightColRevealTimer); rightColRevealTimer = null; }
+    const colLadder = $("col-ladder"), colInbox = $("col-inbox");
+    if (colLadder) colLadder.classList.remove("col-pending-reveal");
+    if (colInbox) colInbox.classList.add("col-pending-reveal");
+  }
+
   function showExplainer(auto) {
     const total = (Store.get().plan || []).length;
-    $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
-    $("explainer-body").textContent = I18n.t(`conditions.${cond.key}.explainer`);
-    $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
+    if (auto && explainerSteps) {
+      // First-ever showing of a multi-step onboarding: start at step 0 with
+      // only the left (inbox) column visible. The column swap — reveal the
+      // right, hide the left — happens when the participant presses OK to
+      // advance to step 1 ("drag them one by one…"), not on a timer.
+      explainerAutoFlow = true;
+      explainerStepIdx = 0;
+      renderExplainerStep();
+    } else if (explainerSteps) {
+      // Reopened mid-task via the footer ⓘ button: show the full text as one
+      // window — the ladder is already visible and placements already exist,
+      // so re-running the step/reveal sequence would be disruptive.
+      explainerAutoFlow = false;
+      $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
+      $("explainer-body").textContent = explainerSteps.map(s => s.body).join(" ");
+      $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
+    } else {
+      explainerAutoFlow = false;
+      $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
+      $("explainer-body").textContent = I18n.t(`conditions.${cond.key}.explainer`);
+      $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
+    }
 
     const overlay = $("explainer-overlay");
     const card = overlay.querySelector(".explainer-card");
+    // The onboarding sequence needs the columns behind the tile to actually
+    // be visible when the ladder is revealed — the normal explainer look
+    // (heavy white wash + blur) hides that almost completely.
+    overlay.classList.toggle("explainer-overlay--light", !!explainerSteps);
     if (explainerTimer) { clearTimeout(explainerTimer); explainerTimer = null; }
 
     overlay.hidden = false;
@@ -320,6 +395,20 @@ window.Task = (function () {
     Store.log("explainer_dismissed", { level, taskId, openMs, reopen: explainerOpens > 1 });
   }
   function explainerOk() {
+    // Mid-onboarding: advance to the next step in place rather than closing,
+    // and swap the columns as we do — reveal the right (ladder), hide the
+    // left (inbox) — because step 1's text ("drag them one by one…") refers
+    // to the right column directly.
+    if (explainerSteps && explainerStepIdx < explainerSteps.length - 1) {
+      explainerStepIdx++;
+      revealRightHideLeft();
+      renderExplainerStep();
+      Store.log("explainer_step", { level, taskId, step: explainerStepIdx });
+      return;
+    }
+    // Closing for real: the actual task needs both columns, so undo the
+    // onboarding swap before work begins.
+    resetColumns();
     hideExplainer();
     if (pendingAutopilot) { pendingAutopilot = false; autoStart(); }
   }
@@ -395,12 +484,30 @@ window.Task = (function () {
     inbox = inboxIds.map(id => byId[id]).filter(Boolean);  // keep the on-screen order
     setupChrome();
     render();
-    // If the explainer is open, swap its text too.
+    // The onboarding steps were looked up in whatever language was active
+    // when the task started (or last relocalized) — refresh them now so a
+    // language switch actually translates the intro text and its buttons,
+    // not just the surrounding chrome.
+    explainerSteps = onboardingStepsFor(cond.key);
+    // If the explainer is open, swap its text too — respecting whichever
+    // onboarding step (if any) is currently showing, so a language switch
+    // mid-onboarding doesn't jump back to the combined single-window text
+    // or leave the button in the old language.
     const overlay = $("explainer-overlay");
     if (overlay && !overlay.hidden) {
-      const total = (Store.get().plan || []).length;
-      $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
-      $("explainer-body").textContent = I18n.t(`conditions.${cond.key}.explainer`);
+      if (explainerSteps && explainerAutoFlow) {
+        renderExplainerStep();
+      } else if (explainerSteps) {
+        const total = (Store.get().plan || []).length;
+        $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
+        $("explainer-body").textContent = explainerSteps.map(s => s.body).join(" ");
+        $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
+      } else {
+        const total = (Store.get().plan || []).length;
+        $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
+        $("explainer-body").textContent = I18n.t(`conditions.${cond.key}.explainer`);
+        $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
+      }
     }
   }
 
@@ -1001,6 +1108,8 @@ window.Task = (function () {
     // Autopilot: the window has passed, so it starts sorting.
     else if (!handoff && autopilotState === "waiting") beginAutopilot();
     // Handoff: after an idle spell with nobody dragging, the AI steps in.
+    // (The initial reading window is handled by the inGrace() guard above,
+    // so the first takeover is delayed too without any special-casing here.)
     else if (handoff && !complete && !fc.active && !fc.returning && !drag
              && (now - lastActivity) > hcfg.idleMs) activateFake();
 
