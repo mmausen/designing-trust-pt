@@ -153,6 +153,12 @@ const CONDITION_TASKS = {
 };
 ```
 
+Listing several ids repeats the condition, one stage per id. The **explainer opens by
+itself only on the first stage of a condition** — it describes the mechanic, not the
+task, so re-reading it before every repeat is friction. The ⓘ button reopens it at any
+time, and `task_start` records `newSection` / `explainerAutoShown` so the difference is
+visible in the data.
+
 With `aiError`, the AI's suggestion swaps that task's `scriptedError.swapKeys` pair —
 a plausible-but-wrong recommendation, to observe whether participants catch it. It
 flows into whichever mechanic the condition uses: the highlighted slot (`hint`), the

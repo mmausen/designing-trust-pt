@@ -190,9 +190,12 @@ window.Task = (function () {
     workStart = null; explainerOpenedAt = null; explainerMs = 0; explainerOpens = 0;
     firstActionAt = null; autopilotStartedAt = null; autopilotMs = null; autopilotDoneAt = null;
 
+    const newSection = isNewSection(step);
+
     Store.log("task_start", {
       level, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
       taskId, aiError, lang: I18n.get(),
+      newSection, explainerAutoShown: newSection,
       inboxOrder: cards.map(c => c.id),
       aiSuggestion: [...aiRanking],
       aiSwappedKeys: aiError ? Tasks.scriptedSwapKeys(taskId) : null,
@@ -202,10 +205,34 @@ window.Task = (function () {
     setupChrome();
     render();
 
-    // Show the explainer first; autopilot (if any) starts when it's dismissed.
-    // Both cursor mechanics wait for the explainer to be dismissed.
+    /* The explainer describes the CONDITION, not the task, so it only opens by
+       itself when the condition changes. A repeat of the same condition (two
+       task ids under one entry in CONDITION_TASKS) goes straight to work —
+       re-reading the identical text is friction, and the ⓘ button is always
+       there if they want it back.
+
+       Both cursor mechanics normally start when the explainer is dismissed, so
+       on a repeat they have to be started here instead. The reading window
+       (startGraceMs) applies either way, and matters more here: without the
+       explainer, this is the participant's first sight of the new task. */
     pendingAutopilot = (aiMode === "autopilot" || handoff);
-    showExplainer(true);
+    if (newSection) {
+      showExplainer(true);
+    } else {
+      workStart = performance.now();     // no explainer to close, so the clock starts now
+      if (pendingAutopilot) { pendingAutopilot = false; autoStart(); }
+    }
+  }
+
+  /* First stage of its condition? Compares against the PREVIOUS stage in the
+     plan rather than remembering the last one, so it stays right after a resume
+     or a dev skip, and a condition that comes round again later still counts as
+     a new section. */
+  function isNewSection(step) {
+    const d = Store.get();
+    const plan = (d && d.plan) || [];
+    const prev = plan[(step.planIndex || 0) - 1];
+    return !prev || prev.level !== step.level;
   }
 
   // Halt the current task's autopilot and clear every transient overlay.
