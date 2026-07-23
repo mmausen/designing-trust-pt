@@ -136,6 +136,12 @@
   }
 
   function boot() {
+    // Loud on purpose: with logging off a completed session leaves no file at
+    // all, which is easy to discover only after a real participant has left.
+    if (Config.CONFIG.loggingEnabled === false) {
+      console.warn("[BDR] LOGGING IS OFF (Config.CONFIG.loggingEnabled = false) — no events are recorded and nothing is written to logs/.");
+    }
+
     Task.wire();
 
     // ── language switcher ──

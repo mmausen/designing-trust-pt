@@ -31,6 +31,7 @@
           "hint": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde. Sie entscheiden, wo er landet.",
           "thought": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde, und erklärt warum. Sie entscheiden, wo er landet.",
           "autopilot": "Die KI sortiert die Schritte. Sobald sie fertig ist, können Sie alles umstellen.",
+          "autopilotWaiting": "Lesen Sie sich die Aufgabe in Ruhe durch — die KI beginnt gleich zu sortieren.",
           "handoff": "Ordnen Sie die Schritte. Wenn Sie kurz nichts tun, übernimmt die KI den Zeiger und macht weiter — bewegen Sie die Maus, um wieder zu übernehmen.",
           "handoff-thoughts": "Ordnen Sie die Schritte. Wenn Sie kurz nichts tun, übernimmt die KI und erklärt dabei, was sie gerade denkt — bewegen Sie die Maus, um wieder zu übernehmen."
         },
@@ -82,17 +83,17 @@
       "c2": {
         "label": "Bedingung 2 — KI übernimmt bei Pause",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Diesmal teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Schritte wie gewohnt selbst. Wenn Sie einen Moment nichts tun, übernimmt die KI den Zeiger und sortiert weiter — sobald Sie die Maus bewegen, haben Sie sofort wieder die Kontrolle. Sie können die KI arbeiten lassen oder alles selbst machen; die endgültige Reihenfolge entscheiden Sie. Wenn sie für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
+        "explainer": "Diesmal teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Schritte wie gewohnt selbst. Wenn Sie einen Moment nichts tun, übernimmt die KI den Zeiger und sortiert weiter — sobald Sie die Maus bewegen, haben Sie sofort wieder die Kontrolle. Zu Beginn haben Sie ein paar Sekunden Zeit, die Aufgabe in Ruhe zu lesen; erst danach kann die KI einspringen. Sie können die KI arbeiten lassen oder alles selbst machen; die endgültige Reihenfolge entscheiden Sie. Wenn sie für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
       },
       "c3": {
         "label": "Bedingung 3 — KI übernimmt + Begründung",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Wie zuvor teilen Sie sich den Mauszeiger mit einer KI: Wenn Sie einen Moment nichts tun, übernimmt sie und sortiert weiter, und sobald Sie die Maus bewegen, haben Sie sofort wieder die Kontrolle. Diesmal zeigt die KI dabei an, was sie gerade denkt. Lesen Sie mit, wenn es Ihnen hilft — entscheiden müssen Sie. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
+        "explainer": "Wie zuvor teilen Sie sich den Mauszeiger mit einer KI: Wenn Sie einen Moment nichts tun, übernimmt sie und sortiert weiter, und sobald Sie die Maus bewegen, haben Sie sofort wieder die Kontrolle. Auch hier haben Sie zu Beginn ein paar Sekunden Zeit, die Aufgabe in Ruhe zu lesen; erst danach kann die KI einspringen. Diesmal zeigt die KI dabei an, was sie gerade denkt. Lesen Sie mit, wenn es Ihnen hilft — entscheiden müssen Sie. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
       },
       "c4": {
         "label": "Bedingung 4 — KI-Autopilot",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Diesmal sortiert die KI die Schritte selbst. Lehnen Sie sich zurück und sehen Sie ihr dabei zu, wie sie alle sechs Schritte einsortiert. Danach liegt die Reihenfolge in Ihrer Hand: Sehen Sie sie in Ruhe durch und ziehen Sie jeden Schritt an eine andere Position, wenn Sie etwas ändern möchten. Sie geben die endgültige Reihenfolge frei — prüfen Sie sie also, bevor Sie auf „Reihenfolge bestätigen“ klicken."
+        "explainer": "Diesmal sortiert die KI die Schritte selbst. Zu Beginn haben Sie ein paar Sekunden Zeit, die Aufgabe in Ruhe zu lesen; danach legt die KI los. Lehnen Sie sich zurück und sehen Sie ihr dabei zu, wie sie alle sechs Schritte einsortiert. Danach liegt die Reihenfolge in Ihrer Hand: Sehen Sie sie in Ruhe durch und ziehen Sie jeden Schritt an eine andere Position, wenn Sie etwas ändern möchten. Sie geben die endgültige Reihenfolge frei — prüfen Sie sie also, bevor Sie auf „Reihenfolge bestätigen“ klicken."
       }
     },
     "surveys": {
@@ -179,6 +180,7 @@
           "hint": "Pick up a step and the AI highlights where it would put it — you decide where it lands.",
           "thought": "Pick up a step and the AI highlights where it would put it and explains why — you decide where it lands.",
           "autopilot": "The AI is sorting the steps. You can rearrange anything once it has finished.",
+          "autopilotWaiting": "Take a moment to read the task — the AI will start sorting shortly.",
           "handoff": "Sort the steps. If you pause, the AI takes the cursor and carries on — move the mouse to take over again.",
           "handoff-thoughts": "Sort the steps. If you pause, the AI takes over and tells you what it is thinking — move the mouse to take over again."
         },
@@ -230,17 +232,17 @@
       "c2": {
         "label": "Condition 2 — AI steps in when you pause",
         "banner": "Everyday process · sorting task",
-        "explainer": "This time you share the mouse cursor with an AI. Sort the steps yourself as usual. If you pause for a moment, the AI takes the cursor and carries on — and as soon as you move the mouse, you have control back immediately. You can let it work or do everything yourself; the final order is your decision. When it looks right to you, press “Confirm ranking”."
+        "explainer": "This time you share the mouse cursor with an AI. Sort the steps yourself as usual. If you pause for a moment, the AI takes the cursor and carries on — and as soon as you move the mouse, you have control back immediately. You have a few seconds at the start to read the task in peace; only after that can the AI step in. You can let it work or do everything yourself; the final order is your decision. When it looks right to you, press “Confirm ranking”."
       },
       "c3": {
         "label": "Condition 3 — AI steps in + reasoning",
         "banner": "Everyday process · sorting task",
-        "explainer": "As before you share the cursor with an AI: pause for a moment and it takes over, move the mouse and you have control back immediately. This time it also shows you what it is thinking as it works. Read along if you find it useful — the decision is still yours. When the order looks right to you, press “Confirm ranking”."
+        "explainer": "As before you share the cursor with an AI: pause for a moment and it takes over, move the mouse and you have control back immediately. Here too you have a few seconds at the start to read the task in peace; only after that can the AI step in. This time it also shows you what it is thinking as it works. Read along if you find it useful — the decision is still yours. When the order looks right to you, press “Confirm ranking”."
       },
       "c4": {
         "label": "Condition 4 — AI autopilot",
         "banner": "Everyday process · sorting task",
-        "explainer": "This time your assistant sorts the steps on its own. Sit back and watch it work through all six. Once it's finished, the order is in your hands: take a moment to look it over and drag any step to a different position if you'd like to change something. You're the one signing off on the final sequence, so review it before you press “Confirm ranking”."
+        "explainer": "This time your assistant sorts the steps on its own. You have a few seconds at the start to read the task in peace; after that the AI gets going. Sit back and watch it work through all six. Once it's finished, the order is in your hands: take a moment to look it over and drag any step to a different position if you'd like to change something. You're the one signing off on the final sequence, so review it before you press “Confirm ranking”."
       }
     },
     "surveys": {

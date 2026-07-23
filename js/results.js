@@ -28,7 +28,9 @@ window.Results = (function () {
     $("db-title").textContent = I18n.t("ui.debrief.title");
     $("db-thanks").textContent = I18n.t("ui.debrief.thanks");
     $("db-sub").textContent = I18n.t("ui.debrief.sub", { id: d.participantId, n: d.results.length });
-    $("db-sync-note").textContent = Config.ENDPOINT_URL
+    // Never claim an upload that didn't happen: with logging switched off
+    // nothing was POSTed, so fall back to the local wording.
+    $("db-sync-note").textContent = (Config.ENDPOINT_URL && Config.CONFIG.loggingEnabled !== false)
       ? I18n.t("ui.debrief.syncRemote")
       : I18n.t("ui.debrief.syncLocal");
 

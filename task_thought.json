@@ -39,7 +39,10 @@
             "Umschlag zukleben"
           ],
           "rationale": "Physisch unmöglich (in zugeklebten Umschlag stecken), aber beide Schritte betreffen den Umschlag und verschwimmen beim schnellen Lesen.",
-          "wrongThought": "Ich bereite den Umschlag komplett vor und klebe ihn zu – dann muss der Brief später nur noch rein und raus."
+          "wrongThought": [
+            "Den Brief schiebe ich danach noch hinein – das geht auch beim fertig zugeklebten Umschlag.",
+            "Ich bereite den Umschlag komplett vor und klebe ihn zu – dann muss der Brief später nur noch rein und raus."
+          ]
         },
         "en": {
           "pair": [
@@ -47,7 +50,10 @@
             "Seal the envelope"
           ],
           "rationale": "Physically impossible (putting a letter into a sealed envelope), but both steps involve the envelope and blur together when read quickly.",
-          "wrongThought": "I'll get the envelope fully ready and seal it — then the letter just has to slip in and out later."
+          "wrongThought": [
+            "The letter slides in afterwards — that still works with the envelope already sealed.",
+            "I'll get the envelope fully ready and seal it — then the letter just has to slip in and out later."
+          ]
         }
       },
       "tiles": [
@@ -140,7 +146,10 @@
             "Passende Kandidatin zum Gespräch einladen"
           ],
           "rationale": "Objektiv falsch – die passende Kandidatin ergibt sich erst aus dem Sichten –, wirkt aber effizient.",
-          "wrongThought": "Vielversprechende Kandidatinnen lade ich sofort ein – gründlich sichten kann ich die restlichen Bewerbungen später."
+          "wrongThought": [
+            "Die Bewerbungen sichte ich in Ruhe, während die ersten Gespräche schon laufen.",
+            "Vielversprechende Kandidatinnen lade ich sofort ein – gründlich sichten kann ich die restlichen Bewerbungen später."
+          ]
         },
         "en": {
           "pair": [
@@ -148,7 +157,10 @@
             "Invite the right candidate to an interview"
           ],
           "rationale": "Objectively wrong — the right candidate only emerges from reviewing — but it feels efficient.",
-          "wrongThought": "I'll invite promising candidates right away — I can review the remaining applications thoroughly later."
+          "wrongThought": [
+            "I'll review the applications properly while the first interviews are already running.",
+            "I'll invite promising candidates right away — I can review the remaining applications thoroughly later."
+          ]
         }
       },
       "tiles": [
@@ -241,7 +253,10 @@
             "Abwesenheitsnotiz mit den genehmigten Daten einrichten"
           ],
           "rationale": "Objektiv falsch (genehmigte Daten existieren erst nach der Genehmigung), aber im Alltag wird die Notiz oft früh eingerichtet.",
-          "wrongThought": "Die Abwesenheitsnotiz richte ich direkt mit ein, dann ist das erledigt – die Genehmigung ist ja reine Formsache."
+          "wrongThought": [
+            "Die Genehmigung trudelt danach ein – daran hat noch nie etwas gehangen.",
+            "Die Abwesenheitsnotiz richte ich direkt mit ein, dann ist das erledigt – die Genehmigung ist ja reine Formsache."
+          ]
         },
         "en": {
           "pair": [
@@ -249,7 +264,10 @@
             "Set up an out-of-office note with the approved dates"
           ],
           "rationale": "Objectively wrong (approved dates only exist after approval), but in daily life the note often gets set up early.",
-          "wrongThought": "I'll set up the out-of-office note right away, then it's done — the approval is just a formality anyway."
+          "wrongThought": [
+            "The approval comes in afterwards — that has never been the sticking point.",
+            "I'll set up the out-of-office note right away, then it's done — the approval is just a formality anyway."
+          ]
         }
       },
       "tiles": [
@@ -342,7 +360,10 @@
             "Fertige Becher entgegennehmen"
           ],
           "rationale": "Physisch unmöglich, aber beide Schritte spielen am Tresen und verschwimmen beim schnellen Lesen.",
-          "wrongThought": "Am Tresen stehen oft schon fertige Becher bereit – die nehme ich direkt mit und bestelle den Rest dazu."
+          "wrongThought": [
+            "Bestellt wird danach – was dann noch fehlt, gebe ich in einem Rutsch auf.",
+            "Am Tresen stehen oft schon fertige Becher bereit – die nehme ich direkt mit und bestelle den Rest dazu."
+          ]
         },
         "en": {
           "pair": [
@@ -350,7 +371,10 @@
             "Pick up the finished cups"
           ],
           "rationale": "Physically impossible, but both steps happen at the counter and blur together when read quickly.",
-          "wrongThought": "There are often finished cups already sitting at the counter — I'll grab those and order the rest on top."
+          "wrongThought": [
+            "I'll order afterwards — whatever's still missing goes in one go.",
+            "There are often finished cups already sitting at the counter — I'll grab those and order the rest on top."
+          ]
         }
       },
       "tiles": [
@@ -443,7 +467,10 @@
             "Termin bestätigen"
           ],
           "rationale": "Objektiv falsch (man kann keinen Termin bestätigen, der noch nicht vorgeschlagen wurde), aber beide Kacheln sind kurze Termin-Schritte.",
-          "wrongThought": "Ich bestätige am besten sofort meine Verfügbarkeit – dann kann die IT ihren Terminvorschlag direkt daran ausrichten."
+          "wrongThought": [
+            "Der Terminvorschlag der IT kommt dann passend zu meiner Bestätigung herein.",
+            "Ich bestätige am besten sofort meine Verfügbarkeit – dann kann die IT ihren Terminvorschlag direkt daran ausrichten."
+          ]
         },
         "en": {
           "pair": [
@@ -451,7 +478,10 @@
             "Confirm the appointment"
           ],
           "rationale": "Objectively wrong (you can't confirm an appointment that hasn't been proposed yet), but both tiles are short appointment steps.",
-          "wrongThought": "I'd better confirm my availability right away — then IT can line up its proposed time to match it."
+          "wrongThought": [
+            "IT's proposed time then comes in to match what I've confirmed.",
+            "I'd better confirm my availability right away — then IT can line up its proposed time to match it."
+          ]
         }
       },
       "tiles": [
@@ -544,7 +574,10 @@
             "Scan an das Spesenformular anhängen"
           ],
           "rationale": "Objektiv falsch (der Scan existiert vor dem Anhängen), aber beide Schritte betreffen den Scan und verschwimmen beim schnellen Lesen.",
-          "wrongThought": "Ich bereite erst das Formular mit allen Anhängen vor und scanne die Quittung dann in einem Rutsch dazu."
+          "wrongThought": [
+            "Eingescannt wird, wenn das Formular steht – dann landet der Scan direkt an der richtigen Stelle.",
+            "Ich bereite erst das Formular mit allen Anhängen vor und scanne die Quittung dann in einem Rutsch dazu."
+          ]
         },
         "en": {
           "pair": [
@@ -552,7 +585,10 @@
             "Attach the scan to the expense form"
           ],
           "rationale": "Objectively wrong (the scan exists before it can be attached), but both steps involve the scan and blur together when read quickly.",
-          "wrongThought": "I'll prep the form with all its attachments first and scan the receipt straight into it in one go."
+          "wrongThought": [
+            "I'll scan once the form is ready — then it lands in exactly the right place.",
+            "I'll prep the form with all its attachments first and scan the receipt straight into it in one go."
+          ]
         }
       },
       "tiles": [
@@ -645,7 +681,10 @@
             "Termin anhand der Rückmeldungen festlegen"
           ],
           "rationale": "Objektiv falsch (die Rückmeldungen existieren erst nach der Abfrage), aber Termin-zuerst ist verbreitete Praxis und wird leicht durchgewinkt.",
-          "wrongThought": "Ich setze einfach einen Termin – wer nicht kann, meldet sich schon. Das spart eine ganze Abfragerunde."
+          "wrongThought": [
+            "Die Verfügbarkeiten frage ich danach ab – dann sehe ich gleich, wem der Termin passt.",
+            "Ich setze einfach einen Termin – wer nicht kann, meldet sich schon. Das spart eine ganze Abfragerunde."
+          ]
         },
         "en": {
           "pair": [
@@ -653,7 +692,10 @@
             "Set the date based on the responses"
           ],
           "rationale": "Objectively wrong (the responses only exist after asking), but date-first is common practice and easily waved through.",
-          "wrongThought": "I'll just set a date — whoever can't make it will speak up. That saves a whole round of asking."
+          "wrongThought": [
+            "I'll ask about availability afterwards — then I can see straight away who the date suits.",
+            "I'll just set a date — whoever can't make it will speak up. That saves a whole round of asking."
+          ]
         }
       },
       "tiles": [
@@ -746,7 +788,10 @@
             "Folien aus den Rechercheergebnissen erstellen"
           ],
           "rationale": "Objektiv falsch (die Folien bauen auf den Rechercheergebnissen auf), aber mit Folien zu starten ist gängige Praxis.",
-          "wrongThought": "Ich lege direkt mit den Folien los – das Grundgerüst steht ja, die Details recherchiere ich nebenbei."
+          "wrongThought": [
+            "Die Recherche schiebe ich nach, sobald die Struktur steht – dann weiß ich genau, wonach ich suche.",
+            "Ich lege direkt mit den Folien los – das Grundgerüst steht ja, die Details recherchiere ich nebenbei."
+          ]
         },
         "en": {
           "pair": [
@@ -754,7 +799,10 @@
             "Build the slides from the research findings"
           ],
           "rationale": "Objectively wrong (the slides build on the research findings), but starting with slides is common practice.",
-          "wrongThought": "I'll dive straight into the slides — the framework's there, and I can research the details along the way."
+          "wrongThought": [
+            "I'll do the research once the structure is there — then I know exactly what to look for.",
+            "I'll dive straight into the slides — the framework's there, and I can research the details along the way."
+          ]
         }
       },
       "tiles": [
@@ -847,7 +895,10 @@
             "Kuchenstücke an die Kollegen verteilen"
           ],
           "rationale": "Physisch unmöglich (Stücke existieren erst nach dem Anschneiden), aber beide Kacheln sind Kuchen-Schritte und verschwimmen.",
-          "wrongThought": "Beim Verteilen schneide ich einfach Stück für Stück ab – das spart einen extra Schritt."
+          "wrongThought": [
+            "Angeschnitten wird nebenbei, während ich mit dem Blech herumgehe.",
+            "Beim Verteilen schneide ich einfach Stück für Stück ab – das spart einen extra Schritt."
+          ]
         },
         "en": {
           "pair": [
@@ -855,7 +906,10 @@
             "Hand out the cake slices to the colleagues"
           ],
           "rationale": "Physically impossible (slices only exist after cutting), but both tiles are cake steps and blur together.",
-          "wrongThought": "As I hand it out I'll just slice off piece by piece — that saves an extra step."
+          "wrongThought": [
+            "I'll cut it as I go, while I'm walking around with the tray.",
+            "As I hand it out I'll just slice off piece by piece — that saves an extra step."
+          ]
         }
       },
       "tiles": [
@@ -948,7 +1002,10 @@
             "Schlüssel zur Reservierung am Empfang abholen"
           ],
           "rationale": "Objektiv falsch (der Empfang gibt den Schlüssel nur gegen eine bestehende Reservierung heraus), wirkt aber pragmatisch.",
-          "wrongThought": "Ich schnappe mir erst den Schlüssel, solange das Auto frei ist – die Buchung trage ich danach im System nach."
+          "wrongThought": [
+            "Die Reservierung trage ich danach nach – dann stimmt das System wieder.",
+            "Ich schnappe mir erst den Schlüssel, solange das Auto frei ist – die Buchung trage ich danach im System nach."
+          ]
         },
         "en": {
           "pair": [
@@ -956,7 +1013,10 @@
             "Pick up the key for the reservation at reception"
           ],
           "rationale": "Objectively wrong (reception only hands out the key against an existing reservation), but it feels pragmatic.",
-          "wrongThought": "I'll grab the key first while the car's free — I can log the booking in the system afterwards."
+          "wrongThought": [
+            "I'll log the reservation afterwards — then the system is back in order.",
+            "I'll grab the key first while the car's free — I can log the booking in the system afterwards."
+          ]
         }
       },
       "tiles": [
@@ -1049,7 +1109,10 @@
             "Willkommensmail beantworten"
           ],
           "rationale": "Logisch unmöglich (antworten setzt Lesen voraus), aber beide Kacheln betreffen dieselbe Mail und verschwimmen beim schnellen Lesen.",
-          "wrongThought": "Kurz freundlich zurückschreiben geht sofort – den Inhalt in Ruhe lesen kann sie danach."
+          "wrongThought": [
+            "Die Mail liest sie danach in Ruhe – am ersten Tag ist dafür genug Zeit.",
+            "Kurz freundlich zurückschreiben geht sofort – den Inhalt in Ruhe lesen kann sie danach."
+          ]
         },
         "en": {
           "pair": [
@@ -1057,7 +1120,10 @@
             "Reply to the welcome email"
           ],
           "rationale": "Logically impossible (replying presupposes reading), but both tiles involve the same email and blur together when read quickly.",
-          "wrongThought": "A quick friendly reply can go out right away — she can read the whole thing properly afterwards."
+          "wrongThought": [
+            "She can read the email properly afterwards — there's plenty of time on day one.",
+            "A quick friendly reply can go out right away — she can read the whole thing properly afterwards."
+          ]
         }
       },
       "tiles": [
@@ -1150,7 +1216,10 @@
             "Geprüfte Rechnung zur Freigabe vorlegen"
           ],
           "rationale": "Objektiv falsch (nur eine geprüfte Rechnung kann vorgelegt werden), aber Freigabe-vor-Prüfung ist der klassische Stempel-Fehler.",
-          "wrongThought": "Ich hole die Freigabe schon mal ein, dann verliert der Vorgang keine Zeit – prüfen kann ich parallel."
+          "wrongThought": [
+            "Geprüft wird parallel – bis die Freigabe zurückkommt, bin ich damit durch.",
+            "Ich hole die Freigabe schon mal ein, dann verliert der Vorgang keine Zeit – prüfen kann ich parallel."
+          ]
         },
         "en": {
           "pair": [
@@ -1158,7 +1227,10 @@
             "Submit the checked invoice for approval"
           ],
           "rationale": "Objectively wrong (only a checked invoice can be submitted), but approval-before-checking is the classic rubber-stamp mistake.",
-          "wrongThought": "I'll get the approval going already so the case doesn't lose time — I can check it in parallel."
+          "wrongThought": [
+            "I'll check it in parallel — I'll be done by the time the approval comes back.",
+            "I'll get the approval going already so the case doesn't lose time — I can check it in parallel."
+          ]
         }
       },
       "tiles": [
@@ -1251,7 +1323,10 @@
             "Auftrag erhalten"
           ],
           "rationale": "Objektiv falsch (Rückfragen zum Angebot sind nach der Auftragserteilung gegenstandslos), wirkt aber kundenfreundlich-pragmatisch.",
-          "wrongThought": "Hauptsache, der Auftrag ist erst mal unter Dach und Fach – offene Fragen zum Angebot klären wir danach in Ruhe."
+          "wrongThought": [
+            "Die Rückfragen zum Angebot klären wir, sobald der Auftrag steht.",
+            "Hauptsache, der Auftrag ist erst mal unter Dach und Fach – offene Fragen zum Angebot klären wir danach in Ruhe."
+          ]
         },
         "en": {
           "pair": [
@@ -1259,7 +1334,10 @@
             "Receive the order"
           ],
           "rationale": "Objectively wrong (questions about the quote are moot once the order is placed), but it feels customer-friendly and pragmatic.",
-          "wrongThought": "The main thing is getting the order locked in first — we can sort out any open questions about the quote afterwards."
+          "wrongThought": [
+            "We'll clear up the questions about the quote once the order is in.",
+            "The main thing is getting the order locked in first — we can sort out any open questions about the quote afterwards."
+          ]
         }
       },
       "tiles": [
@@ -1352,7 +1430,10 @@
             "Zug und Hotel verbindlich buchen"
           ],
           "rationale": "Objektiv falsch (verbindliche Buchung vor Genehmigung verstößt gegen den Prozess), aber ein häufiger Alltagsverstoß mit hoher Durchwink-Chance.",
-          "wrongThought": "Die guten Verbindungen sind schnell weg – ich buche lieber sofort, die Genehmigung kommt erfahrungsgemäß sowieso."
+          "wrongThought": [
+            "Die Genehmigung kommt hinterher – die war noch nie ein Problem.",
+            "Die guten Verbindungen sind schnell weg – ich buche lieber sofort, die Genehmigung kommt erfahrungsgemäß sowieso."
+          ]
         },
         "en": {
           "pair": [
@@ -1360,7 +1441,10 @@
             "Book the train and hotel firmly"
           ],
           "rationale": "Objectively wrong (firm booking before approval breaks the process), but a common everyday violation with a high chance of being waved through.",
-          "wrongThought": "The good connections sell out fast — I'd rather book right away; the approval always comes through anyway."
+          "wrongThought": [
+            "The approval follows afterwards — it has never been a problem.",
+            "The good connections sell out fast — I'd rather book right away; the approval always comes through anyway."
+          ]
         }
       },
       "tiles": [
@@ -1453,7 +1537,10 @@
             "Reset-Link öffnen"
           ],
           "rationale": "Logisch unmöglich, aber beide Kacheln beginnen mit „Reset-Link“ und verschwimmen beim schnellen Lesen.",
-          "wrongThought": "Den Link klicke ich sofort an – solche Reset-Links laufen schnell ab, da zählt jede Minute."
+          "wrongThought": [
+            "Die Mail mit dem Link liegt danach im Postfach – dann habe ich ihn schwarz auf weiß.",
+            "Den Link klicke ich sofort an – solche Reset-Links laufen schnell ab, da zählt jede Minute."
+          ]
         },
         "en": {
           "pair": [
@@ -1461,7 +1548,10 @@
             "Open the reset link"
           ],
           "rationale": "Logically impossible, but both tiles start with 'reset link' and blur together when read quickly.",
-          "wrongThought": "I'll click the link right away — reset links like this expire fast, so every minute counts."
+          "wrongThought": [
+            "The email with the link is in the inbox afterwards — then I have it in writing.",
+            "I'll click the link right away — reset links like this expire fast, so every minute counts."
+          ]
         }
       },
       "tiles": [
@@ -1554,7 +1644,10 @@
             "Material im Schrank einräumen"
           ],
           "rationale": "Physisch unmöglich (eingeräumt werden kann nur Ausgepacktes), aber beide Kacheln sind Handgriffe nach der Lieferung.",
-          "wrongThought": "Ich stelle die Pakete direkt in den Schrank – ausgepackt wird bei Bedarf, das spart jetzt Zeit."
+          "wrongThought": [
+            "Ausgepackt wird später im Schrank, wenn jemand etwas davon braucht.",
+            "Ich stelle die Pakete direkt in den Schrank – ausgepackt wird bei Bedarf, das spart jetzt Zeit."
+          ]
         },
         "en": {
           "pair": [
@@ -1562,7 +1655,10 @@
             "Put the supplies away in the cabinet"
           ],
           "rationale": "Physically impossible (only unpacked items can be put away), but both tiles are handling steps after the delivery.",
-          "wrongThought": "I'll just put the parcels straight in the cabinet — I can unpack them when needed, that saves time now."
+          "wrongThought": [
+            "I'll unpack in the cabinet later, whenever someone needs something.",
+            "I'll just put the parcels straight in the cabinet — I can unpack them when needed, that saves time now."
+          ]
         }
       },
       "tiles": [
@@ -1655,7 +1751,10 @@
             "E-Mail verfassen und PDF anhängen"
           ],
           "rationale": "Objektiv falsch (angehängt werden kann nur ein gespeichertes PDF), wirkt aber wie effizientes Parallelarbeiten.",
-          "wrongThought": "Die Mail tippe ich schon, während der Scan läuft – anhängen und speichern erledige ich dann in einem Schritt."
+          "wrongThought": [
+            "Gespeichert wird danach – aus der fertigen Mail heraus ist das ein Klick.",
+            "Die Mail tippe ich schon, während der Scan läuft – anhängen und speichern erledige ich dann in einem Schritt."
+          ]
         },
         "en": {
           "pair": [
@@ -1663,7 +1762,10 @@
             "Write the email and attach the PDF"
           ],
           "rationale": "Objectively wrong (only a saved PDF can be attached), but it feels like efficient parallel work.",
-          "wrongThought": "I'll type the email while the scan runs — attaching and saving I'll then handle in one step."
+          "wrongThought": [
+            "I'll save it afterwards — straight out of the finished email that's one click.",
+            "I'll type the email while the scan runs — attaching and saving I'll then handle in one step."
+          ]
         }
       },
       "tiles": [
@@ -1756,7 +1858,10 @@
             "Dem Call beitreten"
           ],
           "rationale": "Objektiv falsch (das Vorschaufenster erscheint vor dem Beitritt), aber Beitreten-dann-Testen ist verbreitete (schlechte) Praxis.",
-          "wrongThought": "Ich trete lieber sofort bei, um pünktlich zu sein – Kamera und Mikro teste ich dann schnell im Call."
+          "wrongThought": [
+            "Kamera und Mikrofon prüfe ich, sobald ich drin bin – da merkt man ja sofort, ob es läuft.",
+            "Ich trete lieber sofort bei, um pünktlich zu sein – Kamera und Mikro teste ich dann schnell im Call."
+          ]
         },
         "en": {
           "pair": [
@@ -1764,7 +1869,10 @@
             "Join the call"
           ],
           "rationale": "Objectively wrong (the preview window appears before joining), but joining-then-testing is common (bad) practice.",
-          "wrongThought": "I'd rather join right away to be on time — I can quickly test camera and mic once I'm in the call."
+          "wrongThought": [
+            "I'll check camera and mic once I'm in — you notice right away whether it works.",
+            "I'd rather join right away to be on time — I can quickly test camera and mic once I'm in the call."
+          ]
         }
       },
       "tiles": [
@@ -1857,7 +1965,10 @@
             "Krankschreibung einscannen"
           ],
           "rationale": "Logisch unmöglich, aber beide Kacheln beginnen mit „Krankschreibung“ und verschwimmen beim schnellen Lesen.",
-          "wrongThought": "Das Einscannen erledige ich am besten direkt in der Praxis – dann ist alles durch, bevor ich das Original überhaupt einstecke."
+          "wrongThought": [
+            "Das Original nehme ich beim Rausgehen mit – gescannt ist dann schon alles.",
+            "Das Einscannen erledige ich am besten direkt in der Praxis – dann ist alles durch, bevor ich das Original überhaupt einstecke."
+          ]
         },
         "en": {
           "pair": [
@@ -1865,7 +1976,10 @@
             "Scan the doctor's note"
           ],
           "rationale": "Logically impossible, but both tiles start with 'doctor's note' and blur together when read quickly.",
-          "wrongThought": "I'll do the scanning right there at the office — then it's all through before I even pocket the original."
+          "wrongThought": [
+            "I'll take the original with me on the way out — the scan is done by then.",
+            "I'll do the scanning right there at the office — then it's all through before I even pocket the original."
+          ]
         }
       },
       "tiles": [
@@ -1958,7 +2072,10 @@
             "Einschreiben entgegennehmen"
           ],
           "rationale": "Objektiv falsch (ohne Ausweis keine Herausgabe), aber beide Schritte passieren am Schalter und verschwimmen im Gedächtnis.",
-          "wrongThought": "Am Schalter bekomme ich das Einschreiben meist direkt in die Hand – der Ausweis wird eher beiläufig danach kontrolliert."
+          "wrongThought": [
+            "Den Ausweis zeige ich danach – das läuft am Schalter meist nebenbei.",
+            "Am Schalter bekomme ich das Einschreiben meist direkt in die Hand – der Ausweis wird eher beiläufig danach kontrolliert."
+          ]
         },
         "en": {
           "pair": [
@@ -1966,7 +2083,10 @@
             "Collect the registered letter"
           ],
           "rationale": "Objectively wrong (no handover without ID), but both steps happen at the counter and blur together in memory.",
-          "wrongThought": "At the counter they usually hand me the letter straight away — the ID check tends to happen casually afterwards."
+          "wrongThought": [
+            "I'll show my ID afterwards — at the counter that usually happens on the side.",
+            "At the counter they usually hand me the letter straight away — the ID check tends to happen casually afterwards."
+          ]
         }
       },
       "tiles": [
@@ -2059,7 +2179,10 @@
             "Entwarnung abwarten"
           ],
           "rationale": "Objektiv falsch (Entwarnung gibt es erst, wenn alle am Sammelpunkt erfasst sind), aber beide Kacheln sind „Warten im Freien“.",
-          "wrongThought": "Ich warte erst mal in Ruhe die Entwarnung ab – melden kann ich mich dann beim Reingehen am Sammelpunkt."
+          "wrongThought": [
+            "Am Sammelpunkt melde ich mich, wenn es zurück ins Gebäude geht.",
+            "Ich warte erst mal in Ruhe die Entwarnung ab – melden kann ich mich dann beim Reingehen am Sammelpunkt."
+          ]
         },
         "en": {
           "pair": [
@@ -2067,7 +2190,10 @@
             "Wait for the all-clear"
           ],
           "rationale": "Objectively wrong (the all-clear only comes once everyone is accounted for at the assembly point), but both tiles are 'waiting outside'.",
-          "wrongThought": "I'll just wait for the all-clear first — I can check in at the assembly point on my way back in."
+          "wrongThought": [
+            "I'll check in at the assembly point when we head back into the building.",
+            "I'll just wait for the all-clear first — I can check in at the assembly point on my way back in."
+          ]
         }
       },
       "tiles": [
@@ -2160,7 +2286,10 @@
             "Freigegebenen Newsletter im Tool einplanen"
           ],
           "rationale": "Objektiv falsch (eingeplant wird nur Freigegebenes), aber Einplanen-vor-Freigabe ist ein typischer Prozess-Shortcut.",
-          "wrongThought": "Ich plane den Versandtermin schon mal fest ein – die Freigabe der Chefin ist erfahrungsgemäß reine Formsache."
+          "wrongThought": [
+            "Die Freigabe hole ich noch ein, bevor er rausgeht – geändert wird erfahrungsgemäß nichts.",
+            "Ich plane den Versandtermin schon mal fest ein – die Freigabe der Chefin ist erfahrungsgemäß reine Formsache."
+          ]
         },
         "en": {
           "pair": [
@@ -2168,7 +2297,10 @@
             "Schedule the approved newsletter in the tool"
           ],
           "rationale": "Objectively wrong (only an approved newsletter gets scheduled), but scheduling-before-sign-off is a typical process shortcut.",
-          "wrongThought": "I'll lock in the send time already — the manager's sign-off is a formality anyway."
+          "wrongThought": [
+            "I'll still get the sign-off before it goes out — nothing ever gets changed anyway.",
+            "I'll lock in the send time already — the manager's sign-off is a formality anyway."
+          ]
         }
       },
       "tiles": [
@@ -2261,7 +2393,10 @@
             "Sachen auspacken und einräumen"
           ],
           "rationale": "Physisch unmöglich (aus zugeklebten Kartons kann nichts ausgepackt werden), aber beide Kacheln sind Auspack-Handgriffe.",
-          "wrongThought": "Ich packe direkt aus den Kartons aus – das bisschen Klebeband reißt beim Rausnehmen von selbst auf."
+          "wrongThought": [
+            "Aufgeschnitten wird nur, was sich nicht von selbst öffnet – das mache ich hinterher.",
+            "Ich packe direkt aus den Kartons aus – das bisschen Klebeband reißt beim Rausnehmen von selbst auf."
+          ]
         },
         "en": {
           "pair": [
@@ -2269,7 +2404,10 @@
             "Unpack and put things away"
           ],
           "rationale": "Physically impossible (nothing can be unpacked from taped-up boxes), but both tiles are unpacking steps.",
-          "wrongThought": "I'll just unpack straight from the boxes — that bit of tape tears open by itself as I pull things out."
+          "wrongThought": [
+            "I'll only cut open what doesn't come apart by itself — and that's for afterwards.",
+            "I'll just unpack straight from the boxes — that bit of tape tears open by itself as I pull things out."
+          ]
         }
       },
       "tiles": [
@@ -2362,7 +2500,10 @@
             "Druckauftrag erneut starten"
           ],
           "rationale": "Objektiv falsch (Drucker verweigern den Druck bei offener Klappe), aber beide Kacheln wirken wie gleichwertige Abschlusshandgriffe.",
-          "wrongThought": "Ich schicke den Auftrag sofort wieder los – die Klappe schließe ich nebenbei, dann legt der Drucker direkt los."
+          "wrongThought": [
+            "Die Klappe mache ich zu, während der Auftrag schon losläuft.",
+            "Ich schicke den Auftrag sofort wieder los – die Klappe schließe ich nebenbei, dann legt der Drucker direkt los."
+          ]
         },
         "en": {
           "pair": [
@@ -2370,7 +2511,10 @@
             "Restart the print job"
           ],
           "rationale": "Objectively wrong (printers refuse to print with the flap open), but both tiles feel like equivalent finishing touches.",
-          "wrongThought": "I'll send the job again right away — I'll close the flap on the side, then the printer gets straight to it."
+          "wrongThought": [
+            "I'll close the flap while the job is already running.",
+            "I'll send the job again right away — I'll close the flap on the side, then the printer gets straight to it."
+          ]
         }
       },
       "tiles": [
@@ -2463,7 +2607,10 @@
             "Prüfergebnis mit der Teamleitung abstimmen"
           ],
           "rationale": "Objektiv falsch (ohne Prüfung kein Prüfergebnis), aber „erst die Teamleitung fragen“ wirkt vorsichtig statt falsch.",
-          "wrongThought": "Ich hole erst die Teamleitung dazu – dann sind wir bei der Prüfung von Anfang an abgesichert."
+          "wrongThought": [
+            "Die Bestellung sehen wir uns danach gemeinsam an – zu zweit geht das schneller.",
+            "Ich hole erst die Teamleitung dazu – dann sind wir bei der Prüfung von Anfang an abgesichert."
+          ]
         },
         "en": {
           "pair": [
@@ -2471,7 +2618,10 @@
             "Discuss the findings with the team lead"
           ],
           "rationale": "Objectively wrong (no findings without checking first), but 'ask the team lead first' feels cautious rather than wrong.",
-          "wrongThought": "I'll bring the team lead in first — that way we're covered right from the start of the check."
+          "wrongThought": [
+            "We'll look at the order together afterwards — it's quicker with two of us.",
+            "I'll bring the team lead in first — that way we're covered right from the start of the check."
+          ]
         }
       },
       "tiles": [
@@ -2564,7 +2714,10 @@
             "Änderungen aus der Prüfung einarbeiten"
           ],
           "rationale": "Objektiv falsch (die Änderungen stammen aus der Prüfung), aber beide Kacheln sind interne Überarbeitungsschritte.",
-          "wrongThought": "Die üblichen Standardänderungen arbeite ich vorab ein – dann hat die Rechtsabteilung weniger zu beanstanden."
+          "wrongThought": [
+            "Die Rechtsabteilung schaut danach drüber – auf einen Stand, der schon sauber ist.",
+            "Die üblichen Standardänderungen arbeite ich vorab ein – dann hat die Rechtsabteilung weniger zu beanstanden."
+          ]
         },
         "en": {
           "pair": [
@@ -2572,7 +2725,10 @@
             "Work in the changes from the review"
           ],
           "rationale": "Objectively wrong (the changes come out of the review), but both tiles are internal revision steps.",
-          "wrongThought": "I'll work in the usual standard changes up front — then Legal has less to flag in the review."
+          "wrongThought": [
+            "Legal reviews it afterwards — on a draft that's already clean.",
+            "I'll work in the usual standard changes up front — then Legal has less to flag in the review."
+          ]
         }
       },
       "tiles": [
@@ -2665,7 +2821,10 @@
             "Einladung mit Ort und Uhrzeit verschicken"
           ],
           "rationale": "Objektiv falsch (Ort und Uhrzeit stehen erst nach der Buchung fest), aber Save-the-Date-vor-Buchung ist verbreitete Praxis.",
-          "wrongThought": "Die Einladung schicke ich direkt raus, damit sich alle den Tag freihalten – Ort und Uhrzeit reiche ich nach der Buchung nach."
+          "wrongThought": [
+            "Verbindlich buche ich, sobald ich weiß, wie viele zusagen.",
+            "Die Einladung schicke ich direkt raus, damit sich alle den Tag freihalten – Ort und Uhrzeit reiche ich nach der Buchung nach."
+          ]
         },
         "en": {
           "pair": [
@@ -2673,7 +2832,10 @@
             "Send the invitation with location and time"
           ],
           "rationale": "Objectively wrong (location and time are only fixed after booking), but save-the-date-before-booking is common practice.",
-          "wrongThought": "I'll send the invitation out right away so everyone keeps the day free — location and time I'll add once it's booked."
+          "wrongThought": [
+            "I'll book it firmly once I know how many are coming.",
+            "I'll send the invitation out right away so everyone keeps the day free — location and time I'll add once it's booked."
+          ]
         }
       },
       "tiles": [
@@ -2766,7 +2928,10 @@
             "Leere Fächer auswischen"
           ],
           "rationale": "Objektiv falsch (die Fächer sind erst nach dem Entsorgen leer), aber beide Kacheln sind Putzarbeit und wirken beliebig.",
-          "wrongThought": "Ich wische die Fächer schon mal durch, wo Platz ist – die restlichen Boxen sortiere ich dabei gleich mit aus."
+          "wrongThought": [
+            "Die verwaisten Boxen entsorge ich beim Durchwischen gleich mit.",
+            "Ich wische die Fächer schon mal durch, wo Platz ist – die restlichen Boxen sortiere ich dabei gleich mit aus."
+          ]
         },
         "en": {
           "pair": [
@@ -2774,7 +2939,10 @@
             "Wipe down the empty shelves"
           ],
           "rationale": "Objectively wrong (the shelves are only empty after throwing things out), but both tiles are cleaning work and feel arbitrary.",
-          "wrongThought": "I'll wipe down the shelves wherever there's space already — and sort out the remaining containers as I go."
+          "wrongThought": [
+            "I'll throw the abandoned containers out as I wipe things down.",
+            "I'll wipe down the shelves wherever there's space already — and sort out the remaining containers as I go."
+          ]
         }
       },
       "tiles": [
@@ -2867,7 +3035,10 @@
             "Ersatzkarte für die gesperrte Karte beantragen"
           ],
           "rationale": "Objektiv falsch (die Ersatzkarte setzt die Sperrung voraus), aber „erst die neue Karte“ wirkt effizient.",
-          "wrongThought": "Ich beantrage zuerst die Ersatzkarte, damit ich schnell wieder reinkomme – gesperrt wird die alte dann im selben Zug."
+          "wrongThought": [
+            "Die alte Karte lasse ich danach sperren – auffindbar ist sie ohnehin nicht mehr.",
+            "Ich beantrage zuerst die Ersatzkarte, damit ich schnell wieder reinkomme – gesperrt wird die alte dann im selben Zug."
+          ]
         },
         "en": {
           "pair": [
@@ -2875,7 +3046,10 @@
             "Request a replacement for the blocked card"
           ],
           "rationale": "Objectively wrong (the replacement presupposes the block), but 'get the new card first' feels efficient.",
-          "wrongThought": "I'll request the replacement first so I can get back in quickly — the old one gets blocked in the same go."
+          "wrongThought": [
+            "I'll have the old card blocked afterwards — it's gone for good anyway.",
+            "I'll request the replacement first so I can get back in quickly — the old one gets blocked in the same go."
+          ]
         }
       },
       "tiles": [
@@ -2968,7 +3142,10 @@
             "Installation starten"
           ],
           "rationale": "Objektiv falsch (das Speichern ist explizit vor der Installation verankert), aber der vorschnelle Klick auf „Installieren“ passiert real ständig.",
-          "wrongThought": "Ich klicke direkt auf Installieren – während das Update lädt, bleibt noch genug Zeit zum Speichern."
+          "wrongThought": [
+            "Die offenen Dateien speichere ich, während die Installation läuft.",
+            "Ich klicke direkt auf Installieren – während das Update lädt, bleibt noch genug Zeit zum Speichern."
+          ]
         },
         "en": {
           "pair": [
@@ -2976,7 +3153,10 @@
             "Start the installation"
           ],
           "rationale": "Objectively wrong (saving is explicitly anchored before the installation), but the hasty click on 'Install' happens all the time in real life.",
-          "wrongThought": "I'll click Install right away — while the update downloads there's still plenty of time to save."
+          "wrongThought": [
+            "I'll save the open files while the installation runs.",
+            "I'll click Install right away — while the update downloads there's still plenty of time to save."
+          ]
         }
       },
       "tiles": [

@@ -12,6 +12,13 @@ window.Config = (function () {
     devSkip: false,                // show the bottom-right "Skip ▸" button that jumps to the
                                    // next stage. Prototyping aid only — MUST stay false for
                                    // real participants. Set true to test a later stage quickly.
+    loggingEnabled: true,          // MASTER SWITCH for study logging. false → no events are
+                                   //   recorded and NOTHING is written to logs/ (no POST, no
+                                   //   beacon). The session itself still runs and still
+                                   //   autosaves to localStorage, so resume keeps working.
+                                   //   ↳ For dry runs and demos, so test traffic never lands
+                                   //     in the participant data. MUST be true for real runs —
+                                   //     with it off, a completed session leaves no file.
   };
 
   // Fixed seed for the per-task tile shuffle. Because it is constant, every
@@ -35,6 +42,13 @@ window.Config = (function () {
     speed: 28,              // 0–100 → cursor travel speed
     hesitate: false,        // thinking pauses + second-guess approach curves
     idleMs: 1000,           // handoff only: no input for this long → the AI steps in
+    startGraceMs: 5000,     // reading window: after the explainer is dismissed the AI stays
+                            //   out for this long, so the participant can read the task
+                            //   before anything moves. Applies to BOTH cursor mechanics —
+                            //   handoff cannot take over and autopilot does not start.
+                            //   The explainers say "a few seconds" rather than naming a
+                            //   number, so this stays truthful if you change it.
+                            //   0 disables the wait entirely.
     userSpeedControl: true, // show the PARTICIPANT a speed slider.
                             //   ↳ Good for accessibility (fast cursor motion is
                             //     disorienting for some people), but it makes AI speed

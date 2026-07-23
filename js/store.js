@@ -10,6 +10,13 @@ window.Store = (function () {
   const perfStart = performance.now();
   let data = null;
 
+  /* Master switch (Config.CONFIG.loggingEnabled). Off → no events are recorded
+     and nothing leaves the browser: no POST, no beacon, so logs/ stays clean
+     during dry runs. The session object itself still lives and still autosaves,
+     so the flow, resume and the debrief are unaffected — the run simply leaves
+     no trace. Defaults to on if the key is missing. */
+  const logging = () => Config.CONFIG.loggingEnabled !== false;
+
   function newSession(pid) {
     data = {
       schemaVersion: 1,
@@ -35,7 +42,7 @@ window.Store = (function () {
   function setLang(l) { if (data) { data.lang = l; save(); } }
 
   function log(type, payload) {
-    if (!data) return;
+    if (!data || !logging()) return;
     data.events.push(Object.assign(
       { type, ts: Date.now(), tRel: Math.round(performance.now() - perfStart) },
       payload || {}
@@ -82,7 +89,7 @@ window.Store = (function () {
 
   async function sendRemote() {
     const url = Config.ENDPOINT_URL;
-    if (!url || !data) return false;          // disabled → localStorage only
+    if (!url || !data || !logging()) return false;   // disabled → localStorage only
     try {
       const res = await fetch(url, {
         method: "POST",
@@ -107,7 +114,7 @@ window.Store = (function () {
      participant simply closed the tab. */
   function flush() {
     const url = Config.ENDPOINT_URL;
-    if (!url || !data || !navigator.sendBeacon) return false;
+    if (!url || !data || !logging() || !navigator.sendBeacon) return false;
     try {
       return navigator.sendBeacon(url, new Blob([exportJSON()], { type: "application/json" }));
     } catch (e) { return false; }
