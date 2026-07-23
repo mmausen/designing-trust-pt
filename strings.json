@@ -77,7 +77,11 @@
       "c1": {
         "label": "Bedingung 1 — allein (ohne Unterstützung)",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Willkommen! Links finden Sie sechs Schritte eines alltäglichen Ablaufs — allerdings in der falschen Reihenfolge. Ziehen Sie die Schritte nacheinander in die rechte Spalte und bringen Sie sie in die richtige Reihenfolge: der erste Schritt nach oben, der letzte nach unten. Lassen Sie sich so viel Zeit, wie Sie brauchen. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
+        "explainer": "Willkommen! Links finden Sie sechs Schritte eines alltäglichen Ablaufs — allerdings in der falschen Reihenfolge. Ziehen Sie die Schritte nacheinander in die rechte Spalte und bringen Sie sie in die richtige Reihenfolge: der erste Schritt nach oben, der letzte nach unten. Lassen Sie sich so viel Zeit, wie Sie brauchen. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.",
+        "onboarding": [
+          { "body": "Willkommen! Links finden Sie sechs Schritte eines alltäglichen Ablaufs — allerdings in der falschen Reihenfolge.", "ok": "OK" },
+          { "body": "Ziehen Sie die Schritte nacheinander in die rechte Spalte und bringen Sie sie in die richtige Reihenfolge: der erste Schritt nach oben, der letzte nach unten. Lassen Sie sich so viel Zeit, wie Sie brauchen. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.", "ok": "Alles klar" }
+        ]
       },
       "c2": {
         "label": "Bedingung 2 — KI übernimmt bei Pause",
@@ -225,7 +229,11 @@
       "c1": {
         "label": "Condition 1 — solo (no assistance)",
         "banner": "Everyday process · sorting task",
-        "explainer": "Welcome! On the left you'll find six steps of an everyday process, in the wrong order. Drag them one by one into the column on the right to build the correct sequence — the first step at the top, the last step at the bottom. Take all the time you need. When you're happy with the order, press “Confirm ranking”."
+        "explainer": "Welcome! On the left you'll find six steps of an everyday process, in the wrong order. Drag them one by one into the column on the right to build the correct sequence — the first step at the top, the last step at the bottom. Take all the time you need. When you're happy with the order, press “Confirm ranking”.",
+        "onboarding": [
+          { "body": "Welcome! On the left you'll find six steps of an everyday process, in the wrong order.", "ok": "OK" },
+          { "body": "Drag them one by one into the column on the right to build the correct sequence — the first step at the top, the last step at the bottom. Take all the time you need. When you're happy with the order, press “Confirm ranking”.", "ok": "OK, got it" }
+        ]
       },
       "c2": {
         "label": "Condition 2 — AI steps in when you pause",

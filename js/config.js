@@ -9,7 +9,7 @@ window.Config = (function () {
                                    //   ↳ RECOMMEND setting FALSE for the real study to avoid
                                    //     a learning confound (participants memorising the answer).
     resumeEnabled: true,           // offer to resume an interrupted session from localStorage
-    devSkip: false,                // show the bottom-right "Skip ▸" button that jumps to the
+    devSkip: true,                 // show the bottom-right "Skip ▸" button that jumps to the
                                    // next stage. Prototyping aid only — MUST stay false for
                                    // real participants. Set true to test a later stage quickly.
   };
@@ -35,6 +35,10 @@ window.Config = (function () {
     speed: 28,              // 0–100 → cursor travel speed
     hesitate: false,        // thinking pauses + second-guess approach curves
     idleMs: 1000,           // handoff only: no input for this long → the AI steps in
+    firstIdleMs: 5000,      // handoff only: idle threshold used for the AI's very FIRST
+                            //   activation in a stage (subsequent activations in the same
+                            //   stage use idleMs). Longer on purpose — gives the participant
+                            //   a moment to read the task/inbox before the AI ever moves.
     userSpeedControl: true, // show the PARTICIPANT a speed slider.
                             //   ↳ Good for accessibility (fast cursor motion is
                             //     disorienting for some people), but it makes AI speed

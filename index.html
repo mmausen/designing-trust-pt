@@ -5,7 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>BDR x DFKI</title>
-<link rel="stylesheet" href="styles-accessible.css?v=19"/>
+<link rel="stylesheet" href="styles-accessible.css?v=25"/>
 </head>
 <body>
 
@@ -86,11 +86,11 @@
   </div>
 
   <div id="main">
-    <div class="col">
+    <div class="col" id="col-inbox">
       <div class="col-hd" id="inbox-hd"></div>
       <div class="scroll" id="inbox"></div>
     </div>
-    <div class="col">
+    <div class="col" id="col-ladder">
       <div class="col-hd" id="ladder-hd"></div>
       <div class="ladder" id="ladder"></div>
     </div>
@@ -169,20 +169,20 @@
 <button id="dev-skip" type="button" title="Skip to the next stage (dev only)" hidden>Skip ▸</button>
 
 <!-- ════════════ SCRIPTS (load order = dependency order) ════════════ -->
-<script src="js/config.js?v=19"></script>
-<script src="js/i18n.js?v=19"></script>
-<script src="js/tasks.js?v=19"></script>
+<script src="js/config.js?v=25"></script>
+<script src="js/i18n.js?v=25"></script>
+<script src="js/tasks.js?v=25"></script>
 <!-- AI hint designs: registry, then one file per variant. Adding a variant =
      one file + one tag here; removing one = delete both. Nothing else refers
      to them by name. -->
-<script src="js/hints.js?v=19"></script>
-<script src="js/hint_slot.js?v=19"></script>
-<script src="js/hint_slot_reasoning.js?v=19"></script>
-<script src="js/store.js?v=19"></script>
-<script src="js/survey.js?v=19"></script>
-<script src="js/task.js?v=19"></script>
-<script src="js/results.js?v=19"></script>
-<script src="js/flow.js?v=19"></script>
-<script src="js/main.js?v=19"></script>
+<script src="js/hints.js?v=25"></script>
+<script src="js/hint_slot.js?v=25"></script>
+<script src="js/hint_slot_reasoning.js?v=25"></script>
+<script src="js/store.js?v=25"></script>
+<script src="js/survey.js?v=25"></script>
+<script src="js/task.js?v=25"></script>
+<script src="js/results.js?v=25"></script>
+<script src="js/flow.js?v=25"></script>
+<script src="js/main.js?v=25"></script>
 </body>
 </html>
