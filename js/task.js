@@ -96,6 +96,8 @@ window.Task = (function () {
   let fc = null;
   let rafId = null, watchdog = null, prevTs = 0, lastStepTs = 0;
   let lastPointer = { x: 0, y: 0 }, lastActivity = 0;
+  let pointerInZone = false;    // handoff: real cursor resting inside #ai-zone
+  let zoneEl = null;
 
   // cached overlay elements (set in wire())
   let ghost, aiCursor;
@@ -132,6 +134,16 @@ window.Task = (function () {
   /* ── wire footer controls + cache overlays (once) ── */
   function wire() {
     ghost = $("drag-ghost"); aiCursor = $("ai-cursor");
+    zoneEl = $("ai-zone");
+    /* Handoff activation is now controlled by this zone, not by idle time.
+       Cursor rests inside → the AI takes over; cursor leaves → control back. */
+    if (zoneEl) {
+      zoneEl.addEventListener("mouseenter", () => { pointerInZone = true; });
+      zoneEl.addEventListener("mouseleave", () => {
+        pointerInZone = false;
+        if (handoff && fc && fc.active) autoHandBack();
+      });
+    }
     $("btn-confirm").addEventListener("click", confirm);
     $("explainer-ok").addEventListener("click", explainerOk);
     $("btn-explainer").addEventListener("click", function () { showExplainer(false); });
@@ -162,9 +174,20 @@ window.Task = (function () {
     }
   }
 
+  // Zone caption reflects whether the AI is currently driving.
+  function updateZoneLabel() {
+    if (!zoneEl || zoneEl.hidden) return;
+    const label = $("ai-zone-label");
+    if (label) label.textContent = I18n.t(
+      fc && fc.active ? "ui.task.zone.active" : "ui.task.zone.idle"
+    );
+  }
+
   function registerActivity() {
     lastActivity = performance.now();
-    if (handoff && fc && fc.active) autoHandBack();
+    // Handoff takeover/return is governed by the activation zone (mouseenter /
+    // mouseleave on #ai-zone), not by generic activity — so moving the mouse
+    // WITHIN the zone no longer hands control back mid-drive.
   }
 
   /* ── start a condition ── */
@@ -192,6 +215,7 @@ window.Task = (function () {
     taskStart = performance.now();
     autopilotState = "idle";
     drag = null;
+    pointerInZone = false;
     workStart = null; explainerOpenedAt = null; explainerMs = 0; explainerOpens = 0;
     firstActionAt = null; autopilotStartedAt = null; autopilotMs = null; autopilotDoneAt = null;
 
@@ -469,6 +493,19 @@ window.Task = (function () {
       if (show) {
         $("ai-speed").value = hcfg.speed;
         $("ai-speed-label").textContent = I18n.t("ui.task.speedLabel");
+      }
+    }
+
+    // AI activation zone — only in handoff stages, where a shared cursor exists.
+    if (zoneEl) {
+      zoneEl.hidden = !handoff;
+      if (handoff) {
+        const label = $("ai-zone-label");
+        if (label) label.textContent = I18n.t(
+          fc && fc.active ? "ui.task.zone.active" : "ui.task.zone.idle"
+        );
+      } else {
+        zoneEl.classList.remove("active");
       }
     }
 
@@ -963,6 +1000,8 @@ window.Task = (function () {
     autopilotState = "running";
     aiTakeovers++;
     $("main").classList.add("ai-driving");
+    if (zoneEl) zoneEl.classList.add("active");
+    updateZoneLabel();
     Store.log("ai_took_over", {
       taskId, nth: aiTakeovers, placedSoFar: slots.filter(Boolean).length,
       idleMs: hcfg.idleMs, speed: hcfg.speed,
@@ -978,6 +1017,8 @@ window.Task = (function () {
     fc.carrying = null;
     autopilotState = "done";
     $("main").classList.remove("ai-driving");
+    // Everything is placed — the zone has no more work to hand off, so retire it.
+    if (zoneEl) { zoneEl.classList.remove("active"); zoneEl.hidden = true; }
     ghostHide();
     clearSlotMarks();
     hideThought();
@@ -1011,6 +1052,8 @@ window.Task = (function () {
     autopilotState = handoff ? "idle" : "done";
     userTakebacks++;
     $("main").classList.remove("ai-driving");
+    if (zoneEl) zoneEl.classList.remove("active");
+    updateZoneLabel();
     clearSlotMarks();
     hideThought();
     Store.log("user_took_back", {
@@ -1113,11 +1156,12 @@ window.Task = (function () {
     else if (inGrace(now)) { /* nothing — the participant is reading the task */ }
     // Autopilot: the window has passed, so it starts sorting.
     else if (!handoff && autopilotState === "waiting") beginAutopilot();
-    // Handoff: after an idle spell with nobody dragging, the AI steps in.
+    // Handoff: the AI steps in while the real cursor rests inside the
+    // activation zone. Leaving the zone hands control back (see wire()).
     // (The initial reading window is handled by the inGrace() guard above,
     // so the first takeover is delayed too without any special-casing here.)
     else if (handoff && !complete && !fc.active && !fc.returning && !drag
-             && (now - lastActivity) > hcfg.idleMs) activateFake();
+             && pointerInZone) activateFake();
 
     const targetOp = (fc.active || fc.returning) ? 1 : 0;
     const rate = fc.active ? dt / AUTO.fadeInMs : dt / AUTO.fadeOutMs;

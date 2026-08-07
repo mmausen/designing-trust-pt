@@ -96,6 +96,15 @@
     </div>
   </div>
 
+  <!-- AI activation zone (handoff stages only). Park the real cursor inside
+       this block to let the AI take the shared cursor and carry on; move the
+       cursor out of the block to take control straight back. Replaces the old
+       idle-based takeover. Hidden for every non-handoff condition. -->
+  <div id="ai-zone" hidden>
+    <span class="ai-zone-dot" aria-hidden="true"></span>
+    <span class="ai-zone-label" id="ai-zone-label"></span>
+  </div>
+
   <div id="footer">
     <button class="btn" id="btn-explainer"></button>
     <div class="hint" id="hint"></div>
