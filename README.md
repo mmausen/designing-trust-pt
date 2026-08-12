@@ -155,9 +155,19 @@ collector. See *Saving data* below.
 
 Every condition opens with a short **stepped onboarding** — one idea per tile, dismissed
 with OK — held in `strings.json` under `conditions.<key>.onboarding` as an array of
-`{ body, ok }`. Task 1 teaches the board in two steps; G1–G4 each explain their AI in
-three, following the same shape (what the AI does → how it works → who decides) so the
-wording differs only where the condition itself does.
+`{ body, ok }`. G1–G4 each explain their AI in three steps, following the same shape
+(what the AI does → how it works → who decides) so the wording differs only where the
+condition itself does.
+
+Task 1 (`teachBoard`) instead introduces the screen **one region at a time**: while a
+step is up, the region it talks about is the only one showing — the task brief alone,
+then the inbox, then the ladder. The brief is never hidden; it simply stands alone while
+both columns are, which is also why its step can promise it stays put.
+
+> That mapping is **positional** — step 0 is the brief, step 1 the inbox, the last step
+> the ladder — so c1's `onboarding` entries have to stay in that order, in both
+> languages. It is the one place where the order of strings carries behaviour;
+> `BOARD_INTRO` in `js/task.js` is the other half of it.
 
 It **opens by itself only on the first round of a stage** — it describes the interaction,
 not the task, so re-reading it before every round is friction. The ⓘ button reopens it

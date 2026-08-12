@@ -85,7 +85,6 @@ window.Task = (function () {
   let explainerStepIdx = 0;     // which onboarding step is currently showing
   let explainerAutoFlow = false; // true while the tile is walking through explainerSteps one at a time
                                   // (vs. showing the reopened, combined text) — relocalize() needs this
-  let rightColRevealTimer = null; // pending "reveal the ladder column" timer — onboarding only
   let runId = 0;                // invalidates a stale cursor loop when the task changes
 
   // fake-cursor state (viewport coords); null outside a handoff stage
@@ -218,14 +217,13 @@ window.Task = (function () {
     // switch mid-onboarding picks up the new translation — see relocalize().
     explainerSteps = onboardingStepsFor(cond.key);
     explainerStepIdx = 0;
-    resetColumns();                // both columns start from a clean, visible state
-    /* Hide the ladder for the reveal ONLY on the round that teaches the board
-       (task 1), and only when its onboarding will actually run. On a repeat of
-       the same condition the explainer never opens, so nothing would ever
-       reveal it again and the participant would be left with nowhere to drop
-       the steps. Every later round shows both columns from the start. */
-    const colLadder = $("col-ladder");
-    if (colLadder) colLadder.classList.toggle("col-pending-reveal", !!cond.teachBoard && !!explainerSteps && newSection);
+    resetColumns();                // the whole board starts from a clean, visible state
+    /* Run the region-by-region intro ONLY on the round that teaches the board
+       (task 1), and only when its onboarding will actually open. On a repeat of
+       the same condition the tile never opens, so nothing would ever reveal the
+       columns again and the participant would be left with nowhere to drop the
+       steps. Every later round shows the whole board from the start. */
+    if (cond.teachBoard && explainerSteps && newSection) focusBoardRegion(0);
 
     Store.log("task_start", {
       stage, group, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
@@ -343,24 +341,30 @@ window.Task = (function () {
     $("explainer-ok").textContent = step.ok || I18n.t("ui.task.explainerOk");
   }
 
-  // Guaranteed-clean state: both columns visible, no pending timer. Used at
-  // the top of every start() and as a catch-all on Skip / task switch, so
-  // nothing is ever left hidden by a half-finished onboarding sequence.
+  // Guaranteed-clean state: the whole board visible. Used at the top of every
+  // start() and as a catch-all on Skip / task switch, so nothing is ever left
+  // hidden by a half-finished onboarding sequence.
   function resetColumns() {
-    if (rightColRevealTimer) { clearTimeout(rightColRevealTimer); rightColRevealTimer = null; }
     const colLadder = $("col-ladder"), colInbox = $("col-inbox");
     if (colLadder) colLadder.classList.remove("col-pending-reveal");
     if (colInbox) colInbox.classList.remove("col-pending-reveal");
   }
 
-  // The onboarding "swap": reveal the ladder (right) and hide the inbox
-  // (left) — used both by the timed 3s reveal and when the participant
-  // clicks through step 0 before the timer fires.
-  function revealRightHideLeft() {
-    if (rightColRevealTimer) { clearTimeout(rightColRevealTimer); rightColRevealTimer = null; }
-    const colLadder = $("col-ladder"), colInbox = $("col-inbox");
-    if (colLadder) colLadder.classList.remove("col-pending-reveal");
-    if (colInbox) colInbox.classList.add("col-pending-reveal");
+  /* Task 1 only (cond.teachBoard). Its onboarding introduces the screen one
+     region at a time, so while a step is up, the region it talks about is the
+     only one showing — the task brief alone, then the inbox, then the ladder.
+     (The brief is never hidden; it simply stands alone while both columns are.)
+
+     The mapping is POSITIONAL: step 0 is the brief, step 1 the inbox, the last
+     step the ladder — so c1's onboarding entries in strings.json have to stay
+     in that order, in both languages. Extra steps stay on the ladder. */
+  const BOARD_INTRO = ["brief", "inbox", "ladder"];
+
+  function focusBoardRegion(stepIdx) {
+    const region = BOARD_INTRO[Math.min(stepIdx, BOARD_INTRO.length - 1)];
+    const colInbox = $("col-inbox"), colLadder = $("col-ladder");
+    if (colInbox) colInbox.classList.toggle("col-pending-reveal", region !== "inbox");
+    if (colLadder) colLadder.classList.toggle("col-pending-reveal", region !== "ladder");
   }
 
   function showExplainer(auto) {
@@ -442,13 +446,12 @@ window.Task = (function () {
   }
   function explainerOk() {
     // Mid-onboarding: advance to the next step in place rather than closing.
-    // On the board-teaching round only, swap the columns as we do — reveal the
-    // right (ladder), hide the left (inbox) — because c1's step 1 ("drag them
-    // one by one…") refers to the right column directly. The g1–g4 onboardings
-    // describe the AI, not the board, so they leave both columns alone.
+    // On the board-teaching round only, move the spotlight with it — each of
+    // c1's steps points at a different region of the screen. The g1–g4
+    // onboardings describe the AI, not the board, so they leave it alone.
     if (explainerSteps && explainerStepIdx < explainerSteps.length - 1) {
       explainerStepIdx++;
-      if (cond.teachBoard) revealRightHideLeft();
+      if (cond.teachBoard) focusBoardRegion(explainerStepIdx);
       renderExplainerStep();
       Store.log("explainer_step", { stage, group, taskId, step: explainerStepIdx });
       return;

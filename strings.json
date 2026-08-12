@@ -75,7 +75,11 @@
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
         "onboarding": [
           {
-            "body": "Willkommen! Links finden Sie sechs Schritte eines alltäglichen Ablaufs — allerdings in der falschen Reihenfolge.",
+            "body": "Willkommen! Ganz oben steht, worum es in dieser Aufgabe geht — die Überschrift und darunter eine kurze Beschreibung. Lesen Sie sie in Ruhe durch; sie bleibt die ganze Zeit stehen.",
+            "ok": "OK"
+          },
+          {
+            "body": "Links finden Sie sechs Schritte dieses Ablaufs — allerdings in der falschen Reihenfolge.",
             "ok": "OK"
           },
           {
@@ -285,7 +289,11 @@
         "banner": "Everyday process · sorting task",
         "onboarding": [
           {
-            "body": "Welcome! On the left you'll find six steps of an everyday process, in the wrong order.",
+            "body": "Welcome! At the very top you'll find what this task is about — a heading and a short description below it. Take a moment to read it; it stays there the whole time.",
+            "ok": "OK"
+          },
+          {
+            "body": "On the left you'll find six steps of that process, in the wrong order.",
             "ok": "OK"
           },
           {
