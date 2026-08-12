@@ -208,19 +208,21 @@ window.Task = (function () {
 
     const newSection = isNewSection(step);
 
-    // Multi-step onboarding (currently just condition c1, the very first task):
-    // an array of { body, ok } steps shown one at a time in the explainer tile.
+    // Multi-step onboarding — every condition has one: an array of { body, ok }
+    // steps shown one at a time in the explainer tile. c1 introduces the board,
+    // g1–g4 the AI interaction they are about to meet for the first time.
     // Re-fetched live (not cached) every time it's needed, so a language
     // switch mid-onboarding picks up the new translation — see relocalize().
     explainerSteps = onboardingStepsFor(cond.key);
     explainerStepIdx = 0;
     resetColumns();                // both columns start from a clean, visible state
-    /* Hide the ladder for the reveal ONLY when the onboarding will actually
-       run. On a repeat of the same condition the explainer never opens, so
-       nothing would ever reveal it again and the participant would be left
-       with nowhere to drop the steps. */
+    /* Hide the ladder for the reveal ONLY on the round that teaches the board
+       (task 1), and only when its onboarding will actually run. On a repeat of
+       the same condition the explainer never opens, so nothing would ever
+       reveal it again and the participant would be left with nowhere to drop
+       the steps. Every later round shows both columns from the start. */
     const colLadder = $("col-ladder");
-    if (colLadder) colLadder.classList.toggle("col-pending-reveal", !!explainerSteps && newSection);
+    if (colLadder) colLadder.classList.toggle("col-pending-reveal", !!cond.teachBoard && !!explainerSteps && newSection);
 
     Store.log("task_start", {
       stage, group, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
@@ -318,9 +320,10 @@ window.Task = (function () {
   }
 
   // Look up the onboarding steps fresh (never cached) so a language switch
-  // always sees the current translation — see relocalize(). Most stages define
-  // none, which is why this asks I18n.opt() rather than t(): "no onboarding
-  // here" is the normal answer, not a missing string.
+  // always sees the current translation — see relocalize(). Asked via
+  // I18n.opt() rather than t() because a condition may instead define a single
+  // `explainer` paragraph (showExplainer's last branch), so "no onboarding
+  // here" is a legitimate answer rather than a missing string.
   function onboardingStepsFor(condKey) {
     const v = I18n.opt(`conditions.${condKey}.onboarding`);
     return Array.isArray(v) ? v : null;
@@ -435,13 +438,14 @@ window.Task = (function () {
     Store.log("explainer_dismissed", { stage, group, taskId, openMs, reopen: explainerOpens > 1 });
   }
   function explainerOk() {
-    // Mid-onboarding: advance to the next step in place rather than closing,
-    // and swap the columns as we do — reveal the right (ladder), hide the
-    // left (inbox) — because step 1's text ("drag them one by one…") refers
-    // to the right column directly.
+    // Mid-onboarding: advance to the next step in place rather than closing.
+    // On the board-teaching round only, swap the columns as we do — reveal the
+    // right (ladder), hide the left (inbox) — because c1's step 1 ("drag them
+    // one by one…") refers to the right column directly. The g1–g4 onboardings
+    // describe the AI, not the board, so they leave both columns alone.
     if (explainerSteps && explainerStepIdx < explainerSteps.length - 1) {
       explainerStepIdx++;
-      revealRightHideLeft();
+      if (cond.teachBoard) revealRightHideLeft();
       renderExplainerStep();
       Store.log("explainer_step", { stage, group, taskId, step: explainerStepIdx });
       return;

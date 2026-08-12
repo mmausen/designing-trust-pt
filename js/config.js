@@ -94,13 +94,22 @@ window.Config = (function () {
      Each variant is one file, referenced nowhere else, so dropping one
      leaves nothing behind.
 
-     Label / banner / explainer text lives in strings.json under
-     conditions.<key>, in both languages — e.g. I18n.t("conditions.g1.explainer").
-     The explainers deliberately never mention that the AI can be wrong, but
+     Label / banner / onboarding text lives in strings.json under
+     conditions.<key>, in both languages — e.g. conditions.g1.onboarding, an
+     array of { body, ok } steps shown one at a time when the participant first
+     reaches that stage (a condition may instead define a single `explainer`
+     paragraph, shown as one window). All four groups run the same three-step
+     shape — what the AI does, how it works, who decides — so the wording
+     differs only where the condition itself does.
+     The onboardings deliberately never mention that the AI can be wrong, but
      always make clear the final order is the participant's responsibility. */
 
-  // Task 1 — the unassisted ground-truth run. Everyone does this one.
-  const BASELINE = { key: "c1", ai: "solo" };
+  /* Task 1 — the unassisted ground-truth run. Everyone does this one.
+     `teachBoard` marks it as the round that introduces the BOARD itself: its
+     onboarding hides the ladder column and reveals it as the participant steps
+     through the tile. Only ever true for the very first task — by task 2 the
+     board is familiar, and hiding it again would be nonsense. */
+  const BASELINE = { key: "c1", ai: "solo", teachBoard: true };
 
   // Task 2 — the four AI groups. Exactly one per participant.
   const GROUPS = {

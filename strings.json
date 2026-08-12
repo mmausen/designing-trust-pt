@@ -87,22 +87,74 @@
       "g1": {
         "label": "Gruppe 1 — KI übernimmt im Feld",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Diesmal teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Schritte wie gewohnt selbst. Unter der Liste gibt es ein Feld: Halten Sie den Zeiger darin, übernimmt die KI den Zeiger und sortiert weiter — verlassen Sie das Feld, haben Sie sofort wieder die Kontrolle. Sie können die KI arbeiten lassen oder alles selbst machen; die endgültige Reihenfolge entscheiden Sie. Wenn sie für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
+        "onboarding": [
+          {
+            "body": "Diesmal teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Schritte wie gewohnt selbst.",
+            "ok": "OK"
+          },
+          {
+            "body": "Unter der Liste gibt es ein Feld: Halten Sie den Zeiger darin, übernimmt die KI den Zeiger und sortiert weiter — verlassen Sie das Feld, haben Sie sofort wieder die Kontrolle.",
+            "ok": "OK"
+          },
+          {
+            "body": "Sie können die KI arbeiten lassen oder alles selbst machen; die endgültige Reihenfolge entscheiden Sie. Wenn sie für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.",
+            "ok": "Alles klar"
+          }
+        ]
       },
       "g2": {
         "label": "Gruppe 2 — KI übernimmt im Feld + Begründung",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Wie zuvor teilen Sie sich den Mauszeiger mit einer KI: Halten Sie den Zeiger im Feld unter der Liste, übernimmt sie und sortiert weiter, und sobald Sie das Feld verlassen, haben Sie sofort wieder die Kontrolle. Diesmal zeigt die KI dabei an, was sie gerade denkt. Lesen Sie mit, wenn es Ihnen hilft — entscheiden müssen Sie. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“."
+        "onboarding": [
+          {
+            "body": "Diesmal teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Schritte wie gewohnt selbst.",
+            "ok": "OK"
+          },
+          {
+            "body": "Unter der Liste gibt es ein Feld: Halten Sie den Zeiger darin, übernimmt die KI den Zeiger und sortiert weiter — verlassen Sie das Feld, haben Sie sofort wieder die Kontrolle. Dabei zeigt sie Ihnen an, was sie gerade denkt.",
+            "ok": "OK"
+          },
+          {
+            "body": "Lesen Sie mit, wenn es Ihnen hilft — entscheiden müssen Sie: Die endgültige Reihenfolge bestimmen Sie. Wenn sie für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.",
+            "ok": "Alles klar"
+          }
+        ]
       },
       "g3": {
         "label": "Gruppe 3 — KI-Hinweis",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Diesmal steht Ihnen eine KI zur Seite. Sobald Sie einen Schritt aufnehmen, hebt sie die Position hervor, die sie dafür wählen würde. Das ist nur ein Vorschlag — Sie können ihm folgen oder den Schritt an eine ganz andere Stelle setzen. Die endgültige Reihenfolge entscheiden Sie: Setzen Sie jeden Schritt dorthin, wo er Ihrer Meinung nach hingehört, und klicken Sie dann auf „Reihenfolge bestätigen“."
+        "onboarding": [
+          {
+            "body": "Diesmal steht Ihnen eine KI zur Seite. Ordnen Sie die Schritte wie gewohnt selbst.",
+            "ok": "OK"
+          },
+          {
+            "body": "Sobald Sie einen Schritt aufnehmen, hebt sie die Position hervor, die sie dafür wählen würde. Das ist nur ein Vorschlag — Sie können ihm folgen oder den Schritt an eine ganz andere Stelle setzen.",
+            "ok": "OK"
+          },
+          {
+            "body": "Die endgültige Reihenfolge entscheiden Sie: Setzen Sie jeden Schritt dorthin, wo er Ihrer Meinung nach hingehört, und klicken Sie dann auf „Reihenfolge bestätigen“.",
+            "ok": "Alles klar"
+          }
+        ]
       },
       "g4": {
         "label": "Gruppe 4 — KI-Hinweis + Begründung",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Ihre KI ist jetzt etwas gesprächiger. Wenn Sie einen Schritt aufnehmen, hebt sie die vorgeschlagene Position hervor und erklärt Ihnen ihre Überlegung dazu. Lesen Sie die Begründung, wenn sie Ihnen hilft — die Entscheidung bleibt aber bei Ihnen, und Sie können den Schritt setzen, wohin Sie möchten. Ordnen Sie alle sechs Schritte und klicken Sie dann auf „Reihenfolge bestätigen“."
+        "onboarding": [
+          {
+            "body": "Diesmal steht Ihnen eine KI zur Seite. Ordnen Sie die Schritte wie gewohnt selbst.",
+            "ok": "OK"
+          },
+          {
+            "body": "Sobald Sie einen Schritt aufnehmen, hebt sie die Position hervor, die sie dafür wählen würde, und erklärt Ihnen ihre Überlegung dazu. Das ist nur ein Vorschlag — Sie können ihm folgen oder den Schritt an eine ganz andere Stelle setzen.",
+            "ok": "OK"
+          },
+          {
+            "body": "Lesen Sie die Begründung, wenn sie Ihnen hilft — die Entscheidung bleibt bei Ihnen. Setzen Sie jeden Schritt dorthin, wo er Ihrer Meinung nach hingehört, und klicken Sie dann auf „Reihenfolge bestätigen“.",
+            "ok": "Alles klar"
+          }
+        ]
       }
     },
     "surveys": {
@@ -245,22 +297,74 @@
       "g1": {
         "label": "Group 1 — AI takes over in the box",
         "banner": "Everyday process · sorting task",
-        "explainer": "This time you share the mouse cursor with an AI. Sort the steps yourself as usual. There is a box below the list: rest the cursor inside it and the AI takes the cursor and carries on — move out of the box and you have control back immediately. You can let it work or do everything yourself; the final order is your decision. When it looks right to you, press “Confirm ranking”."
+        "onboarding": [
+          {
+            "body": "This time you share the mouse cursor with an AI. Sort the steps yourself as usual.",
+            "ok": "OK"
+          },
+          {
+            "body": "There is a box below the list: rest the cursor inside it and the AI takes the cursor and carries on — move out of the box and you have control back immediately.",
+            "ok": "OK"
+          },
+          {
+            "body": "You can let it work or do everything yourself; the final order is your decision. When it looks right to you, press “Confirm ranking”.",
+            "ok": "OK, got it"
+          }
+        ]
       },
       "g2": {
         "label": "Group 2 — AI takes over in the box + reasoning",
         "banner": "Everyday process · sorting task",
-        "explainer": "As before you share the cursor with an AI: rest the cursor in the box below the list and it takes over, move out of the box and you have control back immediately. This time it also shows you what it is thinking as it works. Read along if you find it useful — the decision is still yours. When the order looks right to you, press “Confirm ranking”."
+        "onboarding": [
+          {
+            "body": "This time you share the mouse cursor with an AI. Sort the steps yourself as usual.",
+            "ok": "OK"
+          },
+          {
+            "body": "There is a box below the list: rest the cursor inside it and the AI takes the cursor and carries on — move out of the box and you have control back immediately. As it works, it also shows you what it is thinking.",
+            "ok": "OK"
+          },
+          {
+            "body": "Read along if you find it useful — the decision is still yours: you decide the final order. When it looks right to you, press “Confirm ranking”.",
+            "ok": "OK, got it"
+          }
+        ]
       },
       "g3": {
         "label": "Group 3 — AI hint",
         "banner": "Everyday process · sorting task",
-        "explainer": "This time you have an assistant. As soon as you pick up a step, it highlights the position it would choose for it. That's only a suggestion — you can follow it or place the step somewhere else entirely. The final order is yours to decide, so put each step where you think it belongs, then press “Confirm ranking”."
+        "onboarding": [
+          {
+            "body": "This time you have an AI assistant at your side. Sort the steps yourself as usual.",
+            "ok": "OK"
+          },
+          {
+            "body": "As soon as you pick up a step, it highlights the position it would choose for it. That's only a suggestion — you can follow it or place the step somewhere else entirely.",
+            "ok": "OK"
+          },
+          {
+            "body": "The final order is yours to decide: put each step where you think it belongs, then press “Confirm ranking”.",
+            "ok": "OK, got it"
+          }
+        ]
       },
       "g4": {
         "label": "Group 4 — AI hint + reasoning",
         "banner": "Everyday process · sorting task",
-        "explainer": "Your assistant is a little more talkative now. When you pick up a step, it highlights the position it would choose and tells you why. Read its reasoning if you find it useful — but the decision stays with you, and you can place the step wherever you like. Arrange all six steps, then press “Confirm ranking”."
+        "onboarding": [
+          {
+            "body": "This time you have an AI assistant at your side. Sort the steps yourself as usual.",
+            "ok": "OK"
+          },
+          {
+            "body": "As soon as you pick up a step, it highlights the position it would choose and tells you why. That's only a suggestion — you can follow it or place the step somewhere else entirely.",
+            "ok": "OK"
+          },
+          {
+            "body": "Read its reasoning if you find it useful — the decision stays with you. Put each step where you think it belongs, then press “Confirm ranking”.",
+            "ok": "OK, got it"
+          }
+        ]
       }
     },
     "surveys": {
