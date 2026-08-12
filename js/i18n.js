@@ -55,5 +55,22 @@ window.I18n = (function () {
   // Objects/arrays straight out of the active language (surveys, condition text).
   function block(path) { return t(path); }
 
-  return { load, get, set, has, onChange, t, block };
+  /* Optional lookup, for keys only SOME stages define — a condition's
+     onboarding steps, say. t() treats a missing key as a mistake and warns, so
+     asking it about an optional key fires a warning on every task start and
+     drowns the ones that mean something.
+
+     Absent in both languages is a normal answer here (this stage has none), so
+     it returns undefined in silence. Absent in only the active language is
+     still translation drift, so that keeps warning. */
+  function opt(path) {
+    const v = dig(data[lang], path);
+    if (v !== undefined) return v;
+    const other = LANGS.find(l => l !== lang);
+    const alt = dig(data[other], path);
+    if (alt !== undefined) console.warn(`i18n: "${path}" missing in "${lang}" — fell back to "${other}"`);
+    return alt;
+  }
+
+  return { load, get, set, has, onChange, t, block, opt };
 })();

@@ -318,9 +318,11 @@ window.Task = (function () {
   }
 
   // Look up the onboarding steps fresh (never cached) so a language switch
-  // always sees the current translation — see relocalize().
+  // always sees the current translation — see relocalize(). Most stages define
+  // none, which is why this asks I18n.opt() rather than t(): "no onboarding
+  // here" is the normal answer, not a missing string.
   function onboardingStepsFor(condKey) {
-    const v = I18n.t(`conditions.${condKey}.onboarding`);
+    const v = I18n.opt(`conditions.${condKey}.onboarding`);
     return Array.isArray(v) ? v : null;
   }
 
