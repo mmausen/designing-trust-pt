@@ -157,8 +157,10 @@
       const cnd = Config.GROUPS[g];
       const opt = document.createElement("option");
       opt.value = g;
-      // e.g. "G2 · handoff+reasoning" — enough to tell the four apart at a glance.
-      opt.textContent = `${g} · ${cnd.ai}${cnd.thoughts ? "+reasoning" : ""}${cnd.hint ? "/" + cnd.hint : ""}`;
+      // e.g. "G2 · handoff+reasoning", "G4 · hint+reasoning/slot-reasoning" —
+      // enough to tell the four apart, and to see which hint file is running.
+      const variant = Config.hintVariantFor(cnd);
+      opt.textContent = `${g} · ${cnd.ai}${cnd.thoughts ? "+reasoning" : ""}${variant ? "/" + variant : ""}`;
       sel.appendChild(opt);
     });
   }

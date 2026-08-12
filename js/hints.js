@@ -2,11 +2,13 @@
    HINTS — registry of AI-hint designs, so competing variants can live
    side by side and be compared without task.js ever naming one.
 
-   A group picks its variant in Config.GROUPS:
-       G3: { key: "g3", ai: "hint", hint: "slot" }
+   Which variant a group runs is resolved by Config.hintVariantFor() from its
+   `thoughts` flag — "slot" without, "slot-reasoning" with — because those two
+   ARE the study's explanation switch. A group can pin one instead:
+       G3: { key: "g3", ai: "hint", hint: "slot-arrow" }
 
    To ADD a variant: create js/hint_<name>.js, call Hints.register(...),
-   add the <script> tag, point a condition at it.
+   add the <script> tag, pin it on a group (or teach hintVariantFor about it).
    To DROP a variant: delete that file, its <script> tag, and any config
    that names it. Nothing else in the codebase refers to it — that is the
    whole point of this indirection.

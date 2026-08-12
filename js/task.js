@@ -186,8 +186,11 @@ window.Task = (function () {
     group = (stage === "ai") ? Store.group() : null;
     cond = Config.conditionFor(step, group);
     aiMode = cond.ai;
-    hintImpl = (aiMode === "hint") ? Hints.get(cond.hint) : null;
+    hintImpl = Hints.get(Config.hintVariantFor(cond));
     handoff = (aiMode === "handoff");
+    // cond.thoughts means "the AI explains itself" in both mechanics; for a
+    // hint group the variant does the explaining (see Config.hintVariantFor),
+    // for a handoff group it is this panel.
     showThoughts = handoff && !!cond.thoughts;
     hcfg = resolveCursorCfg(cond);
     aiTakeovers = 0; userTakebacks = 0; aiPlacedCount = 0;

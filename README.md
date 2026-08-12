@@ -79,18 +79,28 @@ const BASELINE = { key: "c1", ai: "solo" };          // task 1 — ground truth
 const GROUPS = {
   G1: { key: "g1", ai: "handoff" },
   G2: { key: "g2", ai: "handoff", thoughts: true },
-  G3: { key: "g3", ai: "hint", hint: "slot" },
-  G4: { key: "g4", ai: "hint", hint: "slot-reasoning" },
+  G3: { key: "g3", ai: "hint" },
+  G4: { key: "g4", ai: "hint", thoughts: true },
 };
 ```
+
+Two switches describe every group, and they are the study's two factors — read down
+the `thoughts` column and the 2×2 is right there.
 
 `ai` picks the mechanic:
 
 | `ai` | What the participant sees |
 |---|---|
 | `solo` | No assistance. Establishes that they understood the task. |
-| `hint` | The AI suggests where a step goes; `hint:` names which design does it (below). |
-| `handoff` | **Shared cursor.** The participant works normally, but while the cursor rests inside the activation zone the AI takes the cursor and carries on; leaving the zone hands it straight back. Add `thoughts: true` to narrate its reasoning as it acts. |
+| `hint` | The AI suggests where a step goes, at pick-up time. |
+| `handoff` | **Shared cursor.** The participant works normally, but while the cursor rests inside the activation zone the AI takes the cursor and carries on; leaving the zone hands it straight back. |
+
+`thoughts: true` means **the AI explains itself** — the same switch in both mechanics,
+which is what makes G1:G2 and G3:G4 the same comparison. It renders differently because
+the mechanics differ, not because the manipulation does: a handoff group gets the panel
+above the board narrating what the AI is about to do, a hint group gets the suggested
+slot with the AI's stated reasoning attached. Which hint design implements that is
+resolved by `Config.hintVariantFor()`, so the group table names no filenames.
 
 Adding or removing a group is a one-entry edit: add its text under `conditions.<key>` in
 `strings.json` (both languages) and the balancer picks it up on the next restart. Set
@@ -145,11 +155,13 @@ never names a variant.
 | `slot` | `js/hint_slot.js` | Highlights the slot the AI suggests |
 | `slot-reasoning` | `js/hint_slot_reasoning.js` | That, plus the AI's stated reasoning |
 
-A group picks one in `GROUPS`, so swapping designs is a one-value change:
+These two **are** the explanation switch, so `Config.hintVariantFor()` picks between
+them from `thoughts` and no group names a file. To A/B a third design against one of
+them, pin it on a group explicitly — that override is the only reason `hint:` still
+exists:
 
 ```js
-2: { key: "c2", ai: "hint", hint: "slot" },
-3: { key: "c3", ai: "hint", hint: "slot-reasoning" },
+G3: { key: "g3", ai: "hint", hint: "slot-arrow" },   // beats the thoughts default
 ```
 
 **Add** a variant: create `js/hint_<name>.js` calling `Hints.register(name, {...})`,

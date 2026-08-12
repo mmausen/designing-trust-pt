@@ -78,17 +78,27 @@ window.Config = (function () {
      (task 1, ground truth), then exactly one of the four AI interactions
      (task 2). Which one is decided by the balanced draw — see ASSIGN_URL.
 
-     `ai` picks the mechanic:
-       solo      — no assistance at all
-       hint      — the AI suggests where a step goes; `hint` names WHICH
-                   design does the suggesting (see below)
-       handoff   — shared cursor: the participant works normally, but while
-                   the real cursor rests inside the activation zone the AI
-                   takes the cursor and carries on. Leaving the zone hands
-                   control straight back. `thoughts: true` adds the panel
-                   where it narrates what it is about to do.
+     Two switches describe every group, and they are the study's two factors:
 
-     For ai:"hint", `hint` selects a variant registered in js/hints.js:
+       `ai` — the mechanic
+         solo      — no assistance at all
+         hint      — the AI suggests where a step goes, at pick-up time
+         handoff   — shared cursor: the participant works normally, but while
+                     the real cursor rests inside the activation zone the AI
+                     takes the cursor and carries on. Leaving the zone hands
+                     control straight back.
+
+       `thoughts` — does the AI explain itself? The SAME switch in both
+         mechanics, which is what makes G1:G2 and G3:G4 the same comparison:
+           handoff + thoughts → the panel above the board narrates what it is
+                                about to do
+           hint    + thoughts → the suggested slot comes with the AI's stated
+                                reasoning
+         The two render differently because the mechanics differ, not because
+         the manipulation does.
+
+     Which hint DESIGN implements that is resolved by hintVariantFor() below,
+     so the table never names a file. Variants are registered in js/hints.js:
        "slot"            — highlight the suggested slot            (js/hint_slot.js)
        "slot-reasoning"  — that, plus the AI's stated reasoning     (js/hint_slot_reasoning.js)
      Each variant is one file, referenced nowhere else, so dropping one
@@ -112,13 +122,25 @@ window.Config = (function () {
   const BASELINE = { key: "c1", ai: "solo", teachBoard: true };
 
   // Task 2 — the four AI groups. Exactly one per participant.
+  // Read down the `thoughts` column and the 2×2 is the design: mechanic
+  // (handoff / hint) × explanation (off / on).
   const GROUPS = {
     G1: { key: "g1", ai: "handoff" },
     G2: { key: "g2", ai: "handoff", thoughts: true },
-    G3: { key: "g3", ai: "hint", hint: "slot" },
-    G4: { key: "g4", ai: "hint", hint: "slot-reasoning" },
+    G3: { key: "g3", ai: "hint" },
+    G4: { key: "g4", ai: "hint", thoughts: true },
   };
   const GROUP_KEYS = Object.keys(GROUPS);
+
+  /* Which hint design a hint group runs. `thoughts` decides it, so the table
+     above states the manipulation rather than a filename — the two hint
+     variants ARE the explanation switch, one with reasoning and one without.
+     A group may still pin a design explicitly with `hint: "<name>"`, which is
+     how a third variant would be A/B'd without disturbing the table. */
+  function hintVariantFor(cond) {
+    if (!cond || cond.ai !== "hint") return null;
+    return cond.hint || (cond.thoughts ? "slot-reasoning" : "slot");
+  }
 
   /* How many ROUNDS each stage runs, and on which task.
      One entry = one round, in the order listed. Values are task ids from
@@ -186,6 +208,6 @@ window.Config = (function () {
   return {
     CONFIG, ENDPOINT_URL, ASSIGN_URL, ASSIGN_TIMEOUT_MS, SHUFFLE_SEED, AI_CURSOR,
     BASELINE, GROUPS, GROUP_KEYS, BASELINE_TASKS, GROUP_TASKS,
-    buildTaskPlan, conditionFor, isGroup,
+    buildTaskPlan, conditionFor, isGroup, hintVariantFor,
   };
 })();
