@@ -75,7 +75,7 @@ window.Config = (function () {
                             //  activation zone made it redundant — nothing moves until the
                             //  participant parks the cursor in the zone, so they read the
                             //  task in their own time — and it was removed 2026-08-12.)
-    userSpeedControl: true, // show the PARTICIPANT a speed slider.
+    userSpeedControl: false, // show the PARTICIPANT a speed slider.
                             //   ↳ Good for accessibility (fast cursor motion is
                             //     disorienting for some people), but it makes AI speed
                             //     a participant-controlled variable: timing stops being

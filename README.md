@@ -106,7 +106,7 @@ e.g. `{ ai: "handoff", speed: 40, hesitate: true }`.
 | `speed` | 0–100 → cursor travel speed (maps to 57.5–800 px/s) |
 | `pauseAfterPlaceMs` | How long the cursor rests after dropping each step before going for the next (default 1000) |
 | `hesitate` | Thinking pauses and second-guess approach curves — makes the AI look deliberative |
-| `userSpeedControl` | Show the **participant** a speed slider in the footer |
+| `userSpeedControl` | Show the **participant** a speed slider in the footer (off — see below) |
 
 > **There is no longer a reading window.** `startGraceMs` used to hold the AI back for
 > the first few seconds of a stage, because the explainer is dismissed at the same
@@ -115,12 +115,13 @@ e.g. `{ ai: "handoff", speed: 40, hesitate: true }`.
 > read the task in their own time and the wait was only friction. Removed 2026-08-12,
 > together with the "a few seconds" sentence in the explainers.
 
-> **On `userSpeedControl`:** good for accessibility — fast cursor motion is genuinely
-> disorienting for some people — but it makes AI speed a participant-controlled
-> variable, so `workMs` stops being comparable across people and it may interact with
-> perceived agency. Every change is logged (`ai_speed_changed`), and the value in force
-> is stored on each result as `cursorSpeed`. Consider setting it `false` for the real
-> study once piloting is done.
+> **On `userSpeedControl`:** now `false`. It is good for accessibility — fast cursor
+> motion is genuinely disorienting for some people — but it makes AI speed a
+> participant-controlled variable, so `workMs` stops being comparable across people and
+> it may interact with perceived agency. The accessibility case also weakened once the
+> cursor slowed to 265 px/s with a 1 s rest between steps. Set it `true` to bring the
+> slider back; every change is logged (`ai_speed_changed`) and the value in force is
+> stored on each result as `cursorSpeed` either way.
 
 The two designs are **not** the same abstraction: a hint is a suggestion at pick-up
 time, a handoff is shared control. That's why handoff is a mechanic rather than a hint
