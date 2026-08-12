@@ -256,7 +256,7 @@ kept out of the balancing counts.
 
 ## Languages
 
-German is the default (`I18n.DEFAULT_LANG`); a DE/EN switcher sits fixed top-right on
+German is the default (`DEFAULT_LANG` in `js/i18n.js`); a DE/EN switcher sits fixed top-right on
 every screen.
 
 All interface text lives in `strings.json` with **both languages side by side**, so a

@@ -55,14 +55,5 @@ window.I18n = (function () {
   // Objects/arrays straight out of the active language (surveys, condition text).
   function block(path) { return t(path); }
 
-  // Every language's display name, for the switcher.
-  function options() {
-    return LANGS.map(l => ({
-      code: l,
-      name: dig(data[l], "meta.name") || l.toUpperCase(),
-      short: dig(data[l], "meta.short") || l.toUpperCase(),
-    }));
-  }
-
-  return { load, get, set, has, onChange, t, block, options, LANGS, DEFAULT_LANG };
+  return { load, get, set, has, onChange, t, block };
 })();

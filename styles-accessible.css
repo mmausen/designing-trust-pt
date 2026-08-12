@@ -22,7 +22,6 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .centered{margin:auto;width:min(620px,92vw);display:flex;flex-direction:column;gap:26px;padding:48px 0}
 .screen-kicker{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .muted{color:var(--muted)}
-.row-gap{display:flex;gap:10px;align-items:center}
 
 /* ── explainer tile ── */
 #explainer-overlay{position:absolute;inset:0;z-index:8000;display:flex;align-items:center;justify-content:center;
@@ -84,7 +83,6 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .b-logo{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .b-div{width:1px;height:16px;background:var(--border)}
 .b-prox{font-size:16px;font-weight:600;flex:1}
-.b-meta{font-size:13px;color:var(--muted)}
 .b-badge{font-size:12px;font-weight:700;padding:3px 9px;border-radius:4px;letter-spacing:.04em;
   background:var(--purple-l);color:var(--purple);border:1px solid var(--purple-b)}
 
@@ -114,10 +112,8 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .card:hover{box-shadow:0 3px 8px rgba(0,0,0,.1),0 8px 20px rgba(0,0,0,.12);transform:translateY(-1px)}
 .card:active{cursor:grabbing}
 .card.ghost{opacity:.25}
-.card-icon{font-size:17px;font-weight:800;flex-shrink:0;line-height:1.1;width:26px;text-align:center;color:var(--txt)}
 .card-txt{flex:1;min-width:0}
 .card-title{font-size:15px;font-weight:700}
-.card-detail{font-size:13.5px;color:var(--txt2);margin-top:3px;line-height:1.5}
 .card-grip{color:#9a9a9a;font-size:15px;flex-shrink:0;align-self:center}
 
 /* ── ladder + inbox share one row layout so a tile sits at the same height
@@ -146,9 +142,7 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 /* ── floating drag ghost ── */
 #drag-ghost{position:fixed;pointer-events:none;z-index:9000;background:#fff;border:1px solid var(--border);border-radius:10px;
   padding:14px 16px;display:none;align-items:flex-start;gap:12px;box-shadow:0 10px 32px rgba(0,0,0,.22);max-width:360px}
-#drag-ghost .card-icon{font-size:17px;font-weight:800;flex-shrink:0}
 #drag-ghost .card-title{font-size:15px;font-weight:700}
-#drag-ghost .card-detail{font-size:13.5px;color:var(--txt2);margin-top:3px;line-height:1.5}
 
 /* ── AI cursor (level 4): pointer + an "AI" tag that travels with it, in the
       prototype's purple. Positioned purely by transform, so the arrow tip
@@ -235,28 +229,10 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn-primary:hover:not(:disabled){background:#000;border-color:#000}
 .btn-primary:disabled{background:#cfcfcf;border-color:#cfcfcf;color:#fff}
-.btn-lg{padding:12px 26px;font-size:15.5px;border-radius:9px;font-weight:700}
 
 .empty-note{font-size:13.5px;color:var(--muted);text-align:center;padding:18px 0}
 
 /* ── per-task results ── */
-.lr-header{border-bottom:1px solid var(--border);padding:22px 44px;display:flex;align-items:baseline;gap:18px;flex-shrink:0}
-.lr-header h2{font-size:19px;font-weight:700}
-.lr-header .lr-sub{font-size:13.5px;color:var(--muted)}
-.lr-body{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1}
-.lr-col{padding:30px 44px;border-right:1px solid var(--border)}
-.lr-col:last-child{border-right:none}
-.lr-col-hd{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:16px}
-.lr-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
-.lr-row:last-child{border-bottom:none}
-.lr-pos{font-size:13px;font-weight:700;color:var(--muted);width:22px;flex-shrink:0;padding-top:1px}
-.lr-icon{font-size:16px;font-weight:800;color:var(--txt);flex-shrink:0;width:24px;text-align:center}
-.lr-name{font-size:15px;font-weight:700;flex:1}
-.lr-check{font-size:16px;flex-shrink:0;padding-top:1px;font-weight:800}
-.lr-check.ok{color:var(--ok)}
-.lr-check.err{color:var(--danger)}
-.lr-footer{border-top:1px solid var(--border);padding:16px 44px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.lr-footer .lr-note{font-size:13.5px;color:var(--muted)}
 
 /* ── overall / debrief ── */
 .or-header{border-bottom:1px solid var(--border);padding:22px 44px;display:flex;align-items:baseline;gap:18px;flex-shrink:0}
@@ -273,7 +249,6 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .or-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
 .or-row:last-child{border-bottom:none}
 .or-pos{font-size:12px;font-weight:700;color:var(--muted);width:16px;flex-shrink:0}
-.or-icon{font-size:15px;font-weight:800;color:var(--txt);flex-shrink:0;width:20px;text-align:center}
 .or-name{font-size:13.5px;font-weight:600;flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .or-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .or-dot.ok{background:var(--ok)}
@@ -291,5 +266,8 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
   padding:7px 15px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.14);opacity:.9}
 #dev-group{padding-right:10px;max-width:210px}
 #dev-skip:hover,#dev-group:hover{opacity:1;background:#fff7ed;border-color:#c2410c}
-/* lift it clear of the task footer's Confirm button while a task is showing */
-#screen-task:not([hidden]) ~ #dev-bar{bottom:70px}
+/* Lift it clear of the footer buttons on the two screens that have one at the
+   bottom right (task → Confirm, debrief → End), which the bar would otherwise
+   sit on top of. */
+#screen-task:not([hidden]) ~ #dev-bar,
+#screen-debrief:not([hidden]) ~ #dev-bar{bottom:70px}

@@ -30,8 +30,8 @@ window.Task = (function () {
   const DRAG_THRESHOLD = 5;
 
   /* Fixed motion constants. The study-facing knobs (speed, pauseAfterPlaceMs,
-     hesitate, idleMs, userSpeedControl) live in Config.AI_CURSOR and are
-     resolved per stage into `hcfg` — see resolveCursorCfg(). */
+     hesitate, userSpeedControl) live in Config.AI_CURSOR and are resolved per
+     stage into `hcfg` — see resolveCursorCfg(). */
   const AUTO = {
     /* px/sec at slider 0 / 100. Halved twice on 2026-08-12 (230/3200 →
        115/1600 → here) to make the AI's movement slower. Both ends are halved
@@ -42,14 +42,13 @@ window.Task = (function () {
        separate: this is travel speed, not deliberation. */
     speedMin: 57.5, speedMax: 800,
     fadeInMs: 420, fadeOutMs: 240, returnMs: 190,
-    startDelayMs: 550,    // beat before the first move
   };
   let hcfg = null;        // this stage's resolved cursor settings
 
   // Config.AI_CURSOR, with any inline per-condition overrides applied.
   function resolveCursorCfg(condition) {
     const base = Object.assign({}, Config.AI_CURSOR);
-    ["speed", "pauseAfterPlaceMs", "hesitate", "idleMs", "userSpeedControl"].forEach(k => {
+    ["speed", "pauseAfterPlaceMs", "hesitate", "userSpeedControl"].forEach(k => {
       if (condition && condition[k] !== undefined) base[k] = condition[k];
     });
     return base;
@@ -92,7 +91,7 @@ window.Task = (function () {
   // fake-cursor state (viewport coords); null outside a handoff stage
   let fc = null;
   let rafId = null, watchdog = null, prevTs = 0, lastStepTs = 0;
-  let lastPointer = { x: 0, y: 0 }, lastActivity = 0;
+  let lastPointer = { x: 0, y: 0 };
   let pointerInZone = false;    // handoff: real cursor resting inside #ai-zone
   let zoneEl = null;
 
@@ -145,19 +144,13 @@ window.Task = (function () {
     $("explainer-ok").addEventListener("click", explainerOk);
     $("btn-explainer").addEventListener("click", function () { showExplainer(false); });
 
-    /* Real input marks the participant as active. Takeover and hand-back are
-       governed by the activation zone (see wire()), so this is now only a
-       record of when the participant last did something — the AI's own motion
-       is synthetic and can never register here. */
+    /* Track the real pointer. Takeover and hand-back are governed by the
+       activation zone (above), so this is not an activity detector — the
+       position is what matters: the AI cursor sweeps back to it when the
+       participant takes control, rather than blinking out where it stood. */
     document.addEventListener("mousemove", e => {
       lastPointer = { x: e.clientX, y: e.clientY };
-      registerActivity();
     }, { passive: true });
-    ["mousedown", "wheel", "keydown"].forEach(evt =>
-      document.addEventListener(evt, e => {
-        if (e.target && e.target.closest && e.target.closest("#ai-speed-ctl")) return; // the slider isn't task activity
-        registerActivity();
-      }, { passive: true }));
 
     // Participant-facing speed control (Config.AI_CURSOR.userSpeedControl).
     const speed = $("ai-speed");
@@ -178,13 +171,6 @@ window.Task = (function () {
     if (label) label.textContent = I18n.t(
       fc && fc.active ? "ui.task.zone.active" : "ui.task.zone.idle"
     );
-  }
-
-  function registerActivity() {
-    lastActivity = performance.now();
-    // Handoff takeover/return is governed by the activation zone (mouseenter /
-    // mouseleave on #ai-zone), not by generic activity — so moving the mouse
-    // WITHIN the zone no longer hands control back mid-drive.
   }
 
   /* ── start a condition ── */
@@ -625,10 +611,7 @@ window.Task = (function () {
     div.className = "card";
     div.dataset.id = card.id;
     div.dataset.from = String(from);
-    const icon = card.icon ? `<div class="card-icon">${card.icon}</div>` : "";
-    const detail = card.detail ? `<div class="card-detail">${card.detail}</div>` : "";
-    div.innerHTML = `${icon}
-      <div class="card-txt"><div class="card-title">${card.title}</div>${detail}</div>
+    div.innerHTML = `<div class="card-txt"><div class="card-title">${card.title}</div></div>
       <div class="card-grip">⠿</div>`;
     div.addEventListener("mousedown", onMouseDown);
     // c3: hovering a step shows its reasoning, exactly as the AI passing over
@@ -691,9 +674,7 @@ window.Task = (function () {
   /* ── the floating ghost, shared by the participant's drag and the AI carry ── */
   function ghostShow(id, width) {
     const c = byId[id];
-    $("ghost-icon").textContent = c.icon || "";
     $("ghost-title").textContent = c.title;
-    $("ghost-detail").textContent = c.detail || "";
     ghost.style.maxWidth = "none";
     ghost.style.width = (width || 280) + "px"; // match the source tile — no compression
     ghost.style.display = "flex";
@@ -972,12 +953,9 @@ window.Task = (function () {
     aiCursor.style.display = "block";
     aiCursor.style.opacity = "0";
     aiCursor.style.transform = `translate(${fc.x}px,${fc.y}px)`;
-    lastActivity = performance.now();
-
     aiState = "idle";                    // the participant has control first
     Store.log("handoff_armed", {
-      taskId, idleMs: hcfg.idleMs,
-      speed: hcfg.speed, hesitate: !!hcfg.hesitate,
+      taskId, speed: hcfg.speed, hesitate: !!hcfg.hesitate,
     });
     render();
     driveStart();
@@ -997,7 +975,7 @@ window.Task = (function () {
     updateZoneLabel();
     Store.log("ai_took_over", {
       taskId, nth: aiTakeovers, placedSoFar: slots.filter(Boolean).length,
-      idleMs: hcfg.idleMs, speed: hcfg.speed,
+      speed: hcfg.speed,
     });
   }
 

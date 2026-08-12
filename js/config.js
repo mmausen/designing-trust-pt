@@ -64,24 +64,13 @@ window.Config = (function () {
                             //   short random beat that used to sit there.
                             //   0 = sort straight through with no rest.
     hesitate: false,        // thinking pauses + second-guess approach curves
-    idleMs: 1000,           // NO LONGER DRIVES ANYTHING. Handoff takeover moved to the
-                            //   hover activation zone (#ai-zone) — the cursor resting
-                            //   inside is what hands control over, not idle time. Kept
-                            //   only because it is still written to the logs; delete
-                            //   both once no analysis depends on the field.
-                            //
-                            // (There was also a startGraceMs "reading window" here that
-                            //  held the AI back for the first few seconds of a stage. The
-                            //  activation zone made it redundant — nothing moves until the
-                            //  participant parks the cursor in the zone, so they read the
-                            //  task in their own time — and it was removed 2026-08-12.)
-    userSpeedControl: false, // show the PARTICIPANT a speed slider.
-                            //   ↳ Good for accessibility (fast cursor motion is
-                            //     disorienting for some people), but it makes AI speed
-                            //     a participant-controlled variable: timing stops being
-                            //     comparable across people and it may interact with
-                            //     perceived agency. Every change is logged
-                            //     (ai_speed_changed). Consider false for the real study.
+    userSpeedControl: false, // show the PARTICIPANT a speed slider. OFF for the study:
+                            //   it makes AI speed a participant-controlled variable, so
+                            //   timing stops being comparable across people and it may
+                            //   interact with perceived agency. Set true if a pilot needs
+                            //   it (fast cursor motion is disorienting for some people);
+                            //   every change is logged as ai_speed_changed, and the value
+                            //   in force is on each result as cursorSpeed either way.
   };
 
   /* ═══ study design: one baseline task, then ONE AI group ═══════════

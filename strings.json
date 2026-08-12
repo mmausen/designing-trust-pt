@@ -1,12 +1,7 @@
 {
   "_comment": "All interface text, both languages side by side so gaps are obvious. Keys must stay identical in de/en — a missing key falls back to the other language. {curly} tokens are filled in at runtime. Survey question ids are DATA KEYS: never translate or renumber them. conditions.<key> is keyed by the `key` field of Config.BASELINE / Config.GROUPS: c1 is the unassisted baseline everyone runs and g1–g4 are the four AI groups.",
   "de": {
-    "meta": {
-      "name": "Deutsch",
-      "short": "DE"
-    },
     "ui": {
-      "langLabel": "Sprache",
       "consent": {
         "heading": "Einwilligungserklärung (Platzhalter)",
         "body": "Platzhalter-Text zur Einwilligung. Ersetzen Sie diesen Abschnitt durch die von Ihrer Ethikkommission freigegebene Fassung: worum es in der Studie geht, dass die Teilnahme freiwillig ist, wie die Daten gespeichert und verwendet werden und an wen Sie sich bei Fragen wenden können. Der Übergang zur Studie wird protokolliert.",
@@ -78,7 +73,6 @@
       "c1": {
         "label": "Aufgabe 1 — ohne Unterstützung (Grundlinie)",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Willkommen! Links finden Sie sechs Schritte eines alltäglichen Ablaufs — allerdings in der falschen Reihenfolge. Ziehen Sie die Schritte nacheinander in die rechte Spalte und bringen Sie sie in die richtige Reihenfolge: der erste Schritt nach oben, der letzte nach unten. Lassen Sie sich so viel Zeit, wie Sie brauchen. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.",
         "onboarding": [
           {
             "body": "Willkommen! Links finden Sie sechs Schritte eines alltäglichen Ablaufs — allerdings in der falschen Reihenfolge.",
@@ -165,12 +159,7 @@
     }
   },
   "en": {
-    "meta": {
-      "name": "English",
-      "short": "EN"
-    },
     "ui": {
-      "langLabel": "Language",
       "consent": {
         "heading": "Consent (placeholder)",
         "body": "Placeholder consent text. Replace this with your IRB / ethics-approved wording: what the study involves, that participation is voluntary, how data is stored and used, and whom to contact. This screen is logged when the participant proceeds.",
@@ -242,7 +231,6 @@
       "c1": {
         "label": "Task 1 — unassisted (baseline)",
         "banner": "Everyday process · sorting task",
-        "explainer": "Welcome! On the left you'll find six steps of an everyday process, in the wrong order. Drag them one by one into the column on the right to build the correct sequence — the first step at the top, the last step at the bottom. Take all the time you need. When you're happy with the order, press “Confirm ranking”.",
         "onboarding": [
           {
             "body": "Welcome! On the left you'll find six steps of an everyday process, in the wrong order.",

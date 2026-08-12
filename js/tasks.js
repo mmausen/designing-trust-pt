@@ -79,9 +79,7 @@ window.Tasks = (function () {
       id: "t" + tile.key,
       rank: tile.key + 1,
       title: tile.text,
-      detail: "",
       thought: tile.thought || "",
-      icon: "",
     }));
   }
 
