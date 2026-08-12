@@ -29,18 +29,18 @@ window.Task = (function () {
   }
   const DRAG_THRESHOLD = 5;
 
-  /* Fixed motion constants. The study-facing knobs (speed, hesitate, idleMs,
-     userSpeedControl) live in Config.AI_CURSOR and are resolved per stage
-     into `hcfg` — see resolveCursorCfg(). */
+  /* Fixed motion constants. The study-facing knobs (speed, pauseAfterPlaceMs,
+     hesitate, idleMs, userSpeedControl) live in Config.AI_CURSOR and are
+     resolved per stage into `hcfg` — see resolveCursorCfg(). */
   const AUTO = {
-    /* px/sec at slider 0 / 100. HALVED on 2026-08-12 (was 230 / 3200) to make
-       the AI's movement 50% slower. Both ends were halved rather than just
-       lowering the default `speed`, so every position of the participant's
-       speed slider is half what it used to be — otherwise someone pushing the
-       slider up would land straight back at the old pace. The pauses between
-       moves (the "thinking" beats in planJob) are unchanged: it is the travel
-       that is slower, not the deliberation. */
-    speedMin: 115, speedMax: 1600,
+    /* px/sec at slider 0 / 100. Halved twice on 2026-08-12 (230/3200 →
+       115/1600 → here) to make the AI's movement slower. Both ends are halved
+       each time rather than just lowering the default `speed`, so every
+       position of the participant's speed slider moves with it — otherwise
+       someone pushing the slider up would land straight back at the old pace.
+       The pauses between moves (planJob's beats, and pauseAfterPlaceMs) are
+       separate: this is travel speed, not deliberation. */
+    speedMin: 57.5, speedMax: 800,
     fadeInMs: 420, fadeOutMs: 240, returnMs: 190,
     startDelayMs: 550,    // beat before the first move
   };
@@ -49,7 +49,7 @@ window.Task = (function () {
   // Config.AI_CURSOR, with any inline per-condition overrides applied.
   function resolveCursorCfg(condition) {
     const base = Object.assign({}, Config.AI_CURSOR);
-    ["speed", "hesitate", "idleMs", "userSpeedControl"].forEach(k => {
+    ["speed", "pauseAfterPlaceMs", "hesitate", "idleMs", "userSpeedControl"].forEach(k => {
       if (condition && condition[k] !== undefined) base[k] = condition[k];
     });
     return base;
@@ -861,7 +861,11 @@ window.Task = (function () {
       pushMove(sc.x, sc.y, "back", 0.08);
     }
     pushDrop(slotIdx);
-    pushPause(hes ? rand(260, 520) : rand(160, 300));
+    // Rest after the placement (Config.AI_CURSOR.pauseAfterPlaceMs). A fixed,
+    // configurable value rather than the old random beat, so "the AI waits a
+    // second between steps" is something the study can state exactly.
+    const rest = hcfg && hcfg.pauseAfterPlaceMs != null ? hcfg.pauseAfterPlaceMs : 0;
+    if (rest > 0) pushPause(rest);
   }
 
   function startSegment() {
@@ -875,7 +879,12 @@ window.Task = (function () {
     const amp = d * fc.seg.curve * (Math.random() < 0.5 ? -1 : 1);
     fc.seg.p0 = p0; fc.seg.p1 = p1;
     fc.seg.ctrl = { x: mx + nx * amp, y: my + ny * amp };
-    fc.seg.dur = clamp(d / speedPPS() * 1000 * ((hcfg && hcfg.hesitate) ? 1.22 : 1), 170, 4000);
+    /* The ceiling is a safety valve against nonsense geometry (a zero-size or
+       off-screen rect would otherwise plan a minutes-long crawl), NOT a pacing
+       device — it has to stay well above the slowest legitimate travel, or it
+       would silently cap the speed setting on a large screen. At the default
+       slider the longest realistic move is ~4.5 s. */
+    fc.seg.dur = clamp(d / speedPPS() * 1000 * ((hcfg && hcfg.hesitate) ? 1.22 : 1), 170, 12000);
     fc.seg.t = 0;
   }
   function bezier(p0, ctrl, p1, t) {

@@ -56,7 +56,13 @@ window.Config = (function () {
      Any group may override a value inline, e.g.
          G1: { key: "g1", ai: "handoff", speed: 40, hesitate: true } */
   const AI_CURSOR = {
-    speed: 28,              // 0–100 → cursor travel speed (115–1600 px/s)
+    speed: 28,              // 0–100 → cursor travel speed (57.5–800 px/s)
+    pauseAfterPlaceMs: 1000, // the cursor sits still for this long after dropping each
+                            //   step, before it goes for the next one — a beat to take in
+                            //   what just happened rather than a continuous sweep.
+                            //   Applies whether or not `hesitate` is on, and replaces the
+                            //   short random beat that used to sit there.
+                            //   0 = sort straight through with no rest.
     hesitate: false,        // thinking pauses + second-guess approach curves
     idleMs: 1000,           // NO LONGER DRIVES ANYTHING. Handoff takeover moved to the
                             //   hover activation zone (#ai-zone) — the cursor resting
