@@ -283,11 +283,13 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .or-footer{border-top:1px solid var(--border);padding:16px 44px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
 .or-footer .or-note{font-size:13.5px;color:var(--muted)}
 
-/* ── dev-only Skip button (prototyping aid — remove before the real study) ── */
-#dev-skip{position:fixed;right:16px;bottom:14px;z-index:10000;
-  font:inherit;font-size:12.5px;font-weight:700;letter-spacing:.02em;
+/* ── dev-only bar: group picker + Skip (prototyping aid — remove before the real study) ── */
+#dev-bar{position:fixed;right:16px;bottom:14px;z-index:10000;display:flex;align-items:center;gap:8px}
+#dev-bar[hidden]{display:none}
+#dev-skip,#dev-group{font:inherit;font-size:12.5px;font-weight:700;letter-spacing:.02em;
   color:#9a3412;background:#fff;border:1.5px dashed #e0913f;border-radius:999px;
   padding:7px 15px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.14);opacity:.9}
-#dev-skip:hover{opacity:1;background:#fff7ed;border-color:#c2410c}
+#dev-group{padding-right:10px;max-width:210px}
+#dev-skip:hover,#dev-group:hover{opacity:1;background:#fff7ed;border-color:#c2410c}
 /* lift it clear of the task footer's Confirm button while a task is showing */
-#screen-task:not([hidden]) ~ #dev-skip{bottom:70px}
+#screen-task:not([hidden]) ~ #dev-bar{bottom:70px}

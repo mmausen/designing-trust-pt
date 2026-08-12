@@ -5,7 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>BDR x DFKI</title>
-<link rel="stylesheet" href="styles-accessible.css?v=27"/>
+<link rel="stylesheet" href="styles-accessible.css?v=30"/>
 </head>
 <body>
 
@@ -164,7 +164,7 @@
   </div>
 </div>
 
-<!-- AI cursor (level 4): pointer + an "AI" tag that travels with it -->
+<!-- AI cursor (handoff + autopilot): pointer + an "AI" tag that travels with it -->
 <div id="ai-cursor">
   <div class="ai-ring"></div>
   <svg class="ai-arrow" viewBox="0 0 26 30" width="26" height="30" aria-hidden="true">
@@ -174,24 +174,31 @@
   <div class="ai-tag">AI</div>
 </div>
 
-<!-- dev-only skip — hidden unless Config.CONFIG.devSkip is true (see main.js) -->
-<button id="dev-skip" type="button" title="Skip to the next stage (dev only)" hidden>Skip ▸</button>
+<!-- dev-only controls — hidden unless Config.CONFIG.devMode is true (see main.js).
+     The group picker forces this session's AI interaction (G1–G4); such
+     sessions are flagged and left out of the balancing counts. -->
+<div id="dev-bar" hidden>
+  <select id="dev-group" title="Force the AI group for this session (dev only)"></select>
+  <button id="dev-skip" type="button" title="Skip to the next stage (dev only)">Skip ▸</button>
+</div>
 
 <!-- ════════════ SCRIPTS (load order = dependency order) ════════════ -->
-<script src="js/config.js?v=27"></script>
-<script src="js/i18n.js?v=27"></script>
-<script src="js/tasks.js?v=27"></script>
+<script src="js/config.js?v=30"></script>
+<script src="js/i18n.js?v=30"></script>
+<script src="js/tasks.js?v=30"></script>
 <!-- AI hint designs: registry, then one file per variant. Adding a variant =
      one file + one tag here; removing one = delete both. Nothing else refers
      to them by name. -->
-<script src="js/hints.js?v=27"></script>
-<script src="js/hint_slot.js?v=27"></script>
-<script src="js/hint_slot_reasoning.js?v=27"></script>
-<script src="js/store.js?v=27"></script>
-<script src="js/survey.js?v=27"></script>
-<script src="js/task.js?v=27"></script>
-<script src="js/results.js?v=27"></script>
-<script src="js/flow.js?v=27"></script>
-<script src="js/main.js?v=27"></script>
+<script src="js/hints.js?v=30"></script>
+<script src="js/hint_slot.js?v=30"></script>
+<script src="js/hint_slot_reasoning.js?v=30"></script>
+<!-- balanced G1–G4 assignment (needs Config; used by main.js) -->
+<script src="js/groups.js?v=30"></script>
+<script src="js/store.js?v=30"></script>
+<script src="js/survey.js?v=30"></script>
+<script src="js/task.js?v=30"></script>
+<script src="js/results.js?v=30"></script>
+<script src="js/flow.js?v=30"></script>
+<script src="js/main.js?v=30"></script>
 </body>
 </html>

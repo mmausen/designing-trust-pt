@@ -1,22 +1,25 @@
 /* ═══════════════════════════════════════════════════════════════════
    TASK — the ranking interaction for one condition.
 
-   Mechanics, chosen by CONDITIONS[level].ai:
+   Which mechanic runs is resolved per stage by Config.conditionFor(step,
+   group): a "baseline" stage is always solo, an "ai" stage is whichever
+   group this participant was assigned. `.ai` picks the mechanic:
      solo      — no assistance
      hint      — picking a step up cues the slot the AI suggests; the design
                  doing the cueing is a swappable variant (see js/hints.js)
-     handoff   — shared cursor: the participant works normally, but after
-                 AI_CURSOR.idleMs of no input the AI takes the cursor and
-                 carries on. Any real input hands it straight back. With
-                 `thoughts: true` it also narrates what it is about to do.
+     handoff   — shared cursor: the participant works normally, but while the
+                 real cursor rests inside the activation zone the AI takes the
+                 cursor and carries on. Leaving the zone hands it straight
+                 back. With `thoughts: true` it also narrates what it is about
+                 to do.
      autopilot — a fake cursor places every step while the participant watches
 
    `handoff` and `autopilot` share one cursor engine; they differ only in
    whether it starts dormant and whether input can interrupt it.
 
    The AI's suggestion always comes from `aiRanking`, so a scripted error
-   (Config.CONDITION_TASKS → aiError) flows into the hint, the reasoning and
-   the autopilot alike. Scoring never consults it.
+   (Config.BASELINE_TASKS / GROUP_TASKS → aiError) flows into the hint, the
+   reasoning and the autopilot alike. Scoring never consults it.
 
    All per-task state is module-scoped and reset in start().
    ═══════════════════════════════════════════════════════════════════ */
@@ -50,9 +53,9 @@ window.Task = (function () {
   }
 
   // per-task state
-  let level, cond, aiMode, cards, byId, aiRanking, inbox, slots, taskStart;
+  let stage, group, cond, aiMode, cards, byId, aiRanking, inbox, slots, taskStart;
   let taskId, taskDef, planIndex, aiError;
-  let handoff = false;      // shared-cursor stage: the AI steps in when idle
+  let handoff = false;      // shared-cursor stage: the AI takes over from the activation zone
   let showThoughts = false; // handoff + reasoning panel while the AI acts
   let aiTakeovers = 0, userTakebacks = 0, aiPlacedCount = 0;
 
@@ -104,7 +107,7 @@ window.Task = (function () {
 
   // The active hint variant for this stage (see js/hints.js), or null.
   // task.js deliberately never names a variant — the stage picks one by
-  // name in CONDITIONS, so variants can be added or deleted in isolation.
+  // name in the group definition, so variants can be added or deleted in isolation.
   let hintImpl = null;
 
   /* Everything a hint variant is allowed to see. Built here so a variant
@@ -148,10 +151,10 @@ window.Task = (function () {
     $("explainer-ok").addEventListener("click", explainerOk);
     $("btn-explainer").addEventListener("click", function () { showExplainer(false); });
 
-    /* Real input marks the participant as active. In a handoff stage any of
-       these instantly hands control back; after hcfg.idleMs of none of them,
-       the AI steps in. The AI's own motion is synthetic, so it can never
-       register as activity and interrupt itself. */
+    /* Real input marks the participant as active. Takeover and hand-back are
+       governed by the activation zone (see wire()), so this is now only a
+       record of when the participant last did something — the AI's own motion
+       is synthetic and can never register here. */
     document.addEventListener("mousemove", e => {
       lastPointer = { x: e.clientX, y: e.clientY };
       registerActivity();
@@ -193,11 +196,15 @@ window.Task = (function () {
   /* ── start a condition ── */
   function start(step) {
     stop();                        // halt any autopilot loop from the previous task
-    level = step.level;
+    stage = step.stage;            // "baseline" (solo, everyone) | "ai" (this participant's group)
     taskId = step.taskId;
     planIndex = step.planIndex || 0;
     aiError = !!step.aiError;      // this stage's AI suggestion is scripted-wrong
-    cond = Config.CONDITIONS[level];
+    /* Read the group off the session at START time rather than off the step:
+       the dev picker can change it between stages, and re-entering this task
+       (Flow.render) then picks the new mechanic up with no plan rebuild. */
+    group = (stage === "ai") ? Store.group() : null;
+    cond = Config.conditionFor(step, group);
     aiMode = cond.ai;
     hintImpl = (aiMode === "hint") ? Hints.get(cond.hint) : null;
     handoff = (aiMode === "handoff");
@@ -236,7 +243,7 @@ window.Task = (function () {
     if (colLadder) colLadder.classList.toggle("col-pending-reveal", !!explainerSteps && newSection);
 
     Store.log("task_start", {
-      level, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
+      stage, group, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
       taskId, aiError, lang: I18n.get(),
       newSection, explainerAutoShown: newSection,
       inboxOrder: cards.map(c => c.id),
@@ -248,11 +255,11 @@ window.Task = (function () {
     setupChrome();
     render();
 
-    /* The explainer describes the CONDITION, not the task, so it only opens by
-       itself when the condition changes. A repeat of the same condition (two
-       task ids under one entry in CONDITION_TASKS) goes straight to work —
-       re-reading the identical text is friction, and the ⓘ button is always
-       there if they want it back.
+    /* The explainer describes the INTERACTION, not the task, so it only opens
+       by itself on the first round of a stage. A later round (a second task id
+       in BASELINE_TASKS / GROUP_TASKS) goes straight to work — re-reading the
+       identical text is friction, and the ⓘ button is always there if they
+       want it back.
 
        Both cursor mechanics normally start when the explainer is dismissed, so
        on a repeat they have to be started here instead. The reading window
@@ -267,22 +274,21 @@ window.Task = (function () {
     }
   }
 
-  /* First stage of its condition? Compares against the PREVIOUS stage in the
-     plan rather than remembering the last one, so it stays right after a resume
-     or a dev skip, and a condition that comes round again later still counts as
-     a new section. */
+  /* First round of its stage? Compares against the PREVIOUS entry in the plan
+     rather than remembering the last one, so it stays right after a resume or
+     a dev skip. */
   function isNewSection(step) {
     const d = Store.get();
     const plan = (d && d.plan) || [];
     const prev = plan[(step.planIndex || 0) - 1];
-    return !prev || prev.level !== step.level;
+    return !prev || prev.stage !== step.stage;
   }
 
   // Halt the current task's autopilot and clear every transient overlay.
   // Called by the dev Skip button and at the top of start().
   function stop() {
     runId++;
-    if (explainerTimer) { clearTimeout(explainerTimer); explainerTimer = null; }
+    closeExplainerNow();           // never leave a half-open explainer over the next stage
     resetColumns();                // never leave a column hidden across a Skip / task switch
     driveStop();
     fc = null;
@@ -295,6 +301,29 @@ window.Task = (function () {
     if (ghost) ghost.style.display = "none";
     clearSlotMarks();
     hideCursor();
+  }
+
+  /* Drop the explainer instantly — no animation, no logging. Used when the
+     stage is torn down (task switch, dev Skip), where hideExplainer's 360 ms
+     fly-down is wrong: stop() used to merely CANCEL that pending timer, so an
+     explainer that was still open stayed on screen over the next round (a
+     round which, being a repeat of the same stage, never reopens it). Only
+     reachable with the dev Skip — a participant cannot finish a round with
+     the explainer covering the board — but it made multi-round configs look
+     broken while testing them. */
+  function closeExplainerNow() {
+    if (explainerTimer) { clearTimeout(explainerTimer); explainerTimer = null; }
+    const overlay = $("explainer-overlay");
+    if (!overlay) return;
+    const card = overlay.querySelector(".explainer-card");
+    overlay.hidden = true;
+    overlay.style.transition = ""; overlay.style.opacity = "";
+    if (card) { card.style.transition = ""; card.style.transform = ""; card.style.opacity = ""; }
+    // Close the reading clock so a torn-down stage cannot leave it running.
+    if (explainerOpenedAt != null) {
+      explainerMs += Math.round(performance.now() - explainerOpenedAt);
+      explainerOpenedAt = null;
+    }
   }
 
   /* ── explainer tile (animates to/from the Explainer button) ── */
@@ -396,7 +425,7 @@ window.Task = (function () {
       card.style.transform = "";
     });
     if (explainerOpenedAt == null) { explainerOpenedAt = performance.now(); explainerOpens++; }
-    Store.log("explainer_shown", { level, taskId, auto: !!auto, reopen: explainerOpens > 1 });
+    Store.log("explainer_shown", { stage, group, taskId, auto: !!auto, reopen: explainerOpens > 1 });
   }
 
   function hideExplainer() {
@@ -422,7 +451,7 @@ window.Task = (function () {
     if (openMs != null) explainerMs += openMs;
     explainerOpenedAt = null;
     if (workStart == null) workStart = performance.now();
-    Store.log("explainer_dismissed", { level, taskId, openMs, reopen: explainerOpens > 1 });
+    Store.log("explainer_dismissed", { stage, group, taskId, openMs, reopen: explainerOpens > 1 });
   }
   function explainerOk() {
     // Mid-onboarding: advance to the next step in place rather than closing,
@@ -433,7 +462,7 @@ window.Task = (function () {
       explainerStepIdx++;
       revealRightHideLeft();
       renderExplainerStep();
-      Store.log("explainer_step", { level, taskId, step: explainerStepIdx });
+      Store.log("explainer_step", { stage, group, taskId, step: explainerStepIdx });
       return;
     }
     // Closing for real: the actual task needs both columns, so undo the
@@ -771,7 +800,7 @@ window.Task = (function () {
     if (!inbox.find(c => c.id === id)) inbox.push(byId[id]);
   }
 
-  /* ═══ level-4 autopilot ═══════════════════════════════════════════
+  /* ═══ autopilot ═══════════════════════════════════════════
      A fake cursor that plans human-ish motion: think → curve toward the
      step → grab → carry → drop. Driven by rAF (with a setInterval
      watchdog, because background tabs throttle rAF). It follows
@@ -1241,7 +1270,7 @@ window.Task = (function () {
       });
     }
     const result = {
-      level, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
+      stage, group, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
       taskId, aiError, lang: I18n.get(),
       ranking: [...slots],
       score: scoreRanking(slots),   // vs. the true order — unaffected by aiError
@@ -1252,7 +1281,7 @@ window.Task = (function () {
       cursorHesitate: hcfg ? !!hcfg.hesitate : null,
       ...timing,
     };
-    Store.log("task_confirm", { level, taskId, finalRanking: [...slots], ...timing });
+    Store.log("task_confirm", { stage, group, taskId, finalRanking: [...slots], ...timing });
     Store.addResult(result);
     hideCursor();
     // No per-task summary — go straight to the next stage.

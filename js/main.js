@@ -78,7 +78,10 @@
     $("btn-resume-sess").addEventListener("click", () => {
       Store.restore(savedSession);
       if (savedSession.lang) I18n.set(savedSession.lang);   // repaints via onLanguageChanged
-      Store.log("session_resumed", { atStep: savedSession.currentStep });
+      // The group was drawn when the session started and is pinned to it —
+      // resuming must never draw again, or one participant would occupy two cells.
+      syncDevGroup();
+      Store.log("session_resumed", { atStep: savedSession.currentStep, group: savedSession.group || null });
       Flow.build();
       Flow.go(savedSession.currentStep);
     });
@@ -89,19 +92,45 @@
     });
   }
 
-  // Create the session and jump to the pre-survey (shared by Begin + dev Skip).
-  function startSession() {
-    const pid = genParticipantId();
-    Store.newSession(pid);
-    Store.log("session_start", {
-      participantId: pid,
-      plan: Store.get().plan,
-      config: Store.get().config,
-      lang: I18n.get(),
-    });
-    Store.log("consent", { agreed: true });
-    Flow.build();
-    Flow.go(1); // skip consent step → pre-survey
+  /* Create the session and jump to the pre-survey (shared by Begin + dev Skip).
+
+     Async because the AI group comes from the server's balanced draw. The
+     draw has its own timeout and its own fallback, so this resolves quickly
+     whatever happens — but Begin is disabled meanwhile, so a double click
+     cannot start two sessions and burn two group slots. */
+  let starting = false;
+  async function startSession() {
+    if (starting || Store.get()) return;
+    starting = true;
+    const begin = $("btn-begin");
+    if (begin) begin.disabled = true;
+    try {
+      const pid = genParticipantId();
+      const assignment = await Groups.draw(pid);
+      Store.newSession(pid, assignment);
+      Store.log("session_start", {
+        participantId: pid,
+        group: assignment.group,
+        groupSource: assignment.source,
+        plan: Store.get().plan,
+        config: Store.get().config,
+        lang: I18n.get(),
+      });
+      // Kept as its own event: the assignment is the study's randomisation
+      // record, and it must be legible without parsing session_start.
+      Store.log("group_assigned", {
+        group: assignment.group,
+        source: assignment.source,
+        counts: assignment.counts || null,
+        reason: assignment.reason || null,
+      });
+      Store.log("consent", { agreed: true });
+      syncDevGroup();
+      Flow.build();
+      Flow.go(1); // skip consent step → pre-survey
+    } finally {
+      starting = false;
+    }
   }
 
   // Dev-only: jump to the next stage from wherever we are.
@@ -113,6 +142,48 @@
     Store.log("dev_skip", { from: cur.type });
     Store.sendRemote();
     Flow.next();
+  }
+
+  /* ── dev group picker ───────────────────────────────────────────────
+     Forces this session into one of G1–G4 so a mechanic can be tested
+     without restarting until the balancer happens to hand it over.
+     Sessions touched by it are marked groupSource:"dev" and the collector
+     leaves them out of the balancing counts. */
+  function fillDevGroup() {
+    const sel = $("dev-group");
+    if (!sel) return;
+    sel.innerHTML = "";
+    Groups.keys().forEach(g => {
+      const cnd = Config.GROUPS[g];
+      const opt = document.createElement("option");
+      opt.value = g;
+      // e.g. "G2 · handoff+reasoning" — enough to tell the four apart at a glance.
+      opt.textContent = `${g} · ${cnd.ai}${cnd.thoughts ? "+reasoning" : ""}${cnd.hint ? "/" + cnd.hint : ""}`;
+      sel.appendChild(opt);
+    });
+  }
+
+  // Keep the picker showing the group that is actually in force.
+  function syncDevGroup() {
+    const sel = $("dev-group");
+    if (!sel) return;
+    const g = Store.group() || Groups.override();
+    if (g) sel.value = g;
+  }
+
+  function devSetGroup(g) {
+    if (!Config.isGroup(g)) return;
+    Groups.setOverride(g);            // applies to this session and to any later one
+    if (!Store.get()) return;         // before Begin: the draw will use the override
+    Store.setGroup(g, "dev");
+    Store.log("group_override", { group: g });
+    // Standing on the AI task? Restart it so the new mechanic is visible now,
+    // rather than after the next stage boundary.
+    const cur = Flow.current();
+    if (cur && cur.type === "task" && cur.stage === "ai") {
+      Task.stop();
+      Flow.render();
+    }
   }
 
   /* ── desktop gate ───────────────────────────────────────────────────
@@ -157,17 +228,27 @@
     agree.addEventListener("change", updateBegin);
     begin.addEventListener("click", startSession);
 
-    // ── resume offer ──
+    /* ── resume offer ──
+       Only offer a session this build can actually run: an older save has a
+       plan shaped for the within-subjects flow (entries with `level`, four
+       conditions) and no group, so restoring it would drop the participant
+       into a flow that no longer exists. */
     const saved = Store.load();
-    if (Config.CONFIG.resumeEnabled && saved && !saved.completed) savedSession = saved;
+    if (Config.CONFIG.resumeEnabled && saved && !saved.completed) {
+      if (saved.schemaVersion === Store.SCHEMA_VERSION) savedSession = saved;
+      else console.warn("[BDR] ignoring a saved session from an older build (schema", saved.schemaVersion, "≠", Store.SCHEMA_VERSION + ")");
+    }
 
     // ── survey continue ──
     $("btn-survey-next").addEventListener("click", () => Survey.submit());
 
-    // ── dev Skip button — hidden for participants, on via Config.CONFIG.devSkip ──
-    if (Config.CONFIG.devSkip) {
-      $("dev-skip").hidden = false;
+    // ── dev bar (Skip + group picker) — hidden for participants, on via Config.CONFIG.devMode ──
+    if (Config.CONFIG.devMode) {
+      $("dev-bar").hidden = false;
       $("dev-skip").addEventListener("click", devSkip);
+      fillDevGroup();
+      syncDevGroup();
+      $("dev-group").addEventListener("change", e => devSetGroup(e.target.value));
     }
 
     // ── last-gasp save if the tab is closed or backgrounded mid-task ──

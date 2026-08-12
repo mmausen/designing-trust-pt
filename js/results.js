@@ -40,13 +40,16 @@ window.Results = (function () {
       grid.innerHTML = "";
       d.results.forEach(r => {
         const tById = tilesById(r.taskId);
-        const cnd = Config.CONDITIONS[r.level];
+        // The result carries its own condition key (c1 / g1…g4), so the grid
+        // stays readable even if the config changes between run and analysis.
+        const condKey = r.condition || "c1";
         const task = Tasks.get(r.taskId);
         const col = document.createElement("div");
         col.className = "or-col";
-        col.innerHTML = `<div class="or-col-hd">${cnd.key.toUpperCase()}${r.taskId ? " · " + r.taskId : ""}</div>
+        const head = (r.stage === "ai" && r.group ? r.group : condKey.toUpperCase());
+        col.innerHTML = `<div class="or-col-hd">${head}${r.taskId ? " · " + r.taskId : ""}</div>
           <div class="or-col-sub"></div>`;
-        col.querySelector(".or-col-sub").textContent = task ? task.title : I18n.t(`conditions.${cnd.key}.label`);
+        col.querySelector(".or-col-sub").textContent = task ? task.title : I18n.t(`conditions.${condKey}.label`);
         r.ranking.forEach((id, i) => {
           const tile = tById[id];
           const name = tile ? tile.text : (id || "—");

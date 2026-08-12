@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
    FLOW — the step machine. One linear sequence:
-     consent → pre-survey → [task × conditions] → post-survey → debrief
+     consent → pre-survey → [baseline rounds] → [AI rounds] → post-survey → debrief
    Surveys are ordinary steps; the task's per-level results screen is an
    interstitial owned by the task/results modules (it calls Flow.next()).
    ═══════════════════════════════════════════════════════════════════ */
@@ -14,7 +14,9 @@ window.Flow = (function () {
     steps = [
       { type: "consent" },
       { type: "survey", id: "pre" },
-      ...plan.map((p, idx) => ({ type: "task", level: p.level, taskId: p.taskId, aiError: !!p.aiError, planIndex: idx })),
+      // The step carries the STAGE, not the group: the group lives on the
+      // session, so the dev picker can change it without rebuilding the flow.
+      ...plan.map((p, idx) => ({ type: "task", stage: p.stage, taskId: p.taskId, aiError: !!p.aiError, planIndex: idx })),
       { type: "survey", id: "post" },
       { type: "debrief" },
     ];

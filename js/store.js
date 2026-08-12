@@ -17,13 +17,23 @@ window.Store = (function () {
      no trace. Defaults to on if the key is missing. */
   const logging = () => Config.CONFIG.loggingEnabled !== false;
 
-  function newSession(pid) {
+  /* Bumped whenever the shape of a saved session changes incompatibly. The
+     resume offer checks it, so a session saved by an older build is ignored
+     instead of being restored into a flow that no longer matches it.
+       1 → within-subjects: plan entries carried `level` (1–4)
+       2 → between-subjects: plan entries carry `stage`, session carries `group` */
+  const SCHEMA_VERSION = 2;
+
+  function newSession(pid, assignment) {
+    const a = assignment || {};
     data = {
-      schemaVersion: 1,
+      schemaVersion: SCHEMA_VERSION,
       participantId: pid || "",
       config: { ...Config.CONFIG },
       lang: window.I18n ? I18n.get() : "de",  // language the session runs in (study data)
-      plan: Config.buildTaskPlan(),   // [{ level, taskId, aiError }] — stages, incl. repeats
+      group: a.group || null,         // which AI interaction this participant runs (G1–G4)
+      groupSource: a.source || null,  // "server" (balanced) | "local" (fallback) | "dev" (forced)
+      plan: Config.buildTaskPlan(),   // [{ stage, taskId, aiError }] — one entry per round
       startedAt: new Date().toISOString(),
       currentStep: 0,
       surveys: {},
@@ -40,6 +50,14 @@ window.Store = (function () {
 
   function setStep(i) { if (data) { data.currentStep = i; save(); } }
   function setLang(l) { if (data) { data.lang = l; save(); } }
+  // Only the dev picker changes the group after the session has started.
+  function setGroup(g, source) {
+    if (!data) return;
+    data.group = g;
+    data.groupSource = source || data.groupSource;
+    save();
+  }
+  function group() { return data ? data.group : null; }
 
   function log(type, payload) {
     if (!data || !logging()) return;
@@ -123,7 +141,8 @@ window.Store = (function () {
   function syncStatus() { return { ...lastSync }; }
 
   return {
-    newSession, get, restore, setStep, setLang, log, addResult, setSurvey, markComplete,
+    SCHEMA_VERSION,
+    newSession, get, restore, setStep, setLang, setGroup, group, log, addResult, setSurvey, markComplete,
     save, load, clear, exportJSON, download, sendRemote, flush, syncStatus,
   };
 })();

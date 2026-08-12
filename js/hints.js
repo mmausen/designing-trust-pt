@@ -2,8 +2,8 @@
    HINTS — registry of AI-hint designs, so competing variants can live
    side by side and be compared without task.js ever naming one.
 
-   A stage picks its variant in Config.CONDITIONS:
-       { key: "c2", ai: "hint", hint: "slot" }
+   A group picks its variant in Config.GROUPS:
+       G3: { key: "g3", ai: "hint", hint: "slot" }
 
    To ADD a variant: create js/hint_<name>.js, call Hints.register(...),
    add the <script> tag, point a condition at it.
