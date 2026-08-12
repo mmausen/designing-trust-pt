@@ -56,7 +56,7 @@ window.Config = (function () {
      Any group may override a value inline, e.g.
          G1: { key: "g1", ai: "handoff", speed: 40, hesitate: true } */
   const AI_CURSOR = {
-    speed: 28,              // 0–100 → cursor travel speed
+    speed: 28,              // 0–100 → cursor travel speed (115–1600 px/s)
     hesitate: false,        // thinking pauses + second-guess approach curves
     idleMs: 1000,           // NO LONGER DRIVES ANYTHING. Handoff takeover moved to the
                             //   hover activation zone (#ai-zone) — the cursor resting

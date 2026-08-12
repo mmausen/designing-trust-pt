@@ -33,7 +33,14 @@ window.Task = (function () {
      userSpeedControl) live in Config.AI_CURSOR and are resolved per stage
      into `hcfg` — see resolveCursorCfg(). */
   const AUTO = {
-    speedMin: 230, speedMax: 3200,   // px/sec at slider 0 / 100
+    /* px/sec at slider 0 / 100. HALVED on 2026-08-12 (was 230 / 3200) to make
+       the AI's movement 50% slower. Both ends were halved rather than just
+       lowering the default `speed`, so every position of the participant's
+       speed slider is half what it used to be — otherwise someone pushing the
+       slider up would land straight back at the old pace. The pauses between
+       moves (the "thinking" beats in planJob) are unchanged: it is the travel
+       that is slower, not the deliberation. */
+    speedMin: 115, speedMax: 1600,
     fadeInMs: 420, fadeOutMs: 240, returnMs: 190,
     startDelayMs: 550,    // beat before the first move
   };

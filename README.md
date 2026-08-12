@@ -103,7 +103,7 @@ e.g. `{ ai: "handoff", speed: 40, hesitate: true }`.
 
 | Key | Meaning |
 |---|---|
-| `speed` | 0–100 → cursor travel speed (maps to 230–3200 px/s) |
+| `speed` | 0–100 → cursor travel speed (maps to 115–1600 px/s) |
 | `hesitate` | Thinking pauses and second-guess approach curves — makes the AI look deliberative |
 | `userSpeedControl` | Show the **participant** a speed slider in the footer |
 
