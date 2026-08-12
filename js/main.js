@@ -138,7 +138,7 @@
     const cur = Flow.current();
     if (!Store.get() || !cur) { startSession(); return; }   // from consent → begin
     if (cur.type === "debrief") return;                     // nothing after the end
-    if (cur.type === "task") Task.stop();                   // halt any running autopilot
+    if (cur.type === "task") Task.stop();                   // halt any running AI cursor
     Store.log("dev_skip", { from: cur.type });
     Store.sendRemote();
     Flow.next();

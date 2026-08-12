@@ -63,7 +63,7 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 | `js/store.js` | Session state, localStorage autosave, remote-POST stub |
 | `js/flow.js` | The linear step machine |
 | `js/survey.js` | Renders/validates the pre & post questionnaires |
-| `js/task.js` | The ranking interaction: custom drag, AI cursor engine (handoff + autopilot) |
+| `js/task.js` | The ranking interaction: custom drag, the AI cursor engine (handoff) |
 | `js/results.js` | The final debrief grid |
 | `js/main.js` | Boot: fetch content, consent, resume, wiring |
 
@@ -91,7 +91,6 @@ const GROUPS = {
 | `solo` | No assistance. Establishes that they understood the task. |
 | `hint` | The AI suggests where a step goes; `hint:` names which design does it (below). |
 | `handoff` | **Shared cursor.** The participant works normally, but while the cursor rests inside the activation zone the AI takes the cursor and carries on; leaving the zone hands it straight back. Add `thoughts: true` to narrate its reasoning as it acts. |
-| `autopilot` | An AI cursor sorts all six steps uninterrupted; the participant then reviews and may rearrange. Not assigned to a group any more — the mechanic and its text are still there, behind the commented-out `G5`. |
 
 Adding or removing a group is a one-entry edit: add its text under `conditions.<key>` in
 `strings.json` (both languages) and the balancer picks it up on the next restart. Set
@@ -99,7 +98,7 @@ Adding or removing a group is a one-entry edit: add its text under `conditions.<
 
 ### AI cursor settings (`Config.AI_CURSOR`)
 
-Shared by `handoff` and `autopilot`. Any condition can override a value inline,
+Used by `handoff` (G1/G2). Any group can override a value inline,
 e.g. `{ ai: "handoff", speed: 40, hesitate: true }`.
 
 | Key | Meaning |
@@ -113,9 +112,7 @@ e.g. `{ ai: "handoff", speed: 40, hesitate: true }`.
 > instant the task text first becomes visible. The activation zone made it redundant:
 > nothing moves until the participant deliberately parks the cursor in the zone, so they
 > read the task in their own time and the wait was only friction. Removed 2026-08-12,
-> together with the "a few seconds" sentence in the explainers. Note the knock-on for
-> `autopilot` (the commented-out `G5`): it now starts sorting as soon as the explainer is
-> dismissed.
+> together with the "a few seconds" sentence in the explainers.
 
 > **On `userSpeedControl`:** good for accessibility — fast cursor motion is genuinely
 > disorienting for some people — but it makes AI speed a participant-controlled
@@ -130,9 +127,9 @@ variant — forcing it into the `onPickUp` contract would have made that contrac
 meaningless. G1/G2 and G3/G4 run the two designs against each other by construction;
 both remain fully working.
 
-The AI never blocks the participant: in every condition the final order is theirs to
-set, and `Confirm ranking` is the only way forward. Autopilot cannot be interrupted
-mid-run (by design), but everything is editable once it finishes.
+The AI never blocks the participant: in every group the final order is theirs to set,
+and `Confirm ranking` is the only way forward. Even while the AI is sorting, moving the
+cursor out of the zone takes control straight back, and everything stays editable.
 
 ### Hint variants (A/B testing a design)
 
@@ -187,7 +184,7 @@ With `aiError`, the AI's suggestion swaps that task's `scriptedError.swapKeys` p
 a plausible-but-wrong recommendation, to observe whether participants catch it. It
 flows into whichever mechanic the condition uses: the highlighted slot (`hint`), the
 reasoning text (each swapped tile gets its own `wrongThought`, arguing for the slot the
-AI actually put it in), and the places the autopilot drops steps into.
+AI actually put it in), and the slots the shared cursor drops steps into.
 
 **Scoring is unaffected**: the original tile order stays ground truth, so accepting a
 bad suggestion verbatim scores 4/6 with 0 overrides, while spotting and fixing it
@@ -400,10 +397,10 @@ reload. `Store.download()` exports it as JSON from the console.
   - AI (hint) — `hint_shown` (which slot was hinted, the variant, whether reasoning
     was shown, `isWrongHint`)
   - AI (cursor) — `handoff_armed` (stage ready; the AI acts once the cursor enters the
-    activation zone), `autopilot_start`,
+    activation zone),
     `ai_took_over` / `user_took_back` (each with `nth`
     and `placedSoFar`, so the whole tug-of-war is reconstructable), `ai_placement`,
-    `ai_thought_shown` (incl. `isWrongThought`), `handoff_done` / `autopilot_done`,
+    `ai_thought_shown` (incl. `isWrongThought`), `handoff_done`,
     `ai_speed_changed`
   - `ai_override` — per tile the participant moved away from the AI's suggestion; the
     key measure when `aiError` is on
@@ -423,8 +420,7 @@ separate clocks:
 | `explainerOpens` | How many times it was opened — `> 1` means they went back to re-read |
 | `workMs` | `elapsedMs − explainerMs` — **actual time on the task** |
 | `timeToFirstActionMs` | First explainer dismissal → first drag (hesitation before acting) |
-| `autopilotMs` | autopilot only: how long the AI took to place all six |
-| `reviewMs` | autopilot only: autopilot finished → Confirm, i.e. **how long they reviewed the AI's result before signing it off** |
+| `reviewMs` | Every step placed → Confirm, i.e. **how long they reviewed the finished order before signing it off**. Set only when the AI cursor completed the board, so `null` if the participant placed the last step themselves. |
 
 `workMs + explainerMs == elapsedMs` always holds. `explainer_shown` / `explainer_dismissed`
 also carry `taskId`, `reopen`, and the per-open duration (`openMs`), so you can

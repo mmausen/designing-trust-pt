@@ -1,5 +1,5 @@
 {
-  "_comment": "All interface text, both languages side by side so gaps are obvious. Keys must stay identical in de/en — a missing key falls back to the other language. {curly} tokens are filled in at runtime. Survey question ids are DATA KEYS: never translate or renumber them. conditions.<key> is keyed by the `key` field of Config.BASELINE / Config.GROUPS: c1 is the unassisted baseline everyone runs, g1–g4 are the four AI groups, g5 is the autopilot mechanic kept available but not currently assigned to a group.",
+  "_comment": "All interface text, both languages side by side so gaps are obvious. Keys must stay identical in de/en — a missing key falls back to the other language. {curly} tokens are filled in at runtime. Survey question ids are DATA KEYS: never translate or renumber them. conditions.<key> is keyed by the `key` field of Config.BASELINE / Config.GROUPS: c1 is the unassisted baseline everyone runs and g1–g4 are the four AI groups.",
   "de": {
     "meta": {
       "name": "Deutsch",
@@ -30,7 +30,6 @@
           "solo": "Ziehen Sie jeden Schritt in die Reihenfolge, die Sie für richtig halten, und bestätigen Sie dann.",
           "hint": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde. Sie entscheiden, wo er landet.",
           "thought": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde, und erklärt warum. Sie entscheiden, wo er landet.",
-          "autopilot": "Die KI sortiert die Schritte. Sobald sie fertig ist, können Sie alles umstellen.",
           "handoff": "Ordnen Sie die Schritte. Halten Sie den Zeiger im Feld unten, damit die KI übernimmt und weitermacht — verlassen Sie das Feld, um wieder zu übernehmen.",
           "handoff-thoughts": "Ordnen Sie die Schritte. Halten Sie den Zeiger im Feld unten, damit die KI übernimmt und dabei erklärt, was sie gerade denkt — verlassen Sie das Feld, um wieder zu übernehmen."
         },
@@ -38,11 +37,9 @@
           "idle": "Zeiger hier halten, damit die KI übernimmt",
           "active": "KI sortiert … Feld verlassen, um zu übernehmen"
         },
-        "autopilotDone": "Die KI ist fertig. Sehen Sie die Reihenfolge in Ruhe durch und ziehen Sie jeden Schritt, den Sie ändern möchten — bestätigen Sie dann.",
         "badges": {
           "hint": "KI-Hinweis",
           "thought": "KI-Hinweis + Begründung",
-          "autopilot": "KI-Autopilot",
           "handoff": "KI übernimmt im Feld",
           "handoff-thoughts": "KI übernimmt im Feld + Begründung"
         },
@@ -112,11 +109,6 @@
         "label": "Gruppe 4 — KI-Hinweis + Begründung",
         "banner": "Alltäglicher Ablauf · Sortieraufgabe",
         "explainer": "Ihre KI ist jetzt etwas gesprächiger. Wenn Sie einen Schritt aufnehmen, hebt sie die vorgeschlagene Position hervor und erklärt Ihnen ihre Überlegung dazu. Lesen Sie die Begründung, wenn sie Ihnen hilft — die Entscheidung bleibt aber bei Ihnen, und Sie können den Schritt setzen, wohin Sie möchten. Ordnen Sie alle sechs Schritte und klicken Sie dann auf „Reihenfolge bestätigen“."
-      },
-      "g5": {
-        "label": "Optional — KI-Autopilot (derzeit keiner Gruppe zugeordnet)",
-        "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "explainer": "Diesmal sortiert die KI die Schritte selbst. Sie legt sofort los. Lehnen Sie sich zurück und sehen Sie ihr dabei zu, wie sie alle sechs Schritte einsortiert. Danach liegt die Reihenfolge in Ihrer Hand: Sehen Sie sie in Ruhe durch und ziehen Sie jeden Schritt an eine andere Position, wenn Sie etwas ändern möchten. Sie geben die endgültige Reihenfolge frei — prüfen Sie sie also, bevor Sie auf „Reihenfolge bestätigen“ klicken."
       }
     },
     "surveys": {
@@ -202,7 +194,6 @@
           "solo": "Drag each step into the order you think is right, then confirm.",
           "hint": "Pick up a step and the AI highlights where it would put it — you decide where it lands.",
           "thought": "Pick up a step and the AI highlights where it would put it and explains why — you decide where it lands.",
-          "autopilot": "The AI is sorting the steps. You can rearrange anything once it has finished.",
           "handoff": "Sort the steps. Rest the cursor in the box below to let the AI take over and carry on — move out of the box to take over again.",
           "handoff-thoughts": "Sort the steps. Rest the cursor in the box below to let the AI take over and tell you what it is thinking — move out of the box to take over again."
         },
@@ -210,11 +201,9 @@
           "idle": "Rest the cursor here to let the AI take over",
           "active": "AI is sorting … move out to take over"
         },
-        "autopilotDone": "The AI has finished. Look the order over and drag any step you'd like to move, then press Confirm ranking.",
         "badges": {
           "hint": "AI Hint",
           "thought": "AI Hint + Reasoning",
-          "autopilot": "AI Autopilot",
           "handoff": "AI takes over in the box",
           "handoff-thoughts": "AI takes over in the box + reasoning"
         },
@@ -284,11 +273,6 @@
         "label": "Group 4 — AI hint + reasoning",
         "banner": "Everyday process · sorting task",
         "explainer": "Your assistant is a little more talkative now. When you pick up a step, it highlights the position it would choose and tells you why. Read its reasoning if you find it useful — but the decision stays with you, and you can place the step wherever you like. Arrange all six steps, then press “Confirm ranking”."
-      },
-      "g5": {
-        "label": "Optional — AI autopilot (not assigned to any group)",
-        "banner": "Everyday process · sorting task",
-        "explainer": "This time your assistant sorts the steps on its own. It gets going straight away. Sit back and watch it work through all six. Once it's finished, the order is in your hands: take a moment to look it over and drag any step to a different position if you'd like to change something. You're the one signing off on the final sequence, so review it before you press “Confirm ranking”."
       }
     },
     "surveys": {

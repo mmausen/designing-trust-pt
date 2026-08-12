@@ -51,7 +51,7 @@ window.Config = (function () {
   const ASSIGN_URL = "/assign-group";
   const ASSIGN_TIMEOUT_MS = 4000;   // never leave a participant staring at a dead Begin button
 
-  /* AI cursor behaviour, shared by the "handoff" and "autopilot" mechanics.
+  /* AI cursor behaviour for the "handoff" mechanic (G1/G2).
      These are study parameters, so they live here rather than in task.js.
      Any group may override a value inline, e.g.
          G1: { key: "g1", ai: "handoff", speed: 40, hesitate: true } */
@@ -92,9 +92,6 @@ window.Config = (function () {
                    takes the cursor and carries on. Leaving the zone hands
                    control straight back. `thoughts: true` adds the panel
                    where it narrates what it is about to do.
-       autopilot — the AI places every step itself while the participant
-                   watches. Not one of the four groups any more; the mechanic
-                   is still fully wired (see the commented G5 below).
 
      For ai:"hint", `hint` selects a variant registered in js/hints.js:
        "slot"            — highlight the suggested slot            (js/hint_slot.js)
@@ -116,10 +113,6 @@ window.Config = (function () {
     G2: { key: "g2", ai: "handoff", thoughts: true },
     G3: { key: "g3", ai: "hint", hint: "slot" },
     G4: { key: "g4", ai: "hint", hint: "slot-reasoning" },
-    // G5: { key: "g5", ai: "autopilot" },   // the old condition 4 — mechanic and
-    //                                      // strings.json text are both still here.
-    //                                      // Uncomment to run it as a fifth group;
-    //                                      // the balancer picks it up automatically.
   };
   const GROUP_KEYS = Object.keys(GROUPS);
 

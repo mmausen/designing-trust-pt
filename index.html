@@ -5,7 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>BDR x DFKI</title>
-<link rel="stylesheet" href="styles-accessible.css?v=33"/>
+<link rel="stylesheet" href="styles-accessible.css?v=34"/>
 </head>
 <body>
 
@@ -164,7 +164,7 @@
   </div>
 </div>
 
-<!-- AI cursor (handoff + autopilot): pointer + an "AI" tag that travels with it -->
+<!-- AI cursor (handoff stages): pointer + an "AI" tag that travels with it -->
 <div id="ai-cursor">
   <div class="ai-ring"></div>
   <svg class="ai-arrow" viewBox="0 0 26 30" width="26" height="30" aria-hidden="true">
@@ -183,22 +183,22 @@
 </div>
 
 <!-- ════════════ SCRIPTS (load order = dependency order) ════════════ -->
-<script src="js/config.js?v=33"></script>
-<script src="js/i18n.js?v=33"></script>
-<script src="js/tasks.js?v=33"></script>
+<script src="js/config.js?v=34"></script>
+<script src="js/i18n.js?v=34"></script>
+<script src="js/tasks.js?v=34"></script>
 <!-- AI hint designs: registry, then one file per variant. Adding a variant =
      one file + one tag here; removing one = delete both. Nothing else refers
      to them by name. -->
-<script src="js/hints.js?v=33"></script>
-<script src="js/hint_slot.js?v=33"></script>
-<script src="js/hint_slot_reasoning.js?v=33"></script>
+<script src="js/hints.js?v=34"></script>
+<script src="js/hint_slot.js?v=34"></script>
+<script src="js/hint_slot_reasoning.js?v=34"></script>
 <!-- balanced G1–G4 assignment (needs Config; used by main.js) -->
-<script src="js/groups.js?v=33"></script>
-<script src="js/store.js?v=33"></script>
-<script src="js/survey.js?v=33"></script>
-<script src="js/task.js?v=33"></script>
-<script src="js/results.js?v=33"></script>
-<script src="js/flow.js?v=33"></script>
-<script src="js/main.js?v=33"></script>
+<script src="js/groups.js?v=34"></script>
+<script src="js/store.js?v=34"></script>
+<script src="js/survey.js?v=34"></script>
+<script src="js/task.js?v=34"></script>
+<script src="js/results.js?v=34"></script>
+<script src="js/flow.js?v=34"></script>
+<script src="js/main.js?v=34"></script>
 </body>
 </html>

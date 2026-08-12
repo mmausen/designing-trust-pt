@@ -12,14 +12,10 @@
                  cursor and carries on. Leaving the zone hands it straight
                  back. With `thoughts: true` it also narrates what it is about
                  to do.
-     autopilot — a fake cursor places every step while the participant watches
-
-   `handoff` and `autopilot` share one cursor engine; they differ only in
-   whether it starts dormant and whether input can interrupt it.
 
    The AI's suggestion always comes from `aiRanking`, so a scripted error
-   (Config.BASELINE_TASKS / GROUP_TASKS → aiError) flows into the hint, the
-   reasoning and the autopilot alike. Scoring never consults it.
+   (Config.BASELINE_TASKS / GROUP_TASKS → aiError) flows into both the hint and
+   the reasoning. Scoring never consults it.
 
    All per-task state is module-scoped and reset in start().
    ═══════════════════════════════════════════════════════════════════ */
@@ -69,24 +65,24 @@ window.Task = (function () {
   let explainerMs = 0;           // cumulative time it has been open
   let explainerOpens = 0;        // how many times it was opened
   let firstActionAt = null;      // first drag of the task
-  let autopilotStartedAt = null, autopilotMs = null, autopilotDoneAt = null;
+  let allPlacedAt = null;        // the AI finished the board — start of the review window
 
   // Explainer time so far, including a currently-open one.
   function explainerElapsed() {
     return Math.round(explainerMs + (explainerOpenedAt != null ? performance.now() - explainerOpenedAt : 0));
   }
   let drag = null;
-  let autopilotState = "idle"; // idle | running | done
-  let pendingAutopilot = false; // autopilot waits until the explainer is dismissed
+  let aiState = "idle";         // the AI cursor: idle | running | done
+  let pendingCursorStart = false; // the cursor engine waits until the explainer is dismissed
   let explainerTimer = null;    // pending close-animation cleanup timer
   let explainerSteps = null;    // multi-step onboarding (array) for this stage, or null for the plain single-window explainer
   let explainerStepIdx = 0;     // which onboarding step is currently showing
   let explainerAutoFlow = false; // true while the tile is walking through explainerSteps one at a time
                                   // (vs. showing the reopened, combined text) — relocalize() needs this
   let rightColRevealTimer = null; // pending "reveal the ladder column" timer — onboarding only
-  let runId = 0;                // invalidates a stale autopilot loop when the task changes
+  let runId = 0;                // invalidates a stale cursor loop when the task changes
 
-  // fake-cursor state (viewport coords); null when the autopilot is not running
+  // fake-cursor state (viewport coords); null outside a handoff stage
   let fc = null;
   let rafId = null, watchdog = null, prevTs = 0, lastStepTs = 0;
   let lastPointer = { x: 0, y: 0 }, lastActivity = 0;
@@ -186,7 +182,7 @@ window.Task = (function () {
 
   /* ── start a condition ── */
   function start(step) {
-    stop();                        // halt any autopilot loop from the previous task
+    stop();                        // halt any cursor loop from the previous task
     stage = step.stage;            // "baseline" (solo, everyone) | "ai" (this participant's group)
     taskId = step.taskId;
     planIndex = step.planIndex || 0;
@@ -211,11 +207,11 @@ window.Task = (function () {
     inbox = [...cards];
     slots = Array(6).fill(null);
     taskStart = performance.now();
-    autopilotState = "idle";
+    aiState = "idle";
     drag = null;
     pointerInZone = false;
     workStart = null; explainerOpenedAt = null; explainerMs = 0; explainerOpens = 0;
-    firstActionAt = null; autopilotStartedAt = null; autopilotMs = null; autopilotDoneAt = null;
+    firstActionAt = null; allPlacedAt = null;
 
     const newSection = isNewSection(step);
 
@@ -252,16 +248,16 @@ window.Task = (function () {
        identical text is friction, and the ⓘ button is always there if they
        want it back.
 
-       Both cursor mechanics normally start when the explainer is dismissed, so
-       on a repeat they have to be started here instead. Nothing moves on its own
-       in a handoff stage either way — the AI only takes over once the cursor is
-       parked in the activation zone. */
-    pendingAutopilot = (aiMode === "autopilot" || handoff);
+       The cursor engine normally starts when the explainer is dismissed, so on
+       a repeat it has to be started here instead. Nothing moves on its own
+       either way — the AI only takes over once the cursor is parked in the
+       activation zone. */
+    pendingCursorStart = handoff;
     if (newSection) {
       showExplainer(true);
     } else {
       workStart = performance.now();     // no explainer to close, so the clock starts now
-      if (pendingAutopilot) { pendingAutopilot = false; autoStart(); }
+      if (pendingCursorStart) { pendingCursorStart = false; autoStart(); }
     }
   }
 
@@ -275,7 +271,7 @@ window.Task = (function () {
     return !prev || prev.stage !== step.stage;
   }
 
-  // Halt the current task's autopilot and clear every transient overlay.
+  // Halt the current task's AI cursor and clear every transient overlay.
   // Called by the dev Skip button and at the top of start().
   function stop() {
     runId++;
@@ -283,8 +279,8 @@ window.Task = (function () {
     resetColumns();                // never leave a column hidden across a Skip / task switch
     driveStop();
     fc = null;
-    autopilotState = "idle";
-    pendingAutopilot = false;
+    aiState = "idle";
+    pendingCursorStart = false;
     drag = null;
     const main = $("main");
     if (main) main.classList.remove("ai-driving");
@@ -459,7 +455,7 @@ window.Task = (function () {
     // onboarding swap before work begins.
     resetColumns();
     hideExplainer();
-    if (pendingAutopilot) { pendingAutopilot = false; autoStart(); }
+    if (pendingCursorStart) { pendingCursorStart = false; autoStart(); }
   }
 
   function setupChrome() {
@@ -477,13 +473,11 @@ window.Task = (function () {
     const hintKey = hintImpl ? hintImpl.hintKey : `ui.task.hints.${modeKey}`;
     const badgeKey = hintImpl ? hintImpl.badgeKey : `ui.task.badges.${modeKey}`;
 
-    /* The autopilot's footer line has two phases: sorting, and the review
-       prompt once it is done. Resolved here (rather than only at each
+    /* A handoff stage's footer line has two phases: sorting, and the review
+       prompt once every step is placed. Resolved here (rather than only at the
        transition) so a language switch mid-stage picks the phase up correctly. */
     let hintText = I18n.t(hintKey);
-    if (autopilotState === "done" && (handoff || aiMode === "autopilot")) {
-      hintText = I18n.t(handoff ? "ui.task.handoffDone" : "ui.task.autopilotDone");
-    }
+    if (handoff && aiState === "done") hintText = I18n.t("ui.task.handoffDone");
     $("hint").textContent = hintText;
 
     const badge = $("b-badge");
@@ -504,7 +498,7 @@ window.Task = (function () {
     // Participant speed control — only where an AI cursor actually moves.
     const speedCtl = $("ai-speed-ctl");
     if (speedCtl) {
-      const show = (handoff || aiMode === "autopilot") && !!hcfg.userSpeedControl;
+      const show = handoff && !!hcfg.userSpeedControl;
       speedCtl.hidden = !show;
       if (show) {
         $("ai-speed").value = hcfg.speed;
@@ -570,17 +564,11 @@ window.Task = (function () {
     }
   }
 
-  /* The autopilot owns the board from the start of the stage until it has
-     finished. The participant reviews and edits afterwards, never during. */
-  function autopilotBusy() {
-    return aiMode === "autopilot" && autopilotState === "running";
-  }
-
   /* ── render ── */
   function render() {
     renderInbox();
     renderLadder();
-    $("btn-confirm").disabled = !slots.every(Boolean) || autopilotBusy();
+    $("btn-confirm").disabled = !slots.every(Boolean);
   }
 
   function renderInbox() {
@@ -645,7 +633,6 @@ window.Task = (function () {
   /* ── custom mouse drag ── */
   function onMouseDown(e) {
     if (e.button !== 0) return;
-    if (autopilotBusy()) return;   // hands off until the AI has finished
     const card = e.currentTarget;
     const id = card.dataset.id;
     const from = card.dataset.from === "inbox" ? "inbox" : +card.dataset.from;
@@ -786,7 +773,7 @@ window.Task = (function () {
     if (!inbox.find(c => c.id === id)) inbox.push(byId[id]);
   }
 
-  /* ═══ autopilot ═══════════════════════════════════════════
+  /* ═══ the AI cursor ═══════════════════════════════════════════
      A fake cursor that plans human-ish motion: think → curve toward the
      step → grab → carry → drop. Driven by rAF (with a setInterval
      watchdog, because background tabs throttle rAF). It follows
@@ -954,13 +941,12 @@ window.Task = (function () {
   }
 
   /* ── lifecycle ── */
-  /* Start the cursor engine. In "autopilot" it begins driving immediately; in
-     "handoff" it starts dormant and the drive loop watches the activation zone. */
+  /* Start the cursor engine. It starts dormant: the drive loop watches the
+     activation zone and only then wakes the cursor. */
   function autoStart() {
     const main = $("main");
     const r = main.getBoundingClientRect();
-    // Dormant at birth in BOTH mechanics: the cursor comes alive on takeover
-    // (handoff) or via beginAutopilot() immediately below.
+    // Dormant at birth: the cursor comes alive on takeover, never by itself.
     fc = {
       run: runId, active: false, done: false, opacity: 0,
       x: lastPointer.x || (r.left + r.width * 0.25),
@@ -972,28 +958,13 @@ window.Task = (function () {
     aiCursor.style.transform = `translate(${fc.x}px,${fc.y}px)`;
     lastActivity = performance.now();
 
-    if (handoff) {
-      autopilotState = "idle";           // the participant has control first
-      Store.log("handoff_armed", {
-        taskId, idleMs: hcfg.idleMs,
-        speed: hcfg.speed, hesitate: !!hcfg.hesitate,
-      });
-    } else {
-      beginAutopilot();                  // nothing to wait for — it sorts straight away
-    }
+    aiState = "idle";                    // the participant has control first
+    Store.log("handoff_armed", {
+      taskId, idleMs: hcfg.idleMs,
+      speed: hcfg.speed, hesitate: !!hcfg.hesitate,
+    });
     render();
     driveStart();
-  }
-
-  // The autopilot begins sorting.
-  function beginAutopilot() {
-    autopilotState = "running";
-    fc.active = true;
-    $("main").classList.add("ai-driving");
-    $("hint").textContent = I18n.t("ui.task.hints.autopilot");
-    pushPause(AUTO.startDelayMs);
-    autopilotStartedAt = performance.now();
-    Store.log("autopilot_start", { taskId, suggestion: [...aiRanking] });
   }
 
   // The AI takes the cursor over (handoff only, from the activation zone).
@@ -1003,7 +974,7 @@ window.Task = (function () {
     fc.queue.length = 0;
     fc.seg = null;
     if (lastPointer.x || lastPointer.y) { fc.x = lastPointer.x; fc.y = lastPointer.y; }
-    autopilotState = "running";
+    aiState = "running";
     aiTakeovers++;
     $("main").classList.add("ai-driving");
     if (zoneEl) zoneEl.classList.add("active");
@@ -1021,19 +992,18 @@ window.Task = (function () {
     fc.queue.length = 0;
     fc.seg = null;
     fc.carrying = null;
-    autopilotState = "done";
+    aiState = "done";
     $("main").classList.remove("ai-driving");
     // Everything is placed — the zone has no more work to hand off, so retire it.
     if (zoneEl) { zoneEl.classList.remove("active"); zoneEl.hidden = true; }
     ghostHide();
     clearSlotMarks();
     hideThought();
-    $("hint").textContent = I18n.t(handoff ? "ui.task.handoffDone" : "ui.task.autopilotDone");
+    $("hint").textContent = I18n.t("ui.task.handoffDone");
     render();
-    autopilotDoneAt = performance.now();
-    autopilotMs = autopilotStartedAt != null ? Math.round(autopilotDoneAt - autopilotStartedAt) : null;
-    Store.log(handoff ? "handoff_done" : "autopilot_done", {
-      taskId, slots: [...slots], autopilotMs,
+    allPlacedAt = performance.now();
+    Store.log("handoff_done", {
+      taskId, slots: [...slots],
       aiTakeovers, userTakebacks, placedByAi: aiPlacedCount,
     });
   }
@@ -1055,7 +1025,7 @@ window.Task = (function () {
     // Sweep the cursor back to the real pointer before fading — a visible
     // "here, it's yours again" rather than a blink.
     fc.returning = true; fc.returnT = 0; fc.returnFrom = { x: fc.x, y: fc.y };
-    autopilotState = handoff ? "idle" : "done";
+    aiState = "idle";
     userTakebacks++;
     $("main").classList.remove("ai-driving");
     if (zoneEl) zoneEl.classList.remove("active");
@@ -1218,8 +1188,11 @@ window.Task = (function () {
          elapsedMs    total, screen shown → confirm (includes reading + AI)
          explainerMs  cumulative time the instructions were open
          workMs       elapsedMs minus explainerMs — actual time on the task
-         reviewMs     (c4) autopilot finished → confirm, i.e. how long they
-                      looked the AI's result over before signing it off
+         reviewMs     every step placed → confirm, i.e. how long they looked
+                      the finished order over before signing it off. Only a
+                      handoff stage sets it: it starts when the AI cursor
+                      completes the board, so it is null if the participant
+                      placed the last step themselves.
        timeToFirstActionMs is measured from the first explainer dismissal. */
     const elapsed = Math.round(now - taskStart);
     const explainerTotal = explainerElapsed();
@@ -1230,8 +1203,7 @@ window.Task = (function () {
       workMs: Math.max(0, elapsed - explainerTotal),
       timeToFirstActionMs: (firstActionAt != null && workStart != null)
         ? Math.round(firstActionAt - workStart) : null,
-      autopilotMs,
-      reviewMs: autopilotDoneAt != null ? Math.round(now - autopilotDoneAt) : null,
+      reviewMs: allPlacedAt != null ? Math.round(now - allPlacedAt) : null,
     };
     if (aiMode !== "solo") {
       slots.forEach((id, i) => {
