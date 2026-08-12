@@ -106,17 +106,16 @@ e.g. `{ ai: "handoff", speed: 40, hesitate: true }`.
 |---|---|
 | `speed` | 0–100 → cursor travel speed (maps to 230–3200 px/s) |
 | `hesitate` | Thinking pauses and second-guess approach curves — makes the AI look deliberative |
-| `startGraceMs` | **Reading window** — the AI stays out for this long after the explainer is dismissed (default 5000) |
 | `userSpeedControl` | Show the **participant** a speed slider in the footer |
 
-> **On `startGraceMs`:** the explainer is dismissed at the same instant the task text
-> first becomes visible, so without a pause the AI would be moving before anyone had
-> read what the task is — and in `autopilot` the participant could miss the task
-> entirely. During the window nothing moves: `handoff` cannot take over however idle
-> the participant is, and `autopilot` has not started (its footer says so, and
-> `autopilotMs` still measures only the sorting). The explainers tell participants the
-> AI will step in "after a few seconds" rather than naming a number, so changing this
-> value keeps them truthful. `0` disables the wait.
+> **There is no longer a reading window.** `startGraceMs` used to hold the AI back for
+> the first few seconds of a stage, because the explainer is dismissed at the same
+> instant the task text first becomes visible. The activation zone made it redundant:
+> nothing moves until the participant deliberately parks the cursor in the zone, so they
+> read the task in their own time and the wait was only friction. Removed 2026-08-12,
+> together with the "a few seconds" sentence in the explainers. Note the knock-on for
+> `autopilot` (the commented-out `G5`): it now starts sorting as soon as the explainer is
+> dismissed.
 
 > **On `userSpeedControl`:** good for accessibility — fast cursor motion is genuinely
 > disorienting for some people — but it makes AI speed a participant-controlled
@@ -400,8 +399,8 @@ reload. `Store.download()` exports it as JSON from the console.
   - interaction — `drag_start`, `drag_drop`, `explainer_shown`, `explainer_dismissed`
   - AI (hint) — `hint_shown` (which slot was hinted, the variant, whether reasoning
     was shown, `isWrongHint`)
-  - AI (cursor) — `handoff_armed` / `autopilot_armed` (stage ready, AI still holding
-    off for `startGraceMs`), `autopilot_start` (the window has passed — it begins),
+  - AI (cursor) — `handoff_armed` (stage ready; the AI acts once the cursor enters the
+    activation zone), `autopilot_start`,
     `ai_took_over` / `user_took_back` (each with `nth`
     and `placedSoFar`, so the whole tug-of-war is reconstructable), `ai_placement`,
     `ai_thought_shown` (incl. `isWrongThought`), `handoff_done` / `autopilot_done`,
@@ -424,7 +423,7 @@ separate clocks:
 | `explainerOpens` | How many times it was opened — `> 1` means they went back to re-read |
 | `workMs` | `elapsedMs − explainerMs` — **actual time on the task** |
 | `timeToFirstActionMs` | First explainer dismissal → first drag (hesitation before acting) |
-| `autopilotMs` | autopilot only: how long the AI took to place all six (the reading window is not counted) |
+| `autopilotMs` | autopilot only: how long the AI took to place all six |
 | `reviewMs` | autopilot only: autopilot finished → Confirm, i.e. **how long they reviewed the AI's result before signing it off** |
 
 `workMs + explainerMs == elapsedMs` always holds. `explainer_shown` / `explainer_dismissed`

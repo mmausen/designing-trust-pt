@@ -63,13 +63,12 @@ window.Config = (function () {
                             //   inside is what hands control over, not idle time. Kept
                             //   only because it is still written to the logs; delete
                             //   both once no analysis depends on the field.
-    startGraceMs: 5000,     // reading window: after the explainer is dismissed the AI stays
-                            //   out for this long, so the participant can read the task
-                            //   before anything moves. Applies to BOTH cursor mechanics —
-                            //   handoff cannot take over and autopilot does not start.
-                            //   The explainers say "a few seconds" rather than naming a
-                            //   number, so this stays truthful if you change it.
-                            //   0 disables the wait entirely.
+                            //
+                            // (There was also a startGraceMs "reading window" here that
+                            //  held the AI back for the first few seconds of a stage. The
+                            //  activation zone made it redundant — nothing moves until the
+                            //  participant parks the cursor in the zone, so they read the
+                            //  task in their own time — and it was removed 2026-08-12.)
     userSpeedControl: true, // show the PARTICIPANT a speed slider.
                             //   ↳ Good for accessibility (fast cursor motion is
                             //     disorienting for some people), but it makes AI speed
