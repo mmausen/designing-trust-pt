@@ -5,7 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>BDR x DFKI</title>
-<link rel="stylesheet" href="styles-accessible.css?v=43"/>
+<link rel="stylesheet" href="styles-accessible.css?v=51"/>
 </head>
 <body>
 
@@ -31,6 +31,25 @@
   </div>
 </section>
 
+<!-- ════════════ RESUME ════════════
+     Shown INSTEAD of the normal first screen, and only when an interrupted
+     session for this build is in localStorage. Its own screen rather than a
+     banner on the consent slide, because consent is optional (Config.STEPS) —
+     hung off that screen, the offer disappeared whenever it was switched off. -->
+<section id="screen-resume" class="screen" hidden>
+  <div class="centered">
+    <h1 class="screen-kicker">BDR x DFKI</h1>
+    <div class="consent-box">
+      <h2 id="resume-heading"></h2>
+      <p id="resume-body"></p>
+    </div>
+    <div class="start-row">
+      <button class="btn btn-primary" id="btn-resume-sess"></button>
+      <button class="btn" id="btn-discard-sess"></button>
+    </div>
+  </div>
+</section>
+
 <!-- ════════════ CONSENT ════════════ -->
 <section id="screen-consent" class="screen" hidden>
   <div class="centered">
@@ -43,9 +62,31 @@
         <span data-i18n="ui.consent.agree"></span>
       </label>
     </div>
-    <div class="resume-note" id="resume-note" hidden></div>
     <div class="start-row">
       <button class="btn btn-primary" id="btn-begin" data-i18n="ui.consent.begin" disabled></button>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ PROLIFIC ID ════════════
+     Optional step (Config.STEPS.prolificId). The participant id used for
+     filenames and the group ledger stays the auto-generated one — this is
+     recorded alongside it, so a run can be matched to a Prolific submission
+     without letting participant-supplied text reach the filesystem. -->
+<section id="screen-prolific" class="screen" hidden>
+  <div class="centered">
+    <h1 class="screen-kicker">BDR x DFKI</h1>
+    <div class="consent-box">
+      <h2 data-i18n="ui.prolific.heading"></h2>
+      <p data-i18n="ui.prolific.body"></p>
+      <label class="pid-row">
+        <span data-i18n="ui.prolific.label"></span>
+        <input type="text" id="prolific-input" autocomplete="off" spellcheck="false"/>
+      </label>
+      <p class="pid-error" id="prolific-error" hidden></p>
+    </div>
+    <div class="start-row">
+      <button class="btn btn-primary" id="btn-prolific-next"></button>
     </div>
   </div>
 </section>
@@ -77,14 +118,6 @@
     <div class="task-desc" id="task-desc"></div>
   </div>
 
-  <!-- AI reasoning panel (handoff + thoughts). Present for the whole stage so
-       its space is reserved and nothing shifts when it fills. -->
-  <div id="ai-thought" hidden>
-    <span class="ait-tag">AI</span>
-    <span class="ait-label" id="ai-thought-label"></span>
-    <span class="ait-txt" id="ai-thought-txt"></span>
-  </div>
-
   <div id="main">
     <div class="col" id="col-inbox">
       <div class="col-hd" id="inbox-hd"></div>
@@ -96,14 +129,18 @@
     </div>
   </div>
 
-  <!-- AI activation zone (handoff stages only). Park the real cursor inside
-       this block to let the AI take the shared cursor and carry on; move the
-       cursor out of the block to take control straight back. Replaces the old
-       idle-based takeover. Hidden for every non-handoff condition. -->
-  <div id="ai-zone" hidden>
+  <!-- AI control block. One element, two mechanics, so both stages have the
+       same layout and the block always sits in the same place:
+         handoff — an activation ZONE. Park the real cursor inside it and the
+                   AI takes the shared cursor and carries on; move the cursor
+                   out and control returns instantly.
+         hidden  — a BUTTON ("Start AI"). One press and the AI places every
+                   step at once, with no cursor of its own.
+       Hidden for the solo baseline, which has no AI at all. -->
+  <button type="button" id="ai-zone" hidden>
     <span class="ai-zone-dot" aria-hidden="true"></span>
     <span class="ai-zone-label" id="ai-zone-label"></span>
-  </div>
+  </button>
 
   <div id="footer">
     <button class="btn" id="btn-explainer"></button>
@@ -139,9 +176,7 @@
     <p id="db-thanks"></p>
     <p class="muted" id="db-sync-note"></p>
   </div>
-  <div class="or-grid" id="db-grid" hidden></div>
   <div class="or-footer">
-    <span class="or-note" id="db-note"></span>
     <button class="btn btn-primary" id="btn-end"></button>
   </div>
 </section>
@@ -160,6 +195,10 @@
   <div class="card-title" id="ghost-title"></div>
 </div>
 
+<!-- flight layer (hidden stages): the tile copies that fly from wherever a
+     step sits to the slot the AI chose. Empty except during that ~1 s. -->
+<div id="fly-layer" aria-hidden="true"></div>
+
 <!-- AI cursor (handoff stages): pointer + an "AI" tag that travels with it -->
 <div id="ai-cursor">
   <div class="ai-ring"></div>
@@ -171,30 +210,26 @@
 </div>
 
 <!-- dev-only controls — hidden unless Config.CONFIG.devMode is true (see main.js).
-     The group picker forces this session's AI interaction (G1–G4); such
-     sessions are flagged and left out of the balancing counts. -->
+     The group picker forces this session's setup (G1–G4: AI character plus
+     the order of the two mechanics); such sessions are flagged and left out
+     of the balancing counts. -->
 <div id="dev-bar" hidden>
-  <select id="dev-group" title="Force the AI group for this session (dev only)"></select>
+  <select id="dev-group" title="Force this session's setup — character + mechanic order (dev only)"></select>
   <button id="dev-skip" type="button" title="Skip to the next stage (dev only)">Skip ▸</button>
 </div>
 
 <!-- ════════════ SCRIPTS (load order = dependency order) ════════════ -->
-<script src="js/config.js?v=43"></script>
-<script src="js/i18n.js?v=43"></script>
-<script src="js/tasks.js?v=43"></script>
-<!-- AI hint designs: registry, then one file per variant. Adding a variant =
-     one file + one tag here; removing one = delete both. Nothing else refers
-     to them by name. -->
-<script src="js/hints.js?v=43"></script>
-<script src="js/hint_slot.js?v=43"></script>
-<script src="js/hint_slot_reasoning.js?v=43"></script>
+<script src="js/config.js?v=51"></script>
+<script src="js/i18n.js?v=51"></script>
+<script src="js/tasks.js?v=51"></script>
 <!-- balanced G1–G4 assignment (needs Config; used by main.js) -->
-<script src="js/groups.js?v=43"></script>
-<script src="js/store.js?v=43"></script>
-<script src="js/survey.js?v=43"></script>
-<script src="js/task.js?v=43"></script>
-<script src="js/results.js?v=43"></script>
-<script src="js/flow.js?v=43"></script>
-<script src="js/main.js?v=43"></script>
+<script src="js/groups.js?v=51"></script>
+<script src="js/store.js?v=51"></script>
+<script src="js/prolific.js?v=51"></script>
+<script src="js/survey.js?v=51"></script>
+<script src="js/task.js?v=51"></script>
+<script src="js/results.js?v=51"></script>
+<script src="js/flow.js?v=51"></script>
+<script src="js/main.js?v=51"></script>
 </body>
 </html>

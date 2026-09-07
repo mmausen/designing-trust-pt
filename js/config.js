@@ -6,17 +6,17 @@
    ═══════════════════════════════════════════════════════════════════ */
 window.Config = (function () {
   const CONFIG = {
-    showCorrectnessFeedback: true, // show ✓/✗ + "correct order" on the debrief grid.
-                                   //   ↳ RECOMMEND setting FALSE for the real study to avoid
-                                   //     a learning confound (participants memorising the answer).
     resumeEnabled: true,           // offer to resume an interrupted session from localStorage
     devMode: true,                 // show the bottom-right dev bar: the "Skip ▸" button that
                                    // jumps to the next stage, and the group picker that forces
-                                   // this session into G1–G4. Prototyping aid only — MUST stay
+                                   // this session into G1/G2. Prototyping aid only — MUST stay
                                    // false for real participants (a forced group is excluded
                                    // from the balancing counts, so a live run under devMode
                                    // would also quietly skew nothing but confuse everyone).
-    loggingEnabled: true,          // MASTER SWITCH for study logging. false → no events are
+                                   //   The bar also carries the character picker (bold /
+                                   //   cautious), which overrides CHARACTER below for the
+                                   //   running session only.
+    loggingEnabled: false,          // MASTER SWITCH for study logging. false → no events are
                                    //   recorded and NOTHING is written to logs/ (no POST, no
                                    //   beacon). The session itself still runs and still
                                    //   autosaves to localStorage, so resume keeps working.
@@ -25,11 +25,63 @@ window.Config = (function () {
                                    //     with it off, a completed session leaves no file.
   };
 
+  /* ═══ which steps the session runs ════════════════════════════════
+     Every non-task step can be switched off, so a pilot, a demo or a
+     lab-supervised run can skip the parts it does not need. The task rounds
+     themselves are never optional — they are the study.
+
+     Order when all are on:
+       consent → prolificId → pre → [baseline] → [AI block 1]
+         → mid → [AI block 2] → post → debrief
+
+     The RESUME offer is independent of all of these: it has its own screen,
+     shown ahead of whatever the first one would have been, whenever an
+     interrupted session for this build is in localStorage.
+
+     ⚠ Changing a switch INVALIDATES any session saved under the old set — the
+     resume offer is refused with a console warning, because `currentStep`
+     indexes the steps array whose shape these switches decide. Finish or
+     discard a pilot session before flipping one. */
+  const STEPS = {
+    consent:    true,   // the privacy / consent statement, and the Begin gate
+    prolificId: true,   // ask for the participant's Prolific ID, and log it
+    preSurvey:  true,   // questionnaire before the first task
+    midSurvey:  true,   // questionnaire between the two AI blocks
+    postSurvey: true,   // questionnaire after the last task
+  };
+
   // Fixed seed for the per-task tile shuffle. Because it is constant, every
   // participant sees the SAME inbox order for a given task; because the task id
   // is mixed in, each task is shuffled differently. Change this string to
   // reshuffle every task reproducibly.
   const SHUFFLE_SEED = "bdr-dfki-2026";
+
+  /* ═══ the AI's CHARACTER ═══════════════════════════════════════════
+     Which of the two authored rankings the AI follows. Every task in
+     tasks.json carries an `ai-order` for each character, so this switch
+     changes WHAT the AI recommends in every round:
+
+       "bold"      — "act quick and move forward". Decisive, efficient,
+                     more willing to let a subtle concern through.
+       "cautious"  — "better safe than sorry". Thorough and risk-averse,
+                     more willing to spend attention on a low-risk case.
+
+     One character is in force for a WHOLE SESSION, deliberately: the point is
+     that a participant can build up a mental model of how this AI prioritises
+     across rounds, which a per-round switch would destroy. It is not set here
+     — each GROUP names its character (see below), and the session pins it at
+     creation. This list exists to validate that name.
+
+     NOTE — this currently changes the AI's RANKING only. The study design also
+     describes bold and cautious as differing in observable BEHAVIOUR (bold:
+     fast, few revisits, quick decisions; cautious: inspects every case,
+     revisits, adjusts the ranking repeatedly). That half is not built: it
+     would live in AI_CURSOR below, as a per-character profile of `speed`,
+     `pauseAfterPlaceMs` and `hesitate`, and would only be visible in the
+     handoff mechanic — the hidden one shows an outcome, not a process. */
+  const CHARACTERS = ["bold", "cautious"];
+
+  function isCharacter(c) { return CHARACTERS.indexOf(c) !== -1; }
 
   // Collector endpoint. The session JSON is POSTed here at each step boundary
   // (see store.js). "/collect-logs" is the local Node collector in server.js,
@@ -56,8 +108,8 @@ window.Config = (function () {
      Any group may override a value inline, e.g.
          G1: { key: "g1", ai: "handoff", speed: 40, hesitate: true } */
   const AI_CURSOR = {
-    speed: 28,              // 0–100 → cursor travel speed (57.5–800 px/s)
-    pauseAfterPlaceMs: 1000, // the cursor sits still for this long after dropping each
+    speed: 55,              // 0–100 → cursor travel speed (57.5–800 px/s)
+    pauseAfterPlaceMs: 400, // the cursor sits still for this long after dropping each
                             //   step, before it goes for the next one — a beat to take in
                             //   what just happened rather than a continuous sweep.
                             //   Applies whether or not `hesitate` is on, and replaces the
@@ -73,131 +125,173 @@ window.Config = (function () {
                             //   in force is on each result as cursorSpeed either way.
   };
 
-  /* ═══ study design: one baseline task, then ONE AI group ═══════════
-     Between-subjects. Every participant runs the same unassisted baseline
-     (task 1, ground truth), then exactly one of the four AI interactions
-     (task 2). Which one is decided by the balanced draw — see ASSIGN_URL.
+  /* ═══ study design: unassisted baseline, then ONE AI mechanic ══════
+     Between-subjects. Every participant runs the unassisted baseline rounds
+     first, then the AI rounds with exactly one of the two mechanics, decided
+     by the balanced draw — see ASSIGN_URL.
 
-     Two switches describe every group, and they are the study's two factors:
+     One switch describes every group:
 
        `ai` — the mechanic
          solo      — no assistance at all
-         hint      — the AI suggests where a step goes, at pick-up time
          handoff   — shared cursor: the participant works normally, but while
                      the real cursor rests inside the activation zone the AI
                      takes the cursor and carries on. Leaving the zone hands
                      control straight back.
+         hidden    — no cursor at all. The activation zone is a "Start AI"
+                     button instead; one press and every step flies from
+                     wherever it sits to the slot the AI chose, all at once
+                     (see HIDDEN_PLACE_MS). The participant can then rearrange
+                     anything before confirming, exactly as after a handoff.
 
-       `thoughts` — does the AI explain itself? The SAME switch in both
-         mechanics, which is what makes G1:G2 and G3:G4 the same comparison:
-           handoff + thoughts → the panel above the board narrates what it is
-                                about to do
-           hint    + thoughts → the suggested slot comes with the AI's stated
-                                reasoning
-         The two render differently because the mechanics differ, not because
-         the manipulation does.
-
-     Which hint DESIGN implements that is resolved by hintVariantFor() below,
-     so the table never names a file. Variants are registered in js/hints.js:
-       "slot"            — highlight the suggested slot            (js/hint_slot.js)
-       "slot-reasoning"  — that, plus the AI's stated reasoning     (js/hint_slot_reasoning.js)
-     Each variant is one file, referenced nowhere else, so dropping one
-     leaves nothing behind.
+     The AI never explains itself: there is no reasoning panel and no
+     `thoughts` switch. What it recommends is set by the group's CHARACTER.
 
      Label / banner / onboarding text lives in strings.json under
-     conditions.<key>, in both languages — e.g. conditions.g1.onboarding, an
-     array of { body, ok } steps shown one at a time when the participant first
-     reaches that stage (a condition may instead define a single `explainer`
-     paragraph, shown as one window). All four groups run the same three-step
-     shape — what the AI does, how it works, who decides — so the wording
-     differs only where the condition itself does.
+     conditions.<key>, in both languages — e.g. conditions.handoff.onboarding,
+     a REQUIRED array of { body, ok } steps shown one at a time when the
+     participant first reaches that stage. Both mechanics run the same
+     three-step shape — what the AI does, how it works, who decides — so the
+     wording differs only where the condition itself does.
      The onboardings deliberately never mention that the AI can be wrong, but
      always make clear the final order is the participant's responsibility. */
 
-  /* Task 1 — the unassisted ground-truth run. Everyone does this one.
-     `teachBoard` marks it as the round that introduces the BOARD itself: its
+  /* The unassisted baseline rounds. Everyone does these, with no AI at all.
+     `teachBoard` marks the stage that introduces the BOARD itself: its
      onboarding hides the ladder column and reveals it as the participant steps
-     through the tile. Only ever true for the very first task — by task 2 the
+     through the tile. Only ever true for the baseline — by the AI rounds the
      board is familiar, and hiding it again would be nonsense. */
   const BASELINE = { key: "c1", ai: "solo", teachBoard: true };
 
-  // Task 2 — the four AI groups. Exactly one per participant.
-  // Read down the `thoughts` column and the 2×2 is the design: mechanic
-  // (handoff / hint) × explanation (off / on).
+  /* The two AI mechanics. These are the INTERACTIONS — what a round feels
+     like — and every participant now meets both, so they are no longer groups.
+     `key` is their strings.json entry (conditions.<key>: banner + onboarding),
+     in both languages. */
+  const MECHANICS = {
+    handoff: { key: "handoff", ai: "handoff" },
+    hidden:  { key: "hidden",  ai: "hidden" },
+  };
+
+  /* ═══ the four session setups ═════════════════════════════════════
+     MIXED design. Each setup fixes two things for a whole session:
+
+       `character` — BETWEEN subjects. The AI's strategy, unchanging all
+                     session, so the participant can build a mental model of it.
+       `order`     — the sequence of the two mechanics, WITHIN subjects. Every
+                     participant meets both; the order is counterbalanced so
+                     "second block" effects (practice, fatigue, having already
+                     seen an AI act) don't load onto one mechanic.
+
+     Crossing them gives exactly four cells, which is what the server's
+     balanced draw fills — so a run needs BDR_GROUPS=G1,G2,G3,G4 (its default).
+     Fixing the character by hand is no longer necessary or possible: the draw
+     assigns it with the order, in one decision, and the session pins both. */
   const GROUPS = {
-    G1: { key: "g1", ai: "handoff" },
-    G2: { key: "g2", ai: "handoff", thoughts: true },
-    G3: { key: "g3", ai: "hint" },
-    G4: { key: "g4", ai: "hint", thoughts: true },
+    G1: { character: "bold",     order: ["hidden", "handoff"] },
+    G2: { character: "bold",     order: ["handoff", "hidden"] },
+    G3: { character: "cautious", order: ["hidden", "handoff"] },
+    G4: { character: "cautious", order: ["handoff", "hidden"] },
   };
   const GROUP_KEYS = Object.keys(GROUPS);
 
-  /* Which hint design a hint group runs. `thoughts` decides it, so the table
-     above states the manipulation rather than a filename — the two hint
-     variants ARE the explanation switch, one with reasoning and one without.
-     A group may still pin a design explicitly with `hint: "<name>"`, which is
-     how a third variant would be A/B'd without disturbing the table. */
-  function hintVariantFor(cond) {
-    if (!cond || cond.ai !== "hint") return null;
-    return cond.hint || (cond.thoughts ? "slot-reasoning" : "slot");
+  // The character a group runs, falling back to the first group so a session
+  // can never end up with no character and therefore no AI suggestion.
+  function characterFor(group) {
+    const g = GROUPS[group] || GROUPS[GROUP_KEYS[0]];
+    return g.character;
+  }
+  // The mechanic sequence a group runs, same fallback.
+  function orderFor(group) {
+    const g = GROUPS[group] || GROUPS[GROUP_KEYS[0]];
+    return [...g.order];
   }
 
-  /* How many ROUNDS each stage runs, and on which task.
+  /* How long the hidden mechanic's tiles take to fly to their slots, in ms.
+     One linear, constant-speed run for all six at once — a study parameter
+     (it is the whole visible extent of the interaction), so it lives here. */
+  const HIDDEN_PLACE_MS = 1000;
+
+  /* ═══ which tasks run where ════════════════════════════════════════
      One entry = one round, in the order listed. Values are task ids from
-     task_thought.json (A01–A30). All groups run the SAME task-2 ids, so the
-     only thing that differs between groups is the AI mechanic.
+     tasks.json (T1–T13). This is the rounds knob: trim a list to shorten a
+     pilot, extend it to add rounds.
 
-     Two forms per entry:
-       "A01"                        → the AI suggests the CORRECT order
-       { id: "A01", aiError: true } → the AI suggests a WRONG order
+     BASELINE_TASKS runs first, unassisted, for everyone. The two AI blocks
+     then draw from TASK_BLOCKS. */
+  const BASELINE_TASKS = ["T1", "T2", "T3"];
 
-     With aiError, the task's own scriptedError.swapKeys pair (defined in the
-     task file, with a rationale + wrongThought) is swapped in the AI's
-     suggestion — a plausible but objectively wrong recommendation, to observe
-     whether the participant catches it. Scoring is NOT affected: the original
-     tile order stays the ground truth, so following the bad suggestion costs
-     2 points and is logged as 0 overrides on those two tiles.
+  const TASK_BLOCKS = {
+    blockA: ["T4", "T5", "T6", "T7", "T8"],
+    blockB: ["T9", "T10", "T11", "T12", "T13"],
+  };
 
-     aiError has no effect on the baseline rounds — solo shows no suggestion.
+  /* ═══ how those blocks reach the two mechanics ═════════════════════
+     "position"  — blockA runs FIRST and blockB SECOND, whatever mechanic is
+                   in that position. Since GROUPS counterbalances the order,
+                   each block of tasks meets BOTH mechanics across
+                   participants, so task content is NOT confounded with
+                   mechanic. This is the default, and the reason the four
+                   setups exist.
 
-     The explainer opens by itself only on the FIRST round of a stage, since it
-     describes the interaction rather than the task: later rounds go straight
-     to work. The ⓘ button reopens it at any time. */
-  const BASELINE_TASKS = ["A01"];
-  const GROUP_TASKS = ["A02"];
+     "mechanic"  — each block is pinned to a named mechanic by MECHANIC_BLOCKS
+                   below, and travels with it into whichever position that
+                   mechanic occupies. Task content is then permanently tied to
+                   the mechanic, so a content effect and a mechanic effect
+                   cannot be told apart. Only choose this if the two blocks are
+                   deliberately matched to the two mechanics.
 
-  // Normalise one task entry into { taskId, aiError }.
-  function normalizeTaskEntry(entry) {
-    if (typeof entry === "string") return { taskId: entry, aiError: false };
-    return { taskId: entry.id, aiError: !!entry.aiError };
-  }
+     Both modes keep the ORDER counterbalanced; they differ only in whether the
+     TASKS travel with the position or with the mechanic. Whichever is in force,
+     each round records its `taskBlock`, so the analysis never has to re-derive
+     which content set a round came from. */
+  const TASK_BINDING = "position";                              // "position" | "mechanic"
+  const MECHANIC_BLOCKS = { hidden: "blockA", handoff: "blockB" };  // used when "mechanic"
 
-  /* Expand the two lists into a flat plan of { stage, taskId, aiError }.
-     The plan deliberately does NOT name the group: the group lives on the
-     session (Store), so the dev picker can switch it mid-run without the plan
-     and the flow having to be rebuilt. Task.start resolves stage + session
-     group into an interaction via conditionFor(). */
-  function buildTaskPlan() {
-    const plan = [];
-    BASELINE_TASKS.forEach(entry => {
-      const { taskId, aiError } = normalizeTaskEntry(entry);
-      plan.push({ stage: "baseline", taskId, aiError });
-    });
-    GROUP_TASKS.forEach(entry => {
-      const { taskId, aiError } = normalizeTaskEntry(entry);
-      plan.push({ stage: "ai", taskId, aiError });
+  /* The study plan marks T6 and T11 as the tasks whose AI recommendation is
+     questionable — one in each block above, so a participant meets one under
+     each mechanic however the blocks are bound. There is no per-round error
+     flag: with no correct order there is nothing to swap away from, so a
+     questionable recommendation is authored into that task's `ai-order`.
+
+     The explainer opens by itself on the first round of each BLOCK, since it
+     describes the interaction rather than the task: later rounds in the same
+     block go straight to work, and the second block opens with its own
+     onboarding for the mechanic it introduces. The ⓘ button reopens it. */
+
+  /* Expand the lists into a flat plan for ONE group:
+       [{ stage:"baseline", taskId },
+        { stage:"ai", mechanic, block:1, taskBlock, taskId }, …
+        { stage:"ai", mechanic, block:2, taskBlock, taskId }, …]
+
+     Depends on the group, since the group is what fixes the order — so
+     Store.newSession builds it once the draw is in and pins it onto the
+     session. `block` (1 or 2) is the POSITION and is what tells the two AI
+     sections apart for the onboarding; `taskBlock` is which CONTENT set the
+     round came from; `mechanic` is what each round resolves its interaction
+     through (see conditionFor). */
+  function buildTaskPlan(group) {
+    const plan = BASELINE_TASKS.map(taskId => ({ stage: "baseline", taskId }));
+    const names = Object.keys(TASK_BLOCKS);
+    orderFor(group).forEach((mechanic, i) => {
+      const taskBlock = (TASK_BINDING === "mechanic")
+        ? MECHANIC_BLOCKS[mechanic]     // content follows the mechanic
+        : names[i];                     // content follows the position
+      (TASK_BLOCKS[taskBlock] || []).forEach(taskId =>
+        plan.push({ stage: "ai", mechanic, block: i + 1, taskBlock, taskId }));
     });
     return plan;
   }
 
   function isGroup(g) { return Object.prototype.hasOwnProperty.call(GROUPS, g); }
 
-  /* Which interaction a plan stage runs. Baseline stages ignore the group
-     entirely; AI stages fall back to the first group if the session somehow
-     carries none, so a task can never fail to render. */
-  function conditionFor(step, group) {
+  /* Which interaction one plan entry runs. Baseline entries are always solo;
+     an AI entry names its own mechanic, so this no longer consults the group —
+     the group's only job was to decide the ORDER, and buildTaskPlan already
+     spent it. Falls back to the first mechanic if an entry somehow names none,
+     so a round can never fail to render. */
+  function conditionFor(step) {
     if (!step || step.stage !== "ai") return BASELINE;
-    return GROUPS[group] || GROUPS[GROUP_KEYS[0]];
+    return MECHANICS[step.mechanic] || MECHANICS[Object.keys(MECHANICS)[0]];
   }
 
   // Surveys live in strings.json (surveys.pre / surveys.post), in both
@@ -206,8 +300,10 @@ window.Config = (function () {
   // Question ids are DATA KEYS — keep them identical across languages.
 
   return {
-    CONFIG, ENDPOINT_URL, ASSIGN_URL, ASSIGN_TIMEOUT_MS, SHUFFLE_SEED, AI_CURSOR,
-    BASELINE, GROUPS, GROUP_KEYS, BASELINE_TASKS, GROUP_TASKS,
-    buildTaskPlan, conditionFor, isGroup, hintVariantFor,
+    CONFIG, STEPS, ENDPOINT_URL, ASSIGN_URL, ASSIGN_TIMEOUT_MS, SHUFFLE_SEED, AI_CURSOR,
+    HIDDEN_PLACE_MS, CHARACTERS, isCharacter,
+    BASELINE, MECHANICS, GROUPS, GROUP_KEYS,
+    BASELINE_TASKS, TASK_BLOCKS, TASK_BINDING, MECHANIC_BLOCKS,
+    buildTaskPlan, conditionFor, isGroup, characterFor, orderFor,
   };
 })();

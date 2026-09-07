@@ -127,7 +127,5 @@ window.Survey = (function () {
     Flow.next();
   }
 
-  function current() { return currentId; }
-
-  return { render, submit, relocalize, current };
+  return { render, submit, relocalize };
 })();

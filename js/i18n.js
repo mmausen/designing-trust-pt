@@ -72,5 +72,5 @@ window.I18n = (function () {
     return alt;
   }
 
-  return { load, get, set, has, onChange, t, block, opt };
+  return { load, get, set, onChange, t, block, opt };
 })();

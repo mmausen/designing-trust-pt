@@ -46,8 +46,15 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .consent-box p{font-size:14.5px;color:var(--txt2);line-height:1.65}
 .check-row{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;cursor:pointer;margin-top:6px}
 .check-row input{margin-top:3px;width:18px;height:18px}
-.resume-note{font-size:14px;color:var(--txt2);background:var(--purple-l);border:1px solid var(--purple-b);
-  border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+/* Prolific ID entry — same box as the consent statement, one labelled field */
+.pid-row{display:flex;flex-direction:column;gap:7px;margin-top:6px;font-size:13px;
+  font-weight:700;letter-spacing:.02em;color:var(--muted);text-transform:uppercase}
+.pid-row input{font:inherit;font-size:15px;font-weight:600;letter-spacing:.01em;
+  text-transform:none;color:var(--txt);padding:11px 13px;border:1px solid var(--border);
+  border-radius:8px;background:#fff;width:100%;max-width:420px}
+.pid-row input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-l)}
+.pid-error{font-size:13.5px;line-height:1.55;color:var(--danger);margin-top:2px}
+.pid-error[hidden]{display:none}
 .start-row{display:flex;align-items:center;gap:16px}
 
 /* ── desktop-required gate ── */
@@ -104,35 +111,29 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .scroll::-webkit-scrollbar{width:7px}
 .scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
 
-/* ── card tile (movable) ── */
+/* ── card tile (movable) ──
+      Two lines: the case label, and the short description a priority call
+      actually needs. align-items:flex-start so the grip stays at the top of a
+      two-line tile rather than floating to its middle. ── */
 .card{background:#fff;border:1px solid var(--border);border-radius:10px;
-  padding:14px 16px;margin-bottom:11px;display:flex;align-items:flex-start;gap:13px;
+  padding:13px 16px;margin-bottom:11px;display:flex;align-items:flex-start;gap:13px;
   cursor:grab;box-shadow:0 1px 2px rgba(0,0,0,.06),0 3px 8px rgba(0,0,0,.07);
   transition:box-shadow .12s,transform .08s,background .08s,opacity .1s;position:relative}
 .card:hover{box-shadow:0 3px 8px rgba(0,0,0,.1),0 8px 20px rgba(0,0,0,.12);transform:translateY(-1px)}
 .card:active{cursor:grabbing}
 .card.ghost{opacity:.25}
 .card-txt{flex:1;min-width:0}
-.card-title{font-size:15px;font-weight:700}
+.card-title{font-size:15px;font-weight:700;line-height:1.3}
+.card-desc{font-size:13px;line-height:1.45;color:var(--txt2);margin-top:3px}
+.card-desc:empty{display:none}
 .card-grip{color:#9a9a9a;font-size:15px;flex-shrink:0;align-self:center}
 
 /* ── ladder + inbox share one row layout so a tile sits at the same height
       and width no matter which side it is on ── */
 .ladder{display:flex;flex-direction:column;flex:1;overflow-y:auto;padding:2px 8px 2px 2px}
-.slot,.inbox-slot{border-bottom:1px solid var(--border);min-height:72px;display:flex;align-items:center;transition:background .08s;position:relative}
+.slot,.inbox-slot{border-bottom:1px solid var(--border);min-height:92px;display:flex;align-items:center;transition:background .08s;position:relative}
 .slot:last-child,.inbox-slot:last-child{border-bottom:none}
 .slot.drop-target{background:var(--accent-l)}
-/* the slot the AI suggests, highlighted while a step is picked up (c2 + c3) */
-.slot.slot-hint{background:var(--purple-l);border-bottom-color:#b79df0;box-shadow:inset 3px 0 0 var(--purple)}
-/* the AI's reasoning (c3), anchored over its suggested slot — free to grow
-   downward over the next row so long sentences are never clipped */
-.slot-thought{position:absolute;left:0;right:0;top:0;min-height:100%;z-index:5;
-  display:flex;align-items:center;gap:10px;padding:11px 16px 11px 34px;
-  background:#f7f4fe;border:1px solid var(--purple-b);border-radius:10px;
-  box-shadow:0 8px 24px rgba(91,33,182,.16);pointer-events:none}
-.slot-thought .st-tag{font-size:10.5px;font-weight:800;letter-spacing:.07em;color:#fff;background:var(--purple);
-  padding:2px 7px;border-radius:999px;flex-shrink:0;align-self:flex-start;margin-top:1px}
-.slot-thought .st-txt{font-size:13.5px;line-height:1.5;color:var(--txt2)}
 .slot-num{font-size:14px;font-weight:700;color:var(--muted);width:32px;text-align:center;flex-shrink:0}
 .slot-lbl{font-size:13px;color:var(--muted);padding:0 8px;letter-spacing:.03em}
 .slot .card{flex:1;margin:9px 10px 9px 2px}
@@ -144,7 +145,21 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
   padding:14px 16px;display:none;align-items:flex-start;gap:12px;box-shadow:0 10px 32px rgba(0,0,0,.22);max-width:360px}
 #drag-ghost .card-title{font-size:15px;font-weight:700}
 
-/* ── AI cursor (level 4): pointer + an "AI" tag that travels with it, in the
+/* ── flying tiles (hidden mechanic) ──
+      One press of "Start AI" and a copy of every step travels from wherever it
+      sits to the slot the AI chose, all at once, at constant speed. Copies
+      rather than the real tiles because an inbox tile and a ladder tile have
+      different widths, so `width` is interpolated alongside `left`/`top` —
+      task.js arms that transition inline. The real tiles wait out the flight
+      under .in-flight, holding their layout so nothing reflows on landing. ── */
+#fly-layer{position:fixed;inset:0;pointer-events:none;z-index:9100}
+#fly-layer:empty{display:none}
+.card.fly-card{position:fixed;margin:0;pointer-events:none;
+  transform:none;box-shadow:0 10px 32px rgba(0,0,0,.22)}
+.card.fly-card:hover{transform:none}
+.card.in-flight{visibility:hidden}
+
+/* ── AI cursor (handoff): pointer + an "AI" tag that travels with it, in the
       prototype's purple. Positioned purely by transform, so the arrow tip
       sits on (x, y). ── */
 #ai-cursor{position:fixed;left:0;top:0;width:26px;height:30px;pointer-events:none;z-index:9999;
@@ -159,12 +174,18 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 /* hide the real pointer while the AI is driving */
 #main.ai-driving,#main.ai-driving *{cursor:none!important}
 
-/* ── AI activation zone (handoff) ──
-      A block under the board. While the real cursor rests inside it the AI
-      drives the shared cursor; the moment the cursor leaves, control returns.
+/* ── AI control block ──
+      One block under the board, in the same place for both AI mechanics, so
+      the two stages share a layout:
+        handoff — an activation ZONE (the default look below): while the real
+                  cursor rests inside it the AI drives the shared cursor, and
+                  the moment the cursor leaves, control returns.
+        hidden  — a BUTTON (.ai-zone--btn): one press and every step is placed.
+      It is a <button> element either way, hence the appearance/font resets.
       flex-shrink:0 so it holds its height and #main gives up the space. */
 #ai-zone{flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:10px;
   margin:12px auto 4px;width:min(440px,70%);min-height:64px;padding:14px 22px;
+  -webkit-appearance:none;appearance:none;font-family:inherit;
   border:2px dashed var(--border);border-radius:14px;background:var(--panel,transparent);
   color:var(--muted);font-size:13.5px;font-weight:600;text-align:center;
   cursor:pointer;transition:border-color .18s ease,background .18s ease,color .18s ease}
@@ -177,17 +198,17 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
   box-shadow:0 0 0 4px rgba(91,33,182,.18);animation:aiZonePulse 1.2s ease-in-out infinite}
 @keyframes aiZonePulse{0%,100%{opacity:1}50%{opacity:.45}}
 
-/* ── AI reasoning panel (handoff + thoughts) ──
-      Always occupies its row once the stage shows it, so filling in the text
-      never shifts the columns underneath. ── */
-#ai-thought{flex-shrink:0;display:flex;align-items:baseline;gap:10px;
-  padding:11px 30px;min-height:52px;border-bottom:1px solid var(--border);
-  background:#f7f4fe;opacity:0;transition:opacity .22s ease}
-#ai-thought.visible{opacity:1}
-#ai-thought .ait-tag{font-size:10.5px;font-weight:800;letter-spacing:.07em;color:#fff;
-  background:var(--purple);padding:2px 7px;border-radius:999px;flex-shrink:0;align-self:flex-start;margin-top:2px}
-#ai-thought .ait-label{font-size:12.5px;font-weight:700;color:var(--purple);flex-shrink:0}
-#ai-thought .ait-txt{font-size:14px;line-height:1.5;color:var(--txt2)}
+/* hidden mechanic: the same block, read as the button it is. Solid and filled,
+   so it reads as "press me" rather than "rest here" — the dashed outline is
+   the handoff zone's whole affordance and would say the wrong thing. */
+#ai-zone.ai-zone--btn{border-style:solid;border-color:var(--purple);
+  background:var(--purple);color:#fff;font-size:15px;font-weight:700;letter-spacing:.01em;
+  min-height:56px;width:min(300px,60%);box-shadow:0 3px 10px rgba(91,33,182,.28)}
+#ai-zone.ai-zone--btn:hover{background:#4c1d95;border-color:#4c1d95;color:#fff}
+#ai-zone.ai-zone--btn:active{transform:translateY(1px);box-shadow:0 1px 4px rgba(91,33,182,.3)}
+#ai-zone.ai-zone--btn:disabled{opacity:.55;cursor:default;transform:none}
+/* the resting dot belongs to the zone, not to a button you click once */
+#ai-zone.ai-zone--btn .ai-zone-dot{display:none}
 
 /* ── participant-facing AI speed slider ── */
 .speed-ctl{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;
@@ -241,22 +262,9 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .db-thanks{padding:30px 44px;display:flex;flex-direction:column;gap:10px}
 .db-thanks p{font-size:15.5px;line-height:1.65}
 .db-thanks p.muted{font-size:13.5px}
-.or-grid{display:grid;grid-template-columns:repeat(4,1fr);flex:1}
-.or-col{border-right:1px solid var(--border);padding:24px 22px}
-.or-col:last-child{border-right:none}
-.or-col-hd{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:5px}
-.or-col-sub{font-size:12px;color:var(--muted);margin-bottom:16px}
-.or-row{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--border)}
-.or-row:last-child{border-bottom:none}
-.or-pos{font-size:12px;font-weight:700;color:var(--muted);width:16px;flex-shrink:0}
-.or-name{font-size:13.5px;font-weight:600;flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.or-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.or-dot.ok{background:var(--ok)}
-.or-dot.err{background:var(--danger)}
-.or-score{font-size:12px;color:var(--muted);margin-top:12px}
-.or-score strong{color:var(--txt);font-size:14px}
-.or-footer{border-top:1px solid var(--border);padding:16px 44px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.or-footer .or-note{font-size:13.5px;color:var(--muted)}
+/* the debrief footer holds only the end button now — the results grid it used
+   to sit under went with the correctness feedback */
+.or-footer{border-top:1px solid var(--border);padding:16px 44px;display:flex;justify-content:flex-end;align-items:center;flex-shrink:0}
 
 /* ── dev-only bar: group picker + Skip (prototyping aid — remove before the real study) ── */
 #dev-bar{position:fixed;right:16px;bottom:14px;z-index:10000;display:flex;align-items:center;gap:8px}

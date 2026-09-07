@@ -1,21 +1,29 @@
 /* ═══════════════════════════════════════════════════════════════════
    TASK — the ranking interaction for one condition.
 
-   Which mechanic runs is resolved per stage by Config.conditionFor(step,
-   group): a "baseline" stage is always solo, an "ai" stage is whichever
-   group this participant was assigned. `.ai` picks the mechanic:
+   Which mechanic runs is resolved per ROUND by Config.conditionFor(step): a
+   "baseline" entry is always solo, and an "ai" entry names its own mechanic —
+   every participant meets both, in the order their group fixes. `.ai` picks
+   the mechanic:
      solo      — no assistance
-     hint      — picking a step up cues the slot the AI suggests; the design
-                 doing the cueing is a swappable variant (see js/hints.js)
      handoff   — shared cursor: the participant works normally, but while the
                  real cursor rests inside the activation zone the AI takes the
                  cursor and carries on. Leaving the zone hands it straight
-                 back. With `thoughts: true` it also narrates what it is about
-                 to do.
+                 back.
+     hidden    — no cursor. That same block is a "Start AI" button; one press
+                 and every step flies from wherever it sits to the slot the AI
+                 chose, all at once, in one linear second.
 
-   The AI's suggestion always comes from `aiRanking`, so a scripted error
-   (Config.BASELINE_TASKS / GROUP_TASKS → aiError) flows into both the hint and
-   the reasoning. Scoring never consults it.
+   The two AI mechanics share a layout and a lifecycle on purpose: the same
+   block under the board, the same review phase afterwards, the same footer
+   line once the board is full. What differs is how control changes hands.
+
+   The AI's suggestion always comes from `aiRanking`, which is the task's
+   authored `ai-order` for this session's CHARACTER (bold / cautious).
+
+   Nothing here scores a ranking. These tasks are priority judgements with no
+   correct order, so the only ranking measure is `overrides` — how far the
+   participant's final order departs from the AI's.
 
    All per-task state is module-scoped and reset in start().
    ═══════════════════════════════════════════════════════════════════ */
@@ -56,9 +64,9 @@ window.Task = (function () {
 
   // per-task state
   let stage, group, cond, aiMode, cards, byId, aiRanking, inbox, slots, taskStart;
-  let taskId, taskDef, planIndex, aiError;
+  let taskId, taskDef, planIndex, character, block;
   let handoff = false;      // shared-cursor stage: the AI takes over from the activation zone
-  let showThoughts = false; // handoff + reasoning panel while the AI acts
+  let hiddenAi = false;     // "Start AI" stage: one press places everything, no cursor
   let aiTakeovers = 0, userTakebacks = 0, aiPlacedCount = 0;
 
   /* ── timing ──────────────────────────────────────────────────────────
@@ -97,27 +105,6 @@ window.Task = (function () {
   // cached overlay elements (set in wire())
   let ghost, aiCursor;
 
-  // The active hint variant for this stage (see js/hints.js), or null.
-  // task.js deliberately never names a variant — the stage picks one by
-  // name in the group definition, so variants can be added or deleted in isolation.
-  let hintImpl = null;
-
-  /* Everything a hint variant is allowed to see. Built here so a variant
-     never reaches into task state, which is what keeps them swappable. */
-  function hintContext(cardId) {
-    const aiSlot = (aiMode === "solo") ? -1 : aiRanking.indexOf(cardId);
-    const trueSlot = byId[cardId] ? byId[cardId].rank - 1 : -1;
-    return {
-      cardId, aiSlot, trueSlot,
-      isWrongHint: aiSlot >= 0 && aiSlot !== trueSlot,
-      taskId, aiError, lang: I18n.get(),
-      reasoning: () => Tasks.thoughtFor(taskId, cardId, aiError),
-      slotEl: i => document.querySelector(`#ladder [data-slot="${i}"]`),
-      ladderEl: () => $("ladder"),
-      card: () => document.querySelector(`[data-id="${cardId}"]`),
-    };
-  }
-
   const lerp = (a, b, t) => a + (b - a) * t;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rand = (a, b) => a + Math.random() * (b - a);
@@ -130,15 +117,30 @@ window.Task = (function () {
   function wire() {
     ghost = $("drag-ghost"); aiCursor = $("ai-cursor");
     zoneEl = $("ai-zone");
-    /* Handoff activation is now controlled by this zone, not by idle time.
-       Cursor rests inside → the AI takes over; cursor leaves → control back. */
+    /* One block, read two ways — which one is live depends on the mechanic:
+         handoff — an activation ZONE, governed by hover, not by idle time.
+                   Cursor rests inside → the AI takes over; cursor leaves →
+                   control back.
+         hidden  — a BUTTON. The hover listeners still fire but nothing reads
+                   `pointerInZone` outside a handoff stage, so they are inert. */
     if (zoneEl) {
       zoneEl.addEventListener("mouseenter", () => { pointerInZone = true; });
       zoneEl.addEventListener("mouseleave", () => {
         pointerInZone = false;
         if (handoff && fc && fc.active) autoHandBack();
       });
+      zoneEl.addEventListener("click", () => { if (hiddenAi) startHiddenPlacement(); });
     }
+
+    /* A tab hidden mid-flight throttles the landing timer AND freezes the
+       clones' transition, so a participant who switches away and back would
+       return to tiles hanging in mid-air over an invisible board. Land them
+       the moment the page is visible again — the AI's placement is over, they
+       simply weren't watching. Same reasoning as the cursor engine's watchdog:
+       nothing in this prototype may depend on the tab staying in front. */
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && hiddenFlying) finishHiddenPlacement(runId);
+    });
     $("btn-confirm").addEventListener("click", confirm);
     $("explainer-ok").addEventListener("click", explainerOk);
     $("btn-explainer").addEventListener("click", function () { showExplainer(false); });
@@ -163,42 +165,41 @@ window.Task = (function () {
     }
   }
 
-  // Zone caption reflects whether the AI is currently driving.
+  /* The block's caption. In a hidden stage it is a button and always says the
+     same thing; in a handoff stage it reflects whether the AI is driving. */
   function updateZoneLabel() {
     if (!zoneEl || zoneEl.hidden) return;
     const label = $("ai-zone-label");
-    if (label) label.textContent = I18n.t(
-      fc && fc.active ? "ui.task.zone.active" : "ui.task.zone.idle"
-    );
+    if (!label) return;
+    label.textContent = hiddenAi
+      ? I18n.t("ui.task.startAi")
+      : I18n.t(fc && fc.active ? "ui.task.zone.active" : "ui.task.zone.idle");
   }
 
   /* ── start a condition ── */
   function start(step) {
     stop();                        // halt any cursor loop from the previous task
-    stage = step.stage;            // "baseline" (solo, everyone) | "ai" (this participant's group)
+    stage = step.stage;            // "baseline" (solo, everyone) | "ai" (one of the two mechanics)
     taskId = step.taskId;
     planIndex = step.planIndex || 0;
-    aiError = !!step.aiError;      // this stage's AI suggestion is scripted-wrong
-    /* Read the group off the session at START time rather than off the step:
-       the dev picker can change it between stages, and re-entering this task
-       (Flow.render) then picks the new mechanic up with no plan rebuild. */
-    group = (stage === "ai") ? Store.group() : null;
-    cond = Config.conditionFor(step, group);
+    block = step.block || 0;       // which AI block this round belongs to (1 or 2)
+    /* Character and group come off the SESSION, not the step: the dev picker
+       can change the group between rounds, and re-entering this task
+       (Flow.render) then picks the new setup up. The mechanic, by contrast,
+       comes off the STEP — it is a property of the round now, not the session. */
+    character = Store.character();
+    group = Store.group();
+    cond = Config.conditionFor(step);
     aiMode = cond.ai;
-    hintImpl = Hints.get(Config.hintVariantFor(cond));
     handoff = (aiMode === "handoff");
-    // cond.thoughts means "the AI explains itself" in both mechanics; for a
-    // hint group the variant does the explaining (see Config.hintVariantFor),
-    // for a handoff group it is this panel.
-    showThoughts = handoff && !!cond.thoughts;
+    hiddenAi = (aiMode === "hidden");
     hcfg = resolveCursorCfg(cond);
     aiTakeovers = 0; userTakebacks = 0; aiPlacedCount = 0;
-    aiHoverCard = null; aiHoverSince = 0;
     taskDef = Tasks.get(taskId);
 
     cards = Tasks.inboxCardsFor(taskId, Config.SHUFFLE_SEED); // deterministic per task
     byId = Object.fromEntries(cards.map(c => [c.id, c]));
-    aiRanking = (aiMode === "solo") ? [] : Tasks.aiRankingFor(taskId, aiError);
+    aiRanking = (aiMode === "solo") ? [] : Tasks.aiRankingFor(taskId, character);
     inbox = [...cards];
     slots = Array(6).fill(null);
     taskStart = performance.now();
@@ -226,12 +227,11 @@ window.Task = (function () {
     if (cond.teachBoard && explainerSteps && newSection) focusBoardRegion(0);
 
     Store.log("task_start", {
-      stage, group, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
-      taskId, aiError, lang: I18n.get(),
+      stage, group, condition: cond.key, aiMode, character, block,
+      taskId, lang: I18n.get(),
       newSection, explainerAutoShown: newSection,
       inboxOrder: cards.map(c => c.id),
       aiSuggestion: [...aiRanking],
-      aiSwappedKeys: aiError ? Tasks.scriptedSwapKeys(taskId) : null,
     });
 
     Flow.showScreen("screen-task");
@@ -240,7 +240,7 @@ window.Task = (function () {
 
     /* The explainer describes the INTERACTION, not the task, so it only opens
        by itself on the first round of a stage. A later round (a second task id
-       in BASELINE_TASKS / GROUP_TASKS) goes straight to work — re-reading the
+       in BASELINE_TASKS / TASK_BLOCKS) goes straight to work — re-reading the
        identical text is friction, and the ⓘ button is always there if they
        want it back.
 
@@ -257,14 +257,23 @@ window.Task = (function () {
     }
   }
 
-  /* First round of its stage? Compares against the PREVIOUS entry in the plan
-     rather than remembering the last one, so it stays right after a resume or
-     a dev skip. */
+  /* First round of its SECTION? A section is the baseline block, or one of
+     the two AI blocks — so both mechanics get their own onboarding, and the
+     second block introduces itself rather than arriving unexplained. Keyed on
+     the mechanic rather than on `block`, so it stays right even if the two
+     blocks were ever configured to run the same one.
+
+     Compares against the PREVIOUS entry in the plan rather than remembering
+     the last one, so it stays right after a resume or a dev skip. */
+  function sectionKey(entry) {
+    if (!entry) return null;
+    return entry.stage === "ai" ? "ai:" + entry.mechanic : entry.stage;
+  }
   function isNewSection(step) {
     const d = Store.get();
     const plan = (d && d.plan) || [];
     const prev = plan[(step.planIndex || 0) - 1];
-    return !prev || prev.stage !== step.stage;
+    return !prev || sectionKey(prev) !== sectionKey(step);
   }
 
   // Halt the current task's AI cursor and clear every transient overlay.
@@ -274,6 +283,7 @@ window.Task = (function () {
     closeExplainerNow();           // never leave a half-open explainer over the next stage
     resetColumns();                // never leave a column hidden across a Skip / task switch
     driveStop();
+    stopHiddenPlacement();         // never let a flight land on the next task's board
     fc = null;
     aiState = "idle";
     pendingCursorStart = false;
@@ -322,9 +332,8 @@ window.Task = (function () {
 
   // Look up the onboarding steps fresh (never cached) so a language switch
   // always sees the current translation — see relocalize(). Asked via
-  // I18n.opt() rather than t() because a condition may instead define a single
-  // `explainer` paragraph (showExplainer's last branch), so "no onboarding
-  // here" is a legitimate answer rather than a missing string.
+  // I18n.opt() so a missing array comes back as null and renderExplainerBody
+  // can report it, rather than t() rendering the key path into the tile.
   function onboardingStepsFor(condKey) {
     const v = I18n.opt(`conditions.${condKey}.onboarding`);
     return Array.isArray(v) ? v : null;
@@ -367,30 +376,36 @@ window.Task = (function () {
     if (colLadder) colLadder.classList.toggle("col-pending-reveal", region !== "ladder");
   }
 
-  function showExplainer(auto) {
-    const total = (Store.get().plan || []).length;
-    if (auto && explainerSteps) {
-      // First-ever showing of a multi-step onboarding: start at step 0 with
-      // only the left (inbox) column visible. The column swap — reveal the
-      // right, hide the left — happens when the participant presses OK to
-      // advance to step 1 ("drag them one by one…"), not on a timer.
+  /* Fill the tile in whichever of its two shapes applies, then animate it in.
+     `auto` is the first showing of a stage; a reopen via the ⓘ button is not. */
+  function renderExplainerBody(auto) {
+    if (!explainerSteps) {
+      // Every condition defines an onboarding array; missing one is a content
+      // bug, so say so rather than opening an empty tile on a participant.
+      console.error(`[BDR] conditions.${cond.key}.onboarding is missing — the explainer has nothing to show.`);
+      return;
+    }
+    if (auto) {
+      // First showing: walk the steps one at a time. On the board-teaching
+      // round the column reveal moves with them (see explainerOk), which is
+      // why this cannot just render the combined text.
       explainerAutoFlow = true;
       explainerStepIdx = 0;
       renderExplainerStep();
-    } else if (explainerSteps) {
-      // Reopened mid-task via the footer ⓘ button: show the full text as one
-      // window — the ladder is already visible and placements already exist,
-      // so re-running the step/reveal sequence would be disruptive.
-      explainerAutoFlow = false;
-      $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
-      $("explainer-body").textContent = explainerSteps.map(s => s.body).join(" ");
-      $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
-    } else {
-      explainerAutoFlow = false;
-      $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
-      $("explainer-body").textContent = I18n.t(`conditions.${cond.key}.explainer`);
-      $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
+      return;
     }
+    /* Reopened mid-task: show the full text as one window. The ladder is
+       already visible and placements already exist, so re-running the
+       step/reveal sequence would be disruptive. */
+    explainerAutoFlow = false;
+    const total = (Store.get().plan || []).length;
+    $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
+    $("explainer-body").textContent = explainerSteps.map(s => s.body).join(" ");
+    $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
+  }
+
+  function showExplainer(auto) {
+    renderExplainerBody(!!auto);
 
     const overlay = $("explainer-overlay");
     const card = overlay.querySelector(".explainer-card");
@@ -466,39 +481,25 @@ window.Task = (function () {
   function setupChrome() {
     $("b-prox").textContent = "📍 " + I18n.t(`conditions.${cond.key}.banner`);
 
-    // Task brief on top of the tile segment (title + description from the task).
+    /* Task brief on top of the tile segment. The task supplies only its
+       subject ("Transportation"); the instruction underneath is the same in
+       every round — the task TYPE never varies, only its content — so it
+       lives in strings.json rather than being repeated 13 times. */
     taskDef = Tasks.get(taskId);   // re-resolve: the active language may have changed
     $("task-title").textContent = taskDef ? (taskDef.title || "") : "";
-    $("task-desc").textContent = taskDef ? (taskDef.description || "") : "";
+    $("task-desc").textContent = I18n.t("ui.task.brief");
 
-    // A hint variant supplies its own badge + footer wording, so competing
-    // variants can be told apart on screen without task.js knowing them.
-    // handoff has two flavours (with/without the reasoning panel).
-    const modeKey = (handoff && showThoughts) ? "handoff-thoughts" : aiMode;
-    const hintKey = hintImpl ? hintImpl.hintKey : `ui.task.hints.${modeKey}`;
-    const badgeKey = hintImpl ? hintImpl.badgeKey : `ui.task.badges.${modeKey}`;
-
-    /* A handoff stage's footer line has two phases: sorting, and the review
-       prompt once every step is placed. Resolved here (rather than only at the
+    /* An AI stage's footer line has two phases: sorting, and the review prompt
+       once every step is placed. Resolved here (rather than only at the
        transition) so a language switch mid-stage picks the phase up correctly. */
-    let hintText = I18n.t(hintKey);
-    if (handoff && aiState === "done") hintText = I18n.t("ui.task.handoffDone");
+    let hintText = I18n.t(`ui.task.hints.${aiMode}`);
+    if (aiState === "done") hintText = I18n.t("ui.task.aiDone");
     $("hint").textContent = hintText;
 
     const badge = $("b-badge");
-    const badgeTxt = (aiMode === "solo") ? null : I18n.t(badgeKey);
+    const badgeTxt = (aiMode === "solo") ? null : I18n.t(`ui.task.badges.${aiMode}`);
     if (badgeTxt) { badge.hidden = false; badge.textContent = badgeTxt; }
     else badge.hidden = true;
-
-    // Reasoning panel: present for the whole stage (so its space is reserved
-    // and nothing shifts when it fills), revealed as the AI acts.
-    const panel = $("ai-thought");
-    if (panel) {
-      panel.hidden = !showThoughts;
-      panel.classList.remove("visible");
-      $("ai-thought-txt").textContent = "";
-      $("ai-thought-label").textContent = I18n.t("ui.task.thoughtLabel");
-    }
 
     // Participant speed control — only where an AI cursor actually moves.
     const speedCtl = $("ai-speed-ctl");
@@ -511,17 +512,17 @@ window.Task = (function () {
       }
     }
 
-    // AI activation zone — only in handoff stages, where a shared cursor exists.
+    /* The AI control block: the handoff activation zone, or the hidden
+       mechanic's "Start AI" button. Both mechanics retire it once the board is
+       full — there is no more work to hand over — which is also why a hidden
+       stage that has already run shows nothing here. */
     if (zoneEl) {
-      zoneEl.hidden = !handoff;
-      if (handoff) {
-        const label = $("ai-zone-label");
-        if (label) label.textContent = I18n.t(
-          fc && fc.active ? "ui.task.zone.active" : "ui.task.zone.idle"
-        );
-      } else {
-        zoneEl.classList.remove("active");
-      }
+      const showZone = (handoff || hiddenAi) && aiState !== "done";
+      zoneEl.hidden = !showZone;
+      zoneEl.classList.toggle("ai-zone--btn", hiddenAi);
+      zoneEl.disabled = hiddenAi && (hiddenPlaced || hiddenFlying);
+      if (showZone) updateZoneLabel();
+      else zoneEl.classList.remove("active");
     }
 
     $("btn-explainer").textContent = I18n.t("ui.task.explainerBtn");
@@ -532,8 +533,8 @@ window.Task = (function () {
   }
 
   /* Re-render the whole task in the newly selected language. Safe at any
-     moment: both task files share ids, tiles[].key and swapKeys, so `cards`,
-     `inbox`, `slots` and `aiRanking` stay valid — only the text is replaced. */
+     moment: both language views share ids, tiles[].key and ai-order, so
+     `cards`, `inbox`, `slots` and `aiRanking` stay valid — only text changes. */
   function relocalize() {
     if (!cond) return;
     const inboxIds = inbox.map(c => c.id);           // card ids survive the switch
@@ -547,33 +548,27 @@ window.Task = (function () {
     // language switch actually translates the intro text and its buttons,
     // not just the surrounding chrome.
     explainerSteps = onboardingStepsFor(cond.key);
-    // If the explainer is open, swap its text too — respecting whichever
-    // onboarding step (if any) is currently showing, so a language switch
-    // mid-onboarding doesn't jump back to the combined single-window text
-    // or leave the button in the old language.
+    /* If the explainer is open, swap its text too — through the same renderer
+       showExplainer uses, so the two can never drift. `explainerAutoFlow` says
+       which shape is on screen, so a language switch mid-onboarding re-renders
+       the step the participant is on rather than jumping to the combined text. */
     const overlay = $("explainer-overlay");
-    if (overlay && !overlay.hidden) {
-      if (explainerSteps && explainerAutoFlow) {
-        renderExplainerStep();
-      } else if (explainerSteps) {
-        const total = (Store.get().plan || []).length;
-        $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
-        $("explainer-body").textContent = explainerSteps.map(s => s.body).join(" ");
-        $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
-      } else {
-        const total = (Store.get().plan || []).length;
-        $("explainer-title").textContent = I18n.t("ui.task.taskCounter", { n: planIndex + 1, total });
-        $("explainer-body").textContent = I18n.t(`conditions.${cond.key}.explainer`);
-        $("explainer-ok").textContent = I18n.t("ui.task.explainerOk");
-      }
-    }
+    if (overlay && !overlay.hidden) renderExplainerBody(explainerAutoFlow);
   }
 
   /* ── render ── */
   function render() {
     renderInbox();
     renderLadder();
-    $("btn-confirm").disabled = !slots.every(Boolean);
+    /* Mid-flight the real tiles are already sitting in their final slots —
+       it is the clones on #fly-layer that are still travelling — so hide them
+       until they land, and keep Confirm shut until the board is settled.
+       Re-applied on every render so a language switch mid-flight (relocalize)
+       cannot reveal them early. */
+    if (hiddenFlying) {
+      document.querySelectorAll("#ladder .card").forEach(el => el.classList.add("in-flight"));
+    }
+    $("btn-confirm").disabled = hiddenFlying || !slots.every(Boolean);
   }
 
   function renderInbox() {
@@ -623,18 +618,24 @@ window.Task = (function () {
     div.className = "card";
     div.dataset.id = card.id;
     div.dataset.from = String(from);
-    div.innerHTML = `<div class="card-txt"><div class="card-title">${card.title}</div></div>
+    /* Title plus the case description — a priority judgement needs the detail,
+       not just the label. textContent throughout: task prose is authored
+       content, never markup. */
+    div.innerHTML = `<div class="card-txt">
+        <div class="card-title"></div>
+        <div class="card-desc"></div>
+      </div>
       <div class="card-grip">⠿</div>`;
+    div.querySelector(".card-title").textContent = card.title;
+    div.querySelector(".card-desc").textContent = card.description || "";
     div.addEventListener("mousedown", onMouseDown);
-    // c3: hovering a step shows its reasoning, exactly as the AI passing over
-    // it does. No-op unless the stage has the reasoning panel.
-    div.addEventListener("mouseenter", () => showThought(card.id, "user"));
     return div;
   }
 
   /* ── custom mouse drag ── */
   function onMouseDown(e) {
     if (e.button !== 0) return;
+    if (hiddenFlying) return;      // the tiles are in the air; nothing to grab yet
     const card = e.currentTarget;
     const id = card.dataset.id;
     const from = card.dataset.from === "inbox" ? "inbox" : +card.dataset.from;
@@ -658,21 +659,6 @@ window.Task = (function () {
     drag.ghostH = ghost.offsetHeight || 58;
     const src = document.querySelector(`[data-id="${drag.id}"]`);
     if (src) src.classList.add("ghost");
-
-    // Hand off to whichever hint variant this stage selected. `aiRanking`
-    // already carries any scripted error, so a wrong stage hints — and
-    // explains — the wrong slot, whatever the variant.
-    if (hintImpl) {
-      const ctx = hintContext(drag.id);
-      try { hintImpl.onPickUp(ctx); }
-      catch (e) { console.error(`hint "${hintImpl.name}".onPickUp failed`, e); }
-      if (ctx.aiSlot >= 0) {
-        Store.log("hint_shown", {
-          cardId: drag.id, hintSlot: ctx.aiSlot, hintVariant: hintImpl.name,
-          withThought: !!hintImpl.showsReasoning, isWrongHint: ctx.isWrongHint,
-        });
-      }
-    }
     if (firstActionAt == null) firstActionAt = performance.now();
     Store.log("drag_start", { cardId: drag.id, from: drag.from });
   }
@@ -680,7 +666,6 @@ window.Task = (function () {
   function clearSlotMarks() {
     document.querySelectorAll(".slot").forEach(s =>
       s.classList.remove("drop-target"));
-    Hints.clearAll();   // each variant removes its own traces
   }
 
   /* ── the floating ghost, shared by the participant's drag and the AI carry ── */
@@ -708,13 +693,6 @@ window.Task = (function () {
       s.classList.toggle("drop-target",
         e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom);
     });
-
-    // Optional hook: a variant that reacts to pointer movement (proximity
-    // cues, live confidence, …) implements onMove; the current two don't.
-    if (hintImpl && hintImpl.onMove) {
-      try { hintImpl.onMove(hintContext(drag.id), e.clientX, e.clientY); }
-      catch (err) { console.error(`hint "${hintImpl.name}".onMove failed`, err); }
-    }
 
     ghost.style.left = gx + "px";
     ghost.style.top = gy + "px";
@@ -773,6 +751,153 @@ window.Task = (function () {
     if (!inbox.find(c => c.id === id)) inbox.push(byId[id]);
   }
 
+  /* ═══ the hidden mechanic (G2) ════════════════════════════════════
+     No cursor and no narration. The block under the board is a "Start AI"
+     button; one press and every step travels from wherever it currently sits
+     — inbox or ladder, already-sorted or not — to the slot the AI chose, all
+     six at once, linearly, in Config.HIDDEN_PLACE_MS. The AI's whole visible
+     contribution is that one second; everything after it is the participant's
+     review, exactly as after a handoff.
+
+     It runs ONCE per task. Like the handoff zone at autoFinish(), the button
+     retires when the board is full: there is no more work to hand over, and a
+     second press could only undo the participant's own corrections.
+
+     ── why clones rather than the real tiles ──
+     This is FLIP (measure, commit, measure, animate back), but it moves copies
+     on #fly-layer instead of transforming the tiles in place. An inbox tile and
+     a ladder tile are not the same WIDTH — they carry different left margins so
+     both line up with the numbered slots — so a transform-only flight would pop
+     to the destination width on the very first frame. The clones interpolate
+     left/top/width together, which is not compositor-friendly but is six
+     elements for one second. */
+  let hiddenPlaced = false;   // the button has been pressed for this task
+  let hiddenFlying = false;   // a flight is in the air: the board is frozen
+  let hiddenTimer = null;     // landing callback
+
+  // Viewport rects of the tiles matching `sel`, keyed by card id.
+  function cardRects(sel) {
+    const out = {};
+    document.querySelectorAll(sel).forEach(el => { out[el.dataset.id] = el.getBoundingClientRect(); });
+    return out;
+  }
+
+  // A copy of one tile, parked exactly over where the real one sits.
+  function makeFlyClone(id, rect) {
+    const el = document.createElement("div");
+    el.className = "card fly-card";
+    el.innerHTML = `<div class="card-txt"><div class="card-title"></div></div>
+      <div class="card-grip">⠿</div>`;
+    el.querySelector(".card-title").textContent = byId[id].title;
+    el.style.left = rect.left + "px";
+    el.style.top = rect.top + "px";
+    el.style.width = rect.width + "px";
+    el.style.height = rect.height + "px";
+    return el;
+  }
+
+  // Empty the flight layer and let every real tile be seen again.
+  function clearFlyLayer() {
+    const layer = $("fly-layer");
+    if (layer) layer.innerHTML = "";
+    document.querySelectorAll(".card.in-flight").forEach(el => el.classList.remove("in-flight"));
+  }
+
+  /* Abandon a flight without landing it — task switch, dev Skip. The board's
+     model is already the AI's order by then (startHiddenPlacement commits it
+     before the clones move), so there is nothing to roll back: the next
+     start() rebuilds everything anyway. */
+  function stopHiddenPlacement() {
+    if (hiddenTimer) { clearTimeout(hiddenTimer); hiddenTimer = null; }
+    hiddenPlaced = false;
+    hiddenFlying = false;
+    clearFlyLayer();
+  }
+
+  function startHiddenPlacement() {
+    if (!hiddenAi || hiddenPlaced || hiddenFlying || drag) return;
+    const myRun = runId;
+    hiddenPlaced = true;
+    hiddenFlying = true;
+    /* Pressing the button IS this participant's first move on the task, and it
+       is also the moment they hand the work over — so it counts on both
+       clocks, and aiTakeovers stays comparable with the handoff stages. */
+    if (firstActionAt == null) firstActionAt = performance.now();
+    aiTakeovers++;
+
+    Store.log("hidden_started", {
+      taskId, nth: aiTakeovers,
+      before: [...slots],                        // what they had sorted themselves
+      placedSoFar: slots.filter(Boolean).length,
+      aiSuggestion: [...aiRanking],
+    });
+
+    // Where everything is now …
+    const from = cardRects("#inbox .card, #ladder .card");
+
+    // … commit the AI's order, and find out where everything landed.
+    const order = [...aiRanking];
+    slots = order;
+    inbox = [];
+    render();                                    // hides the real tiles: hiddenFlying is set
+    const to = cardRects("#ladder .card");
+
+    const layer = $("fly-layer");
+    const clones = [];
+    order.forEach((id, i) => {
+      if (!id) return;
+      aiPlacedCount++;
+      Store.log("ai_placement", { cardId: id, slot: i });
+      const a = from[id], b = to[id];
+      const real = document.querySelector(`#ladder [data-id="${id}"]`);
+      if (!a || !b) {
+        // No geometry to fly between (shouldn't happen — all six tiles are
+        // always on screen). Land it instantly rather than leaving it invisible.
+        if (real) real.classList.remove("in-flight");
+        return;
+      }
+      const clone = makeFlyClone(id, a);
+      layer.appendChild(clone);
+      clones.push({ clone, b });
+    });
+
+    // One reflow for the whole set, so every clone starts from its own rect
+    // rather than from wherever the transition happened to be armed.
+    void layer.offsetWidth;
+    const dur = Config.HIDDEN_PLACE_MS;
+    clones.forEach(({ clone, b }) => {
+      clone.style.transition = `left ${dur}ms linear, top ${dur}ms linear, width ${dur}ms linear`;
+      clone.style.left = b.left + "px";
+      clone.style.top = b.top + "px";
+      clone.style.width = b.width + "px";
+    });
+
+    /* One timer for the set rather than six transitionend listeners: each
+       clone fires that event once per animated property, and a clone that has
+       nowhere to travel (a step already in its AI slot) never fires it at all. */
+    if (zoneEl) zoneEl.disabled = true;
+    hiddenTimer = setTimeout(() => finishHiddenPlacement(myRun), dur + 40);
+  }
+
+  /* The tiles have landed: drop the clones, retire the button, open the review.
+     Idempotent — two paths race to call it (the landing timer and the
+     visibility catch in wire()), and calling it twice would re-stamp
+     allPlacedAt and log a second hidden_done. */
+  function finishHiddenPlacement(forRun) {
+    if (forRun !== runId || !hiddenFlying) return;   // a newer task owns the board, or already landed
+    if (hiddenTimer) { clearTimeout(hiddenTimer); hiddenTimer = null; }
+    hiddenFlying = false;
+    clearFlyLayer();
+    aiState = "done";
+    if (zoneEl) { zoneEl.hidden = true; zoneEl.disabled = false; }
+    $("hint").textContent = I18n.t("ui.task.aiDone");
+    render();
+    allPlacedAt = performance.now();
+    Store.log("hidden_done", {
+      taskId, slots: [...slots], placedByAi: aiPlacedCount, durationMs: Config.HIDDEN_PLACE_MS,
+    });
+  }
+
   /* ═══ the AI cursor ═══════════════════════════════════════════
      A fake cursor that plans human-ish motion: think → curve toward the
      step → grab → carry → drop. Driven by rAF (with a setInterval
@@ -829,10 +954,6 @@ window.Task = (function () {
     const slotIdx = aiRanking.indexOf(target.id);
     if (!cc || slotIdx < 0) { pushPause(300); return; }
     const hes = !!(hcfg && hcfg.hesitate);
-
-    // Say what it's about to do BEFORE it moves, so there is time to read it
-    // while the cursor travels rather than only at the moment of the drop.
-    showThought(target.id, "ai");
 
     pushPause(hes ? rand(350, 1000) : rand(120, 260));            // a beat of "thinking"
     if (hes && Math.random() < 0.6) {                             // second-guess approach
@@ -905,13 +1026,6 @@ window.Task = (function () {
       const pos = bezier(s.p0, s.ctrl, s.p1, e);
       fc.x = pos.x; fc.y = pos.y;
       if (fc.carrying != null) { ghostMoveTo(fc.x - 26, fc.y - 20); highlightSlotAt(fc.x, fc.y); }
-      // The AI cursor fires no real hover events, so hit-test what it is over.
-      // While carrying it "holds" that step — show it straight away, since the
-      // grab is deliberate; otherwise require a dwell so transit doesn't flicker.
-      if (showThoughts) {
-        if (fc.carrying != null) showThought(fc.carrying, "ai");
-        else aiHoverThought(cardIdAt(fc.x, fc.y), performance.now());
-      }
       if (s.t >= 1) { fc.x = s.p1.x; fc.y = s.p1.y; fc.seg = null; }
 
     } else if (s.type === "grab") {
@@ -934,7 +1048,7 @@ window.Task = (function () {
         clearSlotMarks();
         clickPulse();
         aiPlacedCount++;
-        Store.log("ai_placement", { cardId: id, slot: s.slot, isError: byId[id].rank !== s.slot + 1 });
+        Store.log("ai_placement", { cardId: id, slot: s.slot });
         placeCard(id, "inbox", s.slot);
         render();
       }
@@ -1004,8 +1118,7 @@ window.Task = (function () {
     if (zoneEl) { zoneEl.classList.remove("active"); zoneEl.hidden = true; }
     ghostHide();
     clearSlotMarks();
-    hideThought();
-    $("hint").textContent = I18n.t("ui.task.handoffDone");
+    $("hint").textContent = I18n.t("ui.task.aiDone");
     render();
     allPlacedAt = performance.now();
     Store.log("handoff_done", {
@@ -1037,66 +1150,12 @@ window.Task = (function () {
     if (zoneEl) zoneEl.classList.remove("active");
     updateZoneLabel();
     clearSlotMarks();
-    hideThought();
     Store.log("user_took_back", {
       taskId, nth: userTakebacks, placedSoFar: slots.filter(Boolean).length,
     });
     render();
   }
 
-  /* ── the AI's reasoning panel (handoff + thoughts) ──
-     The panel always describes the step under the cursor — whichever cursor
-     that is. The participant hovering a tile shows its reasoning just as the
-     AI passing over one does, so the reasoning is readable on demand rather
-     than only while the AI happens to be working.
-
-     It stays on the last step shown rather than clearing on mouse-out, which
-     would make it flicker as the pointer crosses gaps between tiles. */
-  let shownThoughtFor = null;   // card id currently in the panel
-  /* The AI cursor sweeps across tiles in transit. Swapping the panel for every
-     tile it clips would flicker (~20× a task) and make the text unreadable, so
-     a pass only counts once the cursor has settled on it. A real hover by the
-     participant is deliberate and shows immediately. */
-  const AI_HOVER_DWELL_MS = 220;
-  let aiHoverCard = null, aiHoverSince = 0;
-
-  function aiHoverThought(cardId, now) {
-    if (cardId !== aiHoverCard) { aiHoverCard = cardId; aiHoverSince = now; return; }
-    if (cardId && now - aiHoverSince >= AI_HOVER_DWELL_MS) showThought(cardId, "ai");
-  }
-
-  function showThought(cardId, source) {
-    if (!showThoughts || !cardId) return;
-    if (cardId === shownThoughtFor) return;         // already displayed — no re-render, no re-log
-    const text = Tasks.thoughtFor(taskId, cardId, aiError);
-    const panel = $("ai-thought");
-    if (!panel || !text) return;
-    shownThoughtFor = cardId;
-    $("ai-thought-txt").textContent = text;
-    panel.classList.add("visible");
-    const trueSlot = byId[cardId] ? byId[cardId].rank - 1 : -1;
-    const aiSlot = aiRanking.indexOf(cardId);
-    Store.log("ai_thought_shown", {
-      taskId, cardId, aiSlot, source: source || "ai",
-      isWrongThought: aiSlot >= 0 && aiSlot !== trueSlot,
-    });
-  }
-  function hideThought() {
-    const panel = $("ai-thought");
-    if (panel) panel.classList.remove("visible");
-    shownThoughtFor = null;
-  }
-
-  // Which card sits under a viewport point (used for the AI cursor, which
-  // generates no real hover events).
-  function cardIdAt(x, y) {
-    let found = null;
-    document.querySelectorAll("#inbox .card, #ladder .card").forEach(el => {
-      const r = el.getBoundingClientRect();
-      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) found = el.dataset.id;
-    });
-    return found;
-  }
   function updateReturn(dt) {
     fc.returnT += dt / AUTO.returnMs;
     const e = easeInOutCubic(clamp(fc.returnT, 0, 1));
@@ -1170,12 +1229,11 @@ window.Task = (function () {
     }
   }
 
-  /* ── scoring ── */
-  function scoreRanking(submitted) {
-    let correct = 0;
-    submitted.forEach((id, i) => { if (id && byId[id].rank === i + 1) correct++; });
-    return correct;
-  }
+  /* ── the one ranking measure left ──
+     No score: these tasks have no correct order. `overrides` counts the steps
+     the participant's final ranking places somewhere other than the AI put
+     them — i.e. how far they departed from the recommendation. Null in a solo
+     round, where there was no recommendation to depart from. */
   function countOverrides() {
     if (aiMode === "solo") return null;
     let n = 0;
@@ -1219,18 +1277,22 @@ window.Task = (function () {
       });
     }
     const result = {
-      stage, group, condition: cond.key, aiMode, hintVariant: hintImpl ? hintImpl.name : null,
-      taskId, aiError, lang: I18n.get(),
+      stage, group, condition: cond.key, aiMode, character, block,
+      taskId, lang: I18n.get(),
       ranking: [...slots],
-      score: scoreRanking(slots),   // vs. the true order — unaffected by aiError
+      aiSuggestion: [...aiRanking],   // what they were departing from, on the result itself
       overrides: countOverrides(),
-      // shared-control behaviour (handoff stages; 0/null elsewhere)
+      /* Shared-control behaviour. aiTakeovers counts every time the AI was
+         handed the work — a zone entry in a handoff stage, the button press in
+         a hidden one — so the two mechanics stay comparable; the rest is 0
+         outside them. The cursor settings are null wherever no cursor runs,
+         rather than reporting the speed of a cursor that never appeared. */
       aiTakeovers, userTakebacks, placedByAi: aiPlacedCount,
-      cursorSpeed: hcfg ? hcfg.speed : null,
-      cursorHesitate: hcfg ? !!hcfg.hesitate : null,
+      cursorSpeed: (handoff && hcfg) ? hcfg.speed : null,
+      cursorHesitate: (handoff && hcfg) ? !!hcfg.hesitate : null,
       ...timing,
     };
-    Store.log("task_confirm", { stage, group, taskId, finalRanking: [...slots], ...timing });
+    Store.log("task_confirm", { stage, group, character, block, taskId, finalRanking: [...slots], ...timing });
     Store.addResult(result);
     hideCursor();
     // No per-task summary — go straight to the next stage.

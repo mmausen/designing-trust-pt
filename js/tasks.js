@@ -1,26 +1,41 @@
 /* ═══════════════════════════════════════════════════════════════════
-   TASKS — the real task content, from the bilingual task_thought.json.
+   TASKS — the task content, from the bilingual tasks.json.
+
+   Every task is one PRIORITISATION problem: six incoming public-administration
+   cases, to be ranked most urgent first. The task TYPE never changes across
+   tasks — only the subject matter does — so the instruction text lives in
+   strings.json (ui.task.brief) rather than on each task.
 
    That file shares its STRUCTURE and splits only its PROSE:
 
-     { id, tiles:[{ key, de:{text,thought}, en:{…} }],
-       scriptedError:{ swapKeys, de:{pair,rationale,wrongThought[2]}, en:{…} },
-       de:{title,description}, en:{…} }
+     { id,
+       de:{title}, en:{title},
+       "ai-order": { bold:[keys…], cautious:[keys…] },
+       tiles:[{ key, de:{text,description}, en:{…} }] }
 
-   `pair` and `wrongThought` are 2-element arrays positionally aligned to the
-   SHARED swapKeys, so which tile a sentence belongs to cannot diverge between
-   languages either.
+   `id`, `tiles[].key` and `ai-order` therefore exist exactly once and CANNOT
+   diverge between languages — which is what keeps card ids ("t0"…"t5"), the
+   seeded shuffle, the participant's placements and the AI's suggestion
+   language-independent, and a mid-task language switch safe.
 
-   `id`, `tiles[].key` and `scriptedError.swapKeys` therefore exist exactly
-   once and CANNOT diverge between languages — which is what keeps card ids
-   ("t0"…"t5"), the seeded shuffle, the participant's placements, scoring
-   and the scripted error language-independent, and a mid-task language
-   switch safe.
+   ── there is no correct order ─────────────────────────────────────
+   These are hierarchy/priority judgements, not process sequences: no
+   objectively true ranking exists. So `tiles[].key` is ONLY a stable tile id
+   — NOT a position — and nothing here computes a score. Do not add one: there
+   is nothing to score against.
+
+   ── the AI's suggestion ───────────────────────────────────────────
+   `ai-order` is authored per CHARACTER: a "bold" ranking and a "cautious" one,
+   each a permutation of the six tile keys, top to bottom. Which one a session
+   uses comes from its GROUP (Config.characterFor) and is pinned onto the
+   session — see aiRankingFor(). A task whose AI ranking is
+   meant to be questionable simply says so in the array; there is no separate
+   error mechanism any more, and nothing marks such a task as wrong.
 
    `resolve()` flattens one bilingual task into an ordinary single-language
-   task ({id,title,description,tiles:[{key,text,thought}],scriptedError}),
-   so everything downstream stays unaware of the bilingual layout. Views are
-   built once per language and cached.
+   task ({id,title,tiles:[{key,text,description}],aiOrder}), so everything
+   downstream stays unaware of the bilingual layout. Views are built once per
+   language and cached.
 
    When the prototype is baked into a single file, inline the JSON here.
    ═══════════════════════════════════════════════════════════════════ */
@@ -36,22 +51,16 @@ window.Tasks = (function () {
   // Flatten a bilingual task into a plain single-language one.
   function resolve(t, lang) {
     const L = t[lang] || {};
-    const se = t.scriptedError || {};
-    const seL = se[lang] || {};
     return {
       id: t.id,
       title: L.title || "",
-      description: L.description || "",
+      // Kept verbatim: the keys are characters ("bold" / "cautious"), and the
+      // values are tile-key permutations, so neither is language-dependent.
+      aiOrder: t["ai-order"] || {},
       tiles: (t.tiles || []).map(tile => {
         const tl = tile[lang] || {};
-        return { key: tile.key, text: tl.text || "", thought: tl.thought || "" };
+        return { key: tile.key, text: tl.text || "", description: tl.description || "" };
       }),
-      scriptedError: {
-        swapKeys: se.swapKeys,
-        pair: seL.pair,
-        rationale: seL.rationale,
-        wrongThought: seL.wrongThought,
-      },
     };
   }
 
@@ -66,77 +75,32 @@ window.Tasks = (function () {
   }
 
   function get(id) { return active().byId[id] || null; }
-  function has(id) { return !!active().byId[id]; }
-  function all() { return active().list; }
 
-  // Card model for one task's tiles. `id` is stable per correct slot ("t"+key),
-  // `rank` = key+1 to match the app's 1-based scoring. Text goes in the title;
-  // the tile's reasoning is kept on `thought` for later AI features (not shown).
+  /* Card model for one task's tiles. `id` is stable per tile ("t"+key) and is
+     what placements, logs and the AI's suggestion are all expressed in.
+     There is deliberately no `rank`: these tasks have no correct order. */
   function cardsFor(id) {
     const t = get(id);
     if (!t || !Array.isArray(t.tiles)) return [];
     return t.tiles.map(tile => ({
       id: "t" + tile.key,
-      rank: tile.key + 1,
       title: tile.text,
-      thought: tile.thought || "",
+      description: tile.description || "",
     }));
   }
 
-  // Correct order = card ids sorted by slot (["t0","t1",…,"t5"]).
-  function correctOrderFor(id) {
-    return cardsFor(id).slice().sort((a, b) => a.rank - b.rank).map(c => c.id);
-  }
-
-  // The tile-key pair this task's scripted error swaps, or null if it has none.
-  function scriptedSwapKeys(id) {
+  /* The AI's suggested ranking for one task, as card ids top to bottom.
+     `character` selects which authored order to use ("bold" | "cautious").
+     Returns [] when the task or the character is unknown, which reads
+     downstream as "this stage has no AI suggestion" rather than throwing. */
+  function aiRankingFor(id, character) {
     const t = get(id);
-    const keys = t && t.scriptedError && t.scriptedError.swapKeys;
-    return (Array.isArray(keys) && keys.length === 2) ? keys : null;
-  }
-
-  // The AI's suggested ranking. Normally the correct order; with `withError`
-  // the task's scriptedError.swapKeys pair is swapped, so the AI suggests a
-  // plausible-but-wrong order (turned on per round via Config.GROUP_TASKS).
-  // correctOrderFor stays the ground truth for scoring either way.
-  function aiRankingFor(id, withError) {
-    const order = correctOrderFor(id);
-    if (!withError) return order;
-    const keys = scriptedSwapKeys(id);
-    if (!keys) return order;
-    const a = order.indexOf("t" + keys[0]);
-    const b = order.indexOf("t" + keys[1]);
-    if (a === -1 || b === -1) return order;
-    [order[a], order[b]] = [order[b], order[a]];
-    return order;
-  }
-
-  // The AI's stated reasoning for one card, shown in the "thought" condition.
-  // Normally the tile's own `thought` (why it belongs in its correct slot).
-  // With `withError`, the two tiles of the scripted swap instead get the task's
-  // `wrongThought` — the plausible-sounding justification for the wrong order,
-  // so the explanation matches what the AI is actually suggesting.
-  //
-  // `wrongThought` is a 2-element array positionally aligned to `swapKeys`,
-  // exactly like `pair`: EACH swapped tile argues for its own wrong slot. (One
-  // shared sentence cannot: it is written from the perspective of the tile that
-  // moves earlier, so on the other tile it reads as a non sequitur.) A plain
-  // string is still accepted and means "same justification for both".
-  function thoughtFor(id, cardId, withError) {
-    const t = get(id);
-    if (!t) return "";
-    const key = parseInt(String(cardId).replace(/^t/, ""), 10);
-    if (Number.isNaN(key)) return "";
-    if (withError) {
-      const keys = scriptedSwapKeys(id);
-      if (keys && (keys[0] === key || keys[1] === key)) {
-        const wt = (t.scriptedError && t.scriptedError.wrongThought) || "";
-        if (Array.isArray(wt)) return wt[keys[0] === key ? 0 : 1] || "";
-        return wt;
-      }
+    const order = t && t.aiOrder && t.aiOrder[character];
+    if (!Array.isArray(order)) {
+      if (t) console.warn(`[BDR] task ${id} has no ai-order for character "${character}"`);
+      return [];
     }
-    const tile = (t.tiles || []).find(x => x.key === key);
-    return tile ? (tile.thought || "") : "";
+    return order.map(k => "t" + k);
   }
 
   // ── deterministic shuffle: same inbox order for every participant (fixed
@@ -166,5 +130,5 @@ window.Tasks = (function () {
     return seededShuffle(cardsFor(id), String(seed == null ? "" : seed) + ":" + id);
   }
 
-  return { load, get, has, all, cardsFor, correctOrderFor, aiRankingFor, scriptedSwapKeys, thoughtFor, inboxCardsFor };
+  return { load, get, aiRankingFor, inboxCardsFor };
 })();

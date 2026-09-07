@@ -3,7 +3,7 @@
    saves each session to ./logs.
 
    Two endpoints:
-     POST /assign-group  → the least-used of G1…G4 (see the ledger below).
+     POST /assign-group  → the least-used of G1…Gn (see the ledger below).
                            This is the study's randomisation; without it the
                            client falls back to a local coin flip.
      POST /collect-logs  → session snapshot + event stream.
@@ -45,17 +45,24 @@ const GROUP_FILE = path.join(LOG_DIR, "groups.json");
    group (ties broken at random).
 
    MUST match the keys of Config.GROUPS in js/config.js. Override without
-   editing this file:  BDR_GROUPS=G1,G2,G3,G4,G5 node server.js */
+   editing this file:  BDR_GROUPS=G1,G2,G3 node server.js
+
+   NOTE: records naming a group that is no longer in this list are skipped by
+   tally(), so shrinking the set never corrupts the ledger — but it also means
+   old records under a REUSED name still count. G1-G4 have been reused twice
+   this month and mean something different each time (they are now
+   character × mechanic-order setups), so clear logs/groups.json before a real
+   run if pilot records are still in there. */
 const GROUPS = (process.env.BDR_GROUPS || "G1,G2,G3,G4")
   .split(",").map(s => s.trim()).filter(Boolean);
 
 /* What counts towards a group's tally:
      - every FINISHED session, forever
      - every assignment still in flight, until it expires
-   The expiry is what makes this dropout-proof. Someone who is handed G3 and
+   The expiry is what makes this dropout-proof. Someone who is handed G2 and
    closes the tab during the pre-survey holds the slot only until the window
-   passes, after which the next participant can be sent to G3 — so the four
-   cells even out in COMPLETED participants, which is what the analysis
+   passes, after which the next participant can be sent to G2 — so the cells
+   even out in COMPLETED participants, which is what the analysis
    needs. Sessions forced from the dev picker never count at all. */
 const RESERVE_MS = Number(process.env.BDR_RESERVE_MS || 45 * 60 * 1000);
 

@@ -1,11 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════════
-   GROUPS — which AI interaction this participant gets (G1…G4).
+   GROUPS — which AI mechanic this participant gets (G1 handoff / G2 hidden).
 
    The study is between-subjects and unattended, so nobody is standing by
-   to keep the four cells even. A coin flip per participant does not do it:
-   with 40 people, a fair random draw still lands cells of 6 and 14 often
-   enough to matter. So the SERVER holds the tally and hands back the
-   least-used group (server.js → /assign-group).
+   to keep the cells even. A coin flip per participant does not do it: with 40
+   people, a fair random draw still lands cells of 14 and 26 often enough to
+   matter, and it is worse with the small N this study plans for. So the
+   SERVER holds the tally and hands back the least-used group
+   (server.js → /assign-group).
 
    Three ways a group can be decided, all recorded as `groupSource` so the
    analysis can tell them apart:
@@ -69,5 +70,5 @@ window.Groups = (function () {
     }
   }
 
-  return { keys, isValid, setOverride, override, pickLocal, draw };
+  return { keys, setOverride, override, draw };
 })();

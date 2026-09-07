@@ -5,6 +5,13 @@
 (function () {
   const $ = id => document.getElementById(id);
 
+  // Do two STEPS snapshots describe the same flow shape?
+  function sameSteps(a, b) {
+    if (!a || !b) return false;
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+    return [...keys].every(k => !!a[k] === !!b[k]);
+  }
+
   // Auto participant ID: 4 random letters + base36 timestamp (unique, no input needed).
   function genParticipantId() {
     let letters = "";
@@ -13,9 +20,9 @@
   }
 
   /* ── language ──────────────────────────────────────────────────────
-     Switching is a live re-render, never a reload: both task files share
-     ids, tiles[].key and swapKeys, so placements, the seeded shuffle and
-     any scripted error survive untouched — only visible text changes. */
+     Switching is a live re-render, never a reload: both language views share
+     ids, tiles[].key and ai-order, so placements, the seeded shuffle and the
+     AI's suggestion survive untouched — only visible text changes. */
   function applyStaticText() {
     document.querySelectorAll("[data-i18n]").forEach(el => {
       el.textContent = I18n.t(el.getAttribute("data-i18n"));
@@ -32,7 +39,7 @@
       b.classList.toggle("active", b.dataset.lang === I18n.get());
       b.setAttribute("aria-pressed", String(b.dataset.lang === I18n.get()));
     });
-    renderResumeNote();
+    if (!$("screen-resume").hidden) renderResume();
   }
 
   /* Everything that must follow the active language hangs off this one
@@ -46,6 +53,7 @@
     const cur = Flow.current();
     if (!cur) return;
     if (cur.type === "survey") Survey.relocalize();
+    else if (cur.type === "prolific") Prolific.relocalize();
     else if (cur.type === "task") Task.relocalize();
     else if (cur.type === "debrief") Results.relocalize();
   }
@@ -60,22 +68,33 @@
     }
   }
 
-  // The resume offer sits on the consent screen and is language-dependent.
+  /* ── resume ────────────────────────────────────────────────────────
+     Its own screen, shown instead of the normal first one when an
+     interrupted session is in localStorage. It used to be a banner on the
+     consent slide, which meant switching consent off (Config.STEPS) silently
+     took resume with it. */
   let savedSession = null;
-  function renderResumeNote() {
-    const note = $("resume-note");
-    if (!note) return;
-    if (!savedSession) { note.hidden = true; note.innerHTML = ""; return; }
-    note.hidden = false;
-    note.innerHTML =
-      `<span class="rn-txt"></span> ` +
-      `<button class="btn" id="btn-resume-sess"></button>` +
-      `<button class="btn" id="btn-discard-sess"></button>`;
-    note.querySelector(".rn-txt").textContent =
-      I18n.t("ui.consent.resumeFound", { id: savedSession.participantId || "—", step: savedSession.currentStep });
-    $("btn-resume-sess").textContent = I18n.t("ui.consent.resume");
-    $("btn-discard-sess").textContent = I18n.t("ui.consent.startNew");
+
+  // The first screen of a NORMAL start — whatever the toggles leave standing.
+  function showFirstScreen() {
+    if (Config.STEPS.consent) Flow.showScreen("screen-consent");
+    else startSession();   // no consent gate: create the session and get going
+  }
+
+  // Fill the resume screen's text. Safe to call any time; no-ops without an offer.
+  function renderResume() {
+    if (!savedSession) return;
+    $("resume-heading").textContent = I18n.t("ui.resume.heading");
+    $("resume-body").textContent = I18n.t("ui.resume.body", {
+      id: savedSession.participantId || "—", step: savedSession.currentStep,
+    });
+    $("btn-resume-sess").textContent = I18n.t("ui.resume.continue");
+    $("btn-discard-sess").textContent = I18n.t("ui.resume.startNew");
+  }
+
+  function wireResume() {
     $("btn-resume-sess").addEventListener("click", () => {
+      if (!savedSession) return;
       Store.restore(savedSession);
       if (savedSession.lang) I18n.set(savedSession.lang);   // repaints via onLanguageChanged
       // The group was drawn when the session started and is pinned to it —
@@ -88,7 +107,7 @@
     $("btn-discard-sess").addEventListener("click", () => {
       Store.clear();
       savedSession = null;
-      renderResumeNote();
+      showFirstScreen();
     });
   }
 
@@ -112,6 +131,9 @@
         participantId: pid,
         group: assignment.group,
         groupSource: assignment.source,
+        character: Store.character(),
+        order: Store.order(),
+        steps: Store.get().steps,
         plan: Store.get().plan,
         config: Store.get().config,
         lang: I18n.get(),
@@ -127,7 +149,7 @@
       Store.log("consent", { agreed: true });
       syncDevGroup();
       Flow.build();
-      Flow.go(1); // skip consent step → pre-survey
+      Flow.begin();   // past the consent screen, into whatever comes first
     } finally {
       starting = false;
     }
@@ -145,10 +167,10 @@
   }
 
   /* ── dev group picker ───────────────────────────────────────────────
-     Forces this session into one of G1–G4 so a mechanic can be tested
-     without restarting until the balancer happens to hand it over.
-     Sessions touched by it are marked groupSource:"dev" and the collector
-     leaves them out of the balancing counts. */
+     Forces this session into one of the four setups, so a character/order
+     combination can be tested without restarting until the balancer happens
+     to hand it over. Sessions touched by it are marked groupSource:"dev" and
+     the collector leaves them out of the balancing counts. */
   function fillDevGroup() {
     const sel = $("dev-group");
     if (!sel) return;
@@ -157,15 +179,13 @@
       const cnd = Config.GROUPS[g];
       const opt = document.createElement("option");
       opt.value = g;
-      // e.g. "G2 · handoff+reasoning", "G4 · hint+reasoning/slot-reasoning" —
-      // enough to tell the four apart, and to see which hint file is running.
-      const variant = Config.hintVariantFor(cnd);
-      opt.textContent = `${g} · ${cnd.ai}${cnd.thoughts ? "+reasoning" : ""}${variant ? "/" + variant : ""}`;
+      // e.g. "G1 · bold · hidden→handoff" — the whole setup at a glance
+      opt.textContent = `${g} · ${cnd.character} · ${cnd.order.join("→")}`;
       sel.appendChild(opt);
     });
   }
 
-  // Keep the picker showing the group that is actually in force.
+  // Keep the picker showing the setup that is actually in force.
   function syncDevGroup() {
     const sel = $("dev-group");
     if (!sel) return;
@@ -173,19 +193,22 @@
     if (g) sel.value = g;
   }
 
+  /* Switch the running session's setup. The group fixes the character AND the
+     mechanic order, and the plan is built from that order — so Store.setGroup
+     rebuilds the plan, and the flow has to be rebuilt from it before the
+     current step is re-rendered, or the step would still point at the old
+     round. Both orders run the same number of rounds, so the step index stays
+     valid. Dev aid only; a real session draws once and never changes. */
   function devSetGroup(g) {
     if (!Config.isGroup(g)) return;
     Groups.setOverride(g);            // applies to this session and to any later one
     if (!Store.get()) return;         // before Begin: the draw will use the override
     Store.setGroup(g, "dev");
-    Store.log("group_override", { group: g });
-    // Standing on the AI task? Restart it so the new mechanic is visible now,
-    // rather than after the next stage boundary.
+    Store.log("group_override", { group: g, character: Store.character(), order: Store.order() });
     const cur = Flow.current();
-    if (cur && cur.type === "task" && cur.stage === "ai") {
-      Task.stop();
-      Flow.render();
-    }
+    if (cur && cur.type === "task") Task.stop();
+    Flow.build();
+    if (cur) Flow.render();
   }
 
   /* ── desktop gate ───────────────────────────────────────────────────
@@ -215,7 +238,22 @@
       console.warn("[BDR] LOGGING IS OFF (Config.CONFIG.loggingEnabled = false) — no events are recorded and nothing is written to logs/.");
     }
 
+    /* Loud on purpose: a group naming a character with no `ai-order` in
+       tasks.json, or a mechanic that does not exist, leaves its rounds with an
+       empty suggestion or the wrong interaction — which looks like a broken
+       mechanic rather than a config typo. */
+    Config.GROUP_KEYS.forEach(g => {
+      const c = Config.GROUPS[g];
+      if (!Config.isCharacter(c.character)) {
+        console.error(`[BDR] ${g}: character "${c.character}" is not one of ${Config.CHARACTERS.join(" / ")} — the AI will have nothing to suggest.`);
+      }
+      (c.order || []).forEach(m => {
+        if (!Config.MECHANICS[m]) console.error(`[BDR] ${g}: "${m}" is not a known mechanic (${Object.keys(Config.MECHANICS).join(" / ")}).`);
+      });
+    });
+
     Task.wire();
+    Prolific.wire();
 
     // ── language switcher ──
     I18n.onChange(onLanguageChanged);
@@ -231,15 +269,25 @@
     begin.addEventListener("click", startSession);
 
     /* ── resume offer ──
-       Only offer a session this build can actually run: an older save has a
-       plan shaped for the within-subjects flow (entries with `level`, four
-       conditions) and no group, so restoring it would drop the participant
-       into a flow that no longer exists. */
+       Only offer a session this build can actually run. Two gates, because
+       they catch different things:
+         · SCHEMA_VERSION — the plan and the session fields have changed shape
+           several times; its history is listed in store.js.
+         · STEPS — `currentStep` is an index into the steps array Flow builds,
+           and the toggles change that array's SHAPE. A session saved with the
+           pre-survey on would resume into the wrong step once it is off, with
+           nothing to signal that it had. */
     const saved = Store.load();
     if (Config.CONFIG.resumeEnabled && saved && !saved.completed) {
-      if (saved.schemaVersion === Store.SCHEMA_VERSION) savedSession = saved;
-      else console.warn("[BDR] ignoring a saved session from an older build (schema", saved.schemaVersion, "≠", Store.SCHEMA_VERSION + ")");
+      if (saved.schemaVersion !== Store.SCHEMA_VERSION) {
+        console.warn("[BDR] ignoring a saved session from an older build (schema", saved.schemaVersion, "≠", Store.SCHEMA_VERSION + ")");
+      } else if (!sameSteps(saved.steps, Config.STEPS)) {
+        console.warn("[BDR] ignoring a saved session: it ran under different Config.STEPS", saved.steps, "≠", Config.STEPS);
+      } else {
+        savedSession = saved;
+      }
     }
+    wireResume();
 
     // ── survey continue ──
     $("btn-survey-next").addEventListener("click", () => Survey.submit());
@@ -275,7 +323,12 @@
     window.addEventListener("resize", enforceDesktopGate);
     window.addEventListener("orientationchange", enforceDesktopGate);
 
-    Flow.showScreen("screen-consent");
+    /* An interrupted session takes precedence over everything: ask before
+       starting a new one, whatever the first normal screen would have been.
+       Otherwise go straight there — which, with no consent gate, means
+       creating the session and dropping into the first enabled step. */
+    if (savedSession) { renderResume(); Flow.showScreen("screen-resume"); }
+    else showFirstScreen();
   }
 
   /* Terminal screen. Deliberately has no way forward: the participant should
@@ -300,7 +353,7 @@
       if (!r.ok) throw new Error(`${url} → HTTP ${r.status}`);
       return r.json();
     });
-    Promise.all([grab("strings.json"), grab("task_thought.json")])
+    Promise.all([grab("strings.json"), grab("tasks.json")])
       .then(([strings, tasks]) => {
         I18n.load(strings);
         Tasks.load(tasks);

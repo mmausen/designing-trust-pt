@@ -1,20 +1,19 @@
 /* ═══════════════════════════════════════════════════════════════════
-   RESULTS — the final debrief / overall screen.
-   (The per-task summary interstitial was removed; tasks flow straight on.)
-   The overall grid is gated on Config.CONFIG.showCorrectnessFeedback and
-   resolves each result's tiles from its own task (Tasks.get(taskId)).
+   RESULTS — the final debrief screen.
+
+   Deliberately shows the participant NOTHING about their rankings, and should
+   stay that way for two reasons — the first decisive:
+     · These are priority judgements. There IS no correct order to mark a
+       ranking against, so a right/wrong display could only be a lie.
+     · Any feedback at all would teach across rounds — a learning confound,
+       and a reason to distrust the trust measures that follow it.
+
+   The rankings are still fully recorded on each result (`ranking`,
+   `aiSuggestion`, `overrides`); this screen simply does not report them back.
    ═══════════════════════════════════════════════════════════════════ */
 window.Results = (function () {
   const $ = id => document.getElementById(id);
 
-  // Map of card id → tile for one task ("t"+key → {key,text,…}).
-  function tilesById(taskId) {
-    const t = Tasks.get(taskId);
-    if (!t || !Array.isArray(t.tiles)) return {};
-    return Object.fromEntries(t.tiles.map(tile => ["t" + tile.key, tile]));
-  }
-
-  /* ── final screen ── */
   function showDebrief(opts) {
     Flow.showScreen("screen-debrief");
     const d = Store.get();
@@ -24,7 +23,6 @@ window.Results = (function () {
       Store.sendRemote();
     }
 
-    const fb = Config.CONFIG.showCorrectnessFeedback;
     $("db-title").textContent = I18n.t("ui.debrief.title");
     $("db-thanks").textContent = I18n.t("ui.debrief.thanks");
     $("db-sub").textContent = I18n.t("ui.debrief.sub", { id: d.participantId, n: d.results.length });
@@ -33,45 +31,6 @@ window.Results = (function () {
     $("db-sync-note").textContent = (Config.ENDPOINT_URL && Config.CONFIG.loggingEnabled !== false)
       ? I18n.t("ui.debrief.syncRemote")
       : I18n.t("ui.debrief.syncLocal");
-
-    const grid = $("db-grid");
-    grid.hidden = !fb;
-    if (fb) {
-      grid.innerHTML = "";
-      d.results.forEach(r => {
-        const tById = tilesById(r.taskId);
-        // The result carries its own condition key (c1 / g1…g4), so the grid
-        // stays readable even if the config changes between run and analysis.
-        const condKey = r.condition || "c1";
-        const task = Tasks.get(r.taskId);
-        const col = document.createElement("div");
-        col.className = "or-col";
-        const head = (r.stage === "ai" && r.group ? r.group : condKey.toUpperCase());
-        col.innerHTML = `<div class="or-col-hd">${head}${r.taskId ? " · " + r.taskId : ""}</div>
-          <div class="or-col-sub"></div>`;
-        col.querySelector(".or-col-sub").textContent = task ? task.title : I18n.t(`conditions.${condKey}.label`);
-        r.ranking.forEach((id, i) => {
-          const tile = tById[id];
-          const name = tile ? tile.text : (id || "—");
-          const ok = tile ? (tile.key === i) : false;
-          const row = document.createElement("div");
-          row.className = "or-row";
-          row.innerHTML = `<span class="or-pos">${i + 1}</span>
-            <span class="or-name">${name}</span>
-            <span class="or-dot ${ok ? "ok" : "err"}"></span>`;
-          col.appendChild(row);
-        });
-        const score = document.createElement("div");
-        score.className = "or-score";
-        score.textContent = I18n.t("ui.debrief.correct", { score: r.score });
-        if (r.overrides != null) score.textContent += " · " + I18n.t("ui.debrief.overrides", { n: r.overrides });
-        col.appendChild(score);
-        grid.appendChild(col);
-      });
-      $("db-note").textContent = I18n.t("ui.debrief.note");
-    } else {
-      $("db-note").textContent = "";
-    }
   }
 
   // Re-render the debrief in the new language (without re-logging session_end).

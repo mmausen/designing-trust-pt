@@ -1,46 +1,55 @@
 {
-  "_comment": "All interface text, both languages side by side so gaps are obvious. Keys must stay identical in de/en — a missing key falls back to the other language. {curly} tokens are filled in at runtime. Survey question ids are DATA KEYS: never translate or renumber them. conditions.<key> is keyed by the `key` field of Config.BASELINE / Config.GROUPS: c1 is the unassisted baseline everyone runs and g1–g4 are the four AI groups.",
+  "_comment": "All interface text, both languages side by side so gaps are obvious. Keys must stay identical in de/en — a missing key falls back to the other language. {curly} tokens are filled in at runtime. Survey question ids are DATA KEYS: never translate or renumber them. surveys.pre / mid / post are keyed by the id Flow gives Survey.render — mid runs on the seam between the two AI blocks. conditions.<key> holds a `banner` and an `onboarding`, keyed by the `key` field of Config.BASELINE / Config.MECHANICS — c1 is the unassisted baseline, and `handoff` / `hidden` are the two AI mechanics. They are keyed by MECHANIC, not by group: every participant now meets both, and Config.GROUPS (G1-G4) only decides the AI's character and which mechanic comes first. ui.task.brief is the ranking instruction shown under every task's title — the task type never varies across tasks.json, only its subject, so it is stated once here rather than 13 times.",
   "de": {
     "ui": {
+      "resume": {
+        "heading": "Frühere Sitzung gefunden",
+        "body": "Auf diesem Gerät ist eine unterbrochene Sitzung von {id} gespeichert (Schritt {step}). Möchten Sie dort weitermachen, wo Sie aufgehört haben, oder neu beginnen? Wenn Sie neu beginnen, geht der bisherige Fortschritt verloren.",
+        "continue": "Fortsetzen",
+        "startNew": "Neu starten"
+      },
       "consent": {
         "heading": "Einwilligungserklärung (Platzhalter)",
         "body": "Platzhalter-Text zur Einwilligung. Ersetzen Sie diesen Abschnitt durch die von Ihrer Ethikkommission freigegebene Fassung: worum es in der Studie geht, dass die Teilnahme freiwillig ist, wie die Daten gespeichert und verwendet werden und an wen Sie sich bei Fragen wenden können. Der Übergang zur Studie wird protokolliert.",
         "agree": "Ich habe die obigen Informationen gelesen und nehme freiwillig teil.",
-        "begin": "Beginnen",
-        "resumeFound": "Frühere Sitzung von {id} gefunden (Schritt {step}).",
-        "resume": "Fortsetzen",
-        "startNew": "Neu starten"
+        "begin": "Beginnen"
+      },
+      "prolific": {
+        "heading": "Ihre Prolific-ID",
+        "body": "Bitte geben Sie Ihre Prolific-ID ein, damit Ihre Teilnahme zugeordnet und vergütet werden kann. Sie finden sie in Ihrem Prolific-Konto.",
+        "label": "Prolific-ID",
+        "placeholder": "z. B. 5f2a9c1e4b7d3a8e6c0f1b2d",
+        "next": "Weiter",
+        "required": "Bitte geben Sie Ihre Prolific-ID ein.",
+        "checkFormat": "Das sieht nicht wie eine übliche Prolific-ID aus. Bitte prüfen Sie die Eingabe — oder klicken Sie erneut auf „Weiter“, um sie trotzdem zu verwenden."
       },
       "task": {
-        "inboxHd": "Eingang — offene Schritte ({n} übrig)",
-        "ladderHd": "Richtige Reihenfolge — Schritte hierher ziehen",
-        "firstStep": "Erster Schritt",
-        "lastStep": "Letzter Schritt",
-        "allPlaced": "Alle Schritte platziert.",
+        "inboxHd": "Eingang — offene Fälle ({n} übrig)",
+        "ladderHd": "Priorität — Fälle hierher ziehen",
+        "firstStep": "Höchste Priorität",
+        "lastStep": "Niedrigste Priorität",
+        "allPlaced": "Alle Fälle platziert.",
         "explainerBtn": "ⓘ Erklärung",
         "explainerOk": "Alles klar",
         "confirm": "Reihenfolge bestätigen",
         "taskCounter": "Aufgabe {n} von {total}",
+        "brief": "Sie sind Sachbearbeiter:in und sichten die eingegangenen Fälle. Ordnen Sie die sechs Fälle nach Dringlichkeit — der dringendste nach oben, der am wenigsten dringende nach unten. Es gibt keine eine richtige Lösung; entscheiden Sie nach Ihrer eigenen Einschätzung.",
         "hints": {
-          "solo": "Ziehen Sie jeden Schritt in die Reihenfolge, die Sie für richtig halten, und bestätigen Sie dann.",
-          "hint": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde. Sie entscheiden, wo er landet.",
-          "thought": "Nehmen Sie einen Schritt auf — die KI hebt hervor, wohin sie ihn setzen würde, und erklärt warum. Sie entscheiden, wo er landet.",
-          "handoff": "Ordnen Sie die Schritte. Halten Sie den Zeiger im Feld unten, damit die KI übernimmt und weitermacht — verlassen Sie das Feld, um wieder zu übernehmen.",
-          "handoff-thoughts": "Ordnen Sie die Schritte. Halten Sie den Zeiger im Feld unten, damit die KI übernimmt und dabei erklärt, was sie gerade denkt — verlassen Sie das Feld, um wieder zu übernehmen."
+          "solo": "Ziehen Sie jeden Fall in die Reihenfolge, die Sie für richtig halten, und bestätigen Sie dann.",
+          "handoff": "Ordnen Sie die Fälle. Halten Sie den Zeiger im Feld unten, damit die KI übernimmt und weitermacht — verlassen Sie das Feld, um wieder zu übernehmen.",
+          "hidden": "Ordnen Sie die Fälle. Mit „KI starten“ übernimmt die KI und setzt alle Fälle auf einmal — danach können Sie jeden Fall noch verschieben."
         },
         "zone": {
           "idle": "Zeiger hier halten, damit die KI übernimmt",
           "active": "KI sortiert … Feld verlassen, um zu übernehmen"
         },
         "badges": {
-          "hint": "KI-Hinweis",
-          "thought": "KI-Hinweis + Begründung",
           "handoff": "KI übernimmt im Feld",
-          "handoff-thoughts": "KI übernimmt im Feld + Begründung"
+          "hidden": "KI setzt auf Knopfdruck"
         },
-        "handoffDone": "Alle Schritte sind platziert. Sehen Sie die Reihenfolge in Ruhe durch und ziehen Sie jeden Schritt, den Sie ändern möchten — bestätigen Sie dann.",
         "speedLabel": "Tempo der KI",
-        "thoughtLabel": "denkt:"
+        "aiDone": "Alle Fälle sind platziert. Sehen Sie die Reihenfolge in Ruhe durch und ziehen Sie jeden Fall, den Sie ändern möchten — bestätigen Sie dann.",
+        "startAi": "KI starten"
       },
       "survey": {
         "continue": "Weiter",
@@ -53,10 +62,7 @@
         "sub": "ID {id} · {n} Aufgaben abgeschlossen",
         "thanks": "Vielen Dank für Ihre Teilnahme. Ihre Antworten wurden gespeichert.",
         "syncLocal": "Ihre Antworten sind auf diesem Gerät gespeichert und werden automatisch übertragen.",
-        "syncRemote": "Ihre Antworten wurden automatisch übertragen.",
-        "correct": "{score}/6 richtig",
-        "overrides": "{n} Abweichung(en) von der KI",
-        "note": "Grün = richtige Position. Rot = Abweichung von der richtigen Reihenfolge."
+        "syncRemote": "Ihre Antworten wurden automatisch übertragen."
       },
       "mobile": {
         "heading": "Bitte am Computer teilnehmen",
@@ -71,33 +77,31 @@
     },
     "conditions": {
       "c1": {
-        "label": "Aufgabe 1 — ohne Unterstützung (Grundlinie)",
-        "banner": "Alltäglicher Ablauf · Sortieraufgabe",
+        "banner": "Fallpriorisierung",
         "onboarding": [
           {
-            "body": "Willkommen! Ganz oben steht, worum es in dieser Aufgabe geht — die Überschrift und darunter eine kurze Beschreibung. Lesen Sie sie in Ruhe durch; sie bleibt die ganze Zeit stehen.",
+            "body": "Willkommen! Ganz oben steht, worum es in dieser Aufgabe geht — das Thema und darunter, wonach Sie ordnen sollen. Lesen Sie es in Ruhe durch; es bleibt die ganze Zeit stehen.",
             "ok": "OK"
           },
           {
-            "body": "Links finden Sie sechs Schritte dieses Ablaufs — allerdings in der falschen Reihenfolge.",
+            "body": "Links finden Sie sechs eingegangene Fälle, jeweils mit einer kurzen Beschreibung.",
             "ok": "OK"
           },
           {
-            "body": "Ziehen Sie die Schritte nacheinander in die rechte Spalte und bringen Sie sie in die richtige Reihenfolge: der erste Schritt nach oben, der letzte nach unten. Lassen Sie sich so viel Zeit, wie Sie brauchen. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.",
+            "body": "Ziehen Sie die Fälle nacheinander in die rechte Spalte und ordnen Sie sie nach Dringlichkeit: der dringendste nach oben, der am wenigsten dringende nach unten. Es gibt keine eine richtige Lösung — entscheiden Sie nach Ihrer eigenen Einschätzung. Wenn die Reihenfolge für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.",
             "ok": "Alles klar"
           }
         ]
       },
-      "g1": {
-        "label": "Gruppe 1 — KI übernimmt im Feld",
-        "banner": "Alltäglicher Ablauf · Sortieraufgabe",
+      "handoff": {
+        "banner": "Fallpriorisierung",
         "onboarding": [
           {
-            "body": "Diesmal teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Schritte wie gewohnt selbst.",
+            "body": "Ab jetzt teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Fälle wie gewohnt selbst.",
             "ok": "OK"
           },
           {
-            "body": "Unter der Liste gibt es ein Feld: Halten Sie den Zeiger darin, übernimmt die KI den Zeiger und sortiert weiter — verlassen Sie das Feld, haben Sie sofort wieder die Kontrolle.",
+            "body": "Unter der Liste gibt es ein Feld: Halten Sie den Zeiger darin, übernimmt die KI den Zeiger und ordnet weiter — verlassen Sie das Feld, haben Sie sofort wieder die Kontrolle.",
             "ok": "OK"
           },
           {
@@ -106,56 +110,19 @@
           }
         ]
       },
-      "g2": {
-        "label": "Gruppe 2 — KI übernimmt im Feld + Begründung",
-        "banner": "Alltäglicher Ablauf · Sortieraufgabe",
+      "hidden": {
+        "banner": "Fallpriorisierung",
         "onboarding": [
           {
-            "body": "Diesmal teilen Sie sich den Mauszeiger mit einer KI. Ordnen Sie die Schritte wie gewohnt selbst.",
+            "body": "Ab jetzt steht Ihnen eine KI zur Seite. Ordnen Sie die Fälle wie gewohnt selbst.",
             "ok": "OK"
           },
           {
-            "body": "Unter der Liste gibt es ein Feld: Halten Sie den Zeiger darin, übernimmt die KI den Zeiger und sortiert weiter — verlassen Sie das Feld, haben Sie sofort wieder die Kontrolle. Dabei zeigt sie Ihnen an, was sie gerade denkt.",
+            "body": "Unter der Liste gibt es eine Schaltfläche „KI starten“: Ein Klick darauf, und die KI setzt alle Fälle auf einmal in die Reihenfolge, die sie für richtig hält — egal, wo die Fälle gerade liegen.",
             "ok": "OK"
           },
           {
-            "body": "Lesen Sie mit, wenn es Ihnen hilft — entscheiden müssen Sie: Die endgültige Reihenfolge bestimmen Sie. Wenn sie für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.",
-            "ok": "Alles klar"
-          }
-        ]
-      },
-      "g3": {
-        "label": "Gruppe 3 — KI-Hinweis",
-        "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "onboarding": [
-          {
-            "body": "Diesmal steht Ihnen eine KI zur Seite. Ordnen Sie die Schritte wie gewohnt selbst.",
-            "ok": "OK"
-          },
-          {
-            "body": "Sobald Sie einen Schritt aufnehmen, hebt sie die Position hervor, die sie dafür wählen würde. Das ist nur ein Vorschlag — Sie können ihm folgen oder den Schritt an eine ganz andere Stelle setzen.",
-            "ok": "OK"
-          },
-          {
-            "body": "Die endgültige Reihenfolge entscheiden Sie: Setzen Sie jeden Schritt dorthin, wo er Ihrer Meinung nach hingehört, und klicken Sie dann auf „Reihenfolge bestätigen“.",
-            "ok": "Alles klar"
-          }
-        ]
-      },
-      "g4": {
-        "label": "Gruppe 4 — KI-Hinweis + Begründung",
-        "banner": "Alltäglicher Ablauf · Sortieraufgabe",
-        "onboarding": [
-          {
-            "body": "Diesmal steht Ihnen eine KI zur Seite. Ordnen Sie die Schritte wie gewohnt selbst.",
-            "ok": "OK"
-          },
-          {
-            "body": "Sobald Sie einen Schritt aufnehmen, hebt sie die Position hervor, die sie dafür wählen würde, und erklärt Ihnen ihre Überlegung dazu. Das ist nur ein Vorschlag — Sie können ihm folgen oder den Schritt an eine ganz andere Stelle setzen.",
-            "ok": "OK"
-          },
-          {
-            "body": "Lesen Sie die Begründung, wenn sie Ihnen hilft — die Entscheidung bleibt bei Ihnen. Setzen Sie jeden Schritt dorthin, wo er Ihrer Meinung nach hingehört, und klicken Sie dann auf „Reihenfolge bestätigen“.",
+            "body": "Danach können Sie jeden Fall noch verschieben; die endgültige Reihenfolge entscheiden Sie. Wenn sie für Sie stimmt, klicken Sie auf „Reihenfolge bestätigen“.",
             "ok": "Alles klar"
           }
         ]
@@ -184,6 +151,31 @@
             "type": "likert",
             "required": true,
             "label": "Platzhalter Likert: Ich habe Erfahrung mit dieser Art von Aufgabe."
+          }
+        ]
+      },
+      "mid": {
+        "kicker": "Zwischenstand",
+        "title": "Fragebogen nach dem ersten Teil (Platzhalter)",
+        "note": "Platzhalter — ersetzen Sie dies durch Ihre echten Fragen zum eben abgeschlossenen Teil.",
+        "questions": [
+          {
+            "id": "mid_q1",
+            "type": "likert",
+            "required": true,
+            "label": "Platzhalter Likert: Ich habe verstanden, wie die KI in diesem Teil vorgegangen ist."
+          },
+          {
+            "id": "mid_q2",
+            "type": "likert",
+            "required": true,
+            "label": "Platzhalter Likert: Ich habe den Vorschlägen der KI in diesem Teil vertraut."
+          },
+          {
+            "id": "mid_q3",
+            "type": "text",
+            "required": false,
+            "label": "Platzhalter offene Frage: Was ist Ihnen am Vorgehen der KI aufgefallen?"
           }
         ]
       },
@@ -216,45 +208,54 @@
   },
   "en": {
     "ui": {
+      "resume": {
+        "heading": "Earlier session found",
+        "body": "An interrupted session from {id} is stored on this device (step {step}). Would you like to carry on where you left off, or start over? Starting over discards the progress so far.",
+        "continue": "Resume",
+        "startNew": "Start new"
+      },
       "consent": {
         "heading": "Consent (placeholder)",
         "body": "Placeholder consent text. Replace this with your IRB / ethics-approved wording: what the study involves, that participation is voluntary, how data is stored and used, and whom to contact. This screen is logged when the participant proceeds.",
         "agree": "I have read the above and agree to participate.",
-        "begin": "Begin",
-        "resumeFound": "Previous session for {id} found (step {step}).",
-        "resume": "Resume",
-        "startNew": "Start new"
+        "begin": "Begin"
+      },
+      "prolific": {
+        "heading": "Your Prolific ID",
+        "body": "Please enter your Prolific ID so your participation can be matched and paid. You can find it in your Prolific account.",
+        "label": "Prolific ID",
+        "placeholder": "e.g. 5f2a9c1e4b7d3a8e6c0f1b2d",
+        "next": "Continue",
+        "required": "Please enter your Prolific ID.",
+        "checkFormat": "That doesn't look like a usual Prolific ID. Please check it — or press “Continue” again to use it anyway."
       },
       "task": {
-        "inboxHd": "Inbox — incoming steps ({n} remaining)",
-        "ladderHd": "Correct order — drag the steps here",
-        "firstStep": "First step",
-        "lastStep": "Last step",
-        "allPlaced": "All steps placed.",
+        "inboxHd": "Inbox — open cases ({n} remaining)",
+        "ladderHd": "Priority — drag the cases here",
+        "firstStep": "Highest priority",
+        "lastStep": "Lowest priority",
+        "allPlaced": "All cases placed.",
         "explainerBtn": "ⓘ Explainer",
         "explainerOk": "OK, got it",
         "confirm": "Confirm ranking",
         "taskCounter": "Task {n} of {total}",
+        "brief": "You are a caseworker reviewing the incoming cases. Rank the six cases by urgency — the most urgent at the top, the least urgent at the bottom. There is no single right answer; use your own judgement.",
         "hints": {
-          "solo": "Drag each step into the order you think is right, then confirm.",
-          "hint": "Pick up a step and the AI highlights where it would put it — you decide where it lands.",
-          "thought": "Pick up a step and the AI highlights where it would put it and explains why — you decide where it lands.",
-          "handoff": "Sort the steps. Rest the cursor in the box below to let the AI take over and carry on — move out of the box to take over again.",
-          "handoff-thoughts": "Sort the steps. Rest the cursor in the box below to let the AI take over and tell you what it is thinking — move out of the box to take over again."
+          "solo": "Drag each case into the order you think is right, then confirm.",
+          "handoff": "Rank the cases. Rest the cursor in the box below to let the AI take over and carry on — move out of the box to take over again.",
+          "hidden": "Rank the cases. Press “Start AI” and it takes over, placing every case at once — afterwards you can still move any of them."
         },
         "zone": {
           "idle": "Rest the cursor here to let the AI take over",
           "active": "AI is sorting … move out to take over"
         },
         "badges": {
-          "hint": "AI Hint",
-          "thought": "AI Hint + Reasoning",
           "handoff": "AI takes over in the box",
-          "handoff-thoughts": "AI takes over in the box + reasoning"
+          "hidden": "AI places on request"
         },
-        "handoffDone": "All steps are placed. Look the order over and drag any step you'd like to move, then confirm.",
         "speedLabel": "AI speed",
-        "thoughtLabel": "is thinking:"
+        "aiDone": "All cases are placed. Look the order over and drag any case you'd like to move, then confirm.",
+        "startAi": "Start AI"
       },
       "survey": {
         "continue": "Continue",
@@ -267,10 +268,7 @@
         "sub": "ID {id} · {n} tasks completed",
         "thanks": "Thank you for participating. Your responses have been saved.",
         "syncLocal": "Your responses are stored on this device and will be uploaded automatically.",
-        "syncRemote": "Your responses have been uploaded automatically.",
-        "correct": "{score}/6 correct",
-        "overrides": "{n} deviation(s) from the AI",
-        "note": "Green = correct position. Red = deviation from the correct order."
+        "syncRemote": "Your responses have been uploaded automatically."
       },
       "mobile": {
         "heading": "Please take part on a computer",
@@ -285,29 +283,27 @@
     },
     "conditions": {
       "c1": {
-        "label": "Task 1 — unassisted (baseline)",
-        "banner": "Everyday process · sorting task",
+        "banner": "Case prioritisation",
         "onboarding": [
           {
-            "body": "Welcome! At the very top you'll find what this task is about — a heading and a short description below it. Take a moment to read it; it stays there the whole time.",
+            "body": "Welcome! At the very top you'll find what this task is about — the subject, and below it what to rank by. Take a moment to read it; it stays there the whole time.",
             "ok": "OK"
           },
           {
-            "body": "On the left you'll find six steps of that process, in the wrong order.",
+            "body": "On the left you'll find six incoming cases, each with a short description.",
             "ok": "OK"
           },
           {
-            "body": "Drag them one by one into the column on the right to build the correct sequence — the first step at the top, the last step at the bottom. Take all the time you need. When you're happy with the order, press “Confirm ranking”.",
+            "body": "Drag them one by one into the column on the right and rank them by urgency: the most urgent at the top, the least urgent at the bottom. There is no single right answer — use your own judgement. When you're happy with the order, press “Confirm ranking”.",
             "ok": "OK, got it"
           }
         ]
       },
-      "g1": {
-        "label": "Group 1 — AI takes over in the box",
-        "banner": "Everyday process · sorting task",
+      "handoff": {
+        "banner": "Case prioritisation",
         "onboarding": [
           {
-            "body": "This time you share the mouse cursor with an AI. Sort the steps yourself as usual.",
+            "body": "From now on you share the mouse cursor with an AI. Rank the cases yourself as usual.",
             "ok": "OK"
           },
           {
@@ -320,56 +316,19 @@
           }
         ]
       },
-      "g2": {
-        "label": "Group 2 — AI takes over in the box + reasoning",
-        "banner": "Everyday process · sorting task",
+      "hidden": {
+        "banner": "Case prioritisation",
         "onboarding": [
           {
-            "body": "This time you share the mouse cursor with an AI. Sort the steps yourself as usual.",
+            "body": "From now on you have an AI assistant at your side. Rank the cases yourself as usual.",
             "ok": "OK"
           },
           {
-            "body": "There is a box below the list: rest the cursor inside it and the AI takes the cursor and carries on — move out of the box and you have control back immediately. As it works, it also shows you what it is thinking.",
+            "body": "Below the list there is a “Start AI” button: one click and the AI puts every case into the order it thinks is right, all at once — wherever the cases happen to be at that moment.",
             "ok": "OK"
           },
           {
-            "body": "Read along if you find it useful — the decision is still yours: you decide the final order. When it looks right to you, press “Confirm ranking”.",
-            "ok": "OK, got it"
-          }
-        ]
-      },
-      "g3": {
-        "label": "Group 3 — AI hint",
-        "banner": "Everyday process · sorting task",
-        "onboarding": [
-          {
-            "body": "This time you have an AI assistant at your side. Sort the steps yourself as usual.",
-            "ok": "OK"
-          },
-          {
-            "body": "As soon as you pick up a step, it highlights the position it would choose for it. That's only a suggestion — you can follow it or place the step somewhere else entirely.",
-            "ok": "OK"
-          },
-          {
-            "body": "The final order is yours to decide: put each step where you think it belongs, then press “Confirm ranking”.",
-            "ok": "OK, got it"
-          }
-        ]
-      },
-      "g4": {
-        "label": "Group 4 — AI hint + reasoning",
-        "banner": "Everyday process · sorting task",
-        "onboarding": [
-          {
-            "body": "This time you have an AI assistant at your side. Sort the steps yourself as usual.",
-            "ok": "OK"
-          },
-          {
-            "body": "As soon as you pick up a step, it highlights the position it would choose and tells you why. That's only a suggestion — you can follow it or place the step somewhere else entirely.",
-            "ok": "OK"
-          },
-          {
-            "body": "Read its reasoning if you find it useful — the decision stays with you. Put each step where you think it belongs, then press “Confirm ranking”.",
+            "body": "Afterwards you can still move any case; the final order is your decision. When it looks right to you, press “Confirm ranking”.",
             "ok": "OK, got it"
           }
         ]
@@ -398,6 +357,31 @@
             "type": "likert",
             "required": true,
             "label": "Placeholder Likert: I am experienced with this kind of task."
+          }
+        ]
+      },
+      "mid": {
+        "kicker": "Halfway",
+        "title": "Questionnaire after the first part (placeholder)",
+        "note": "Placeholder — replace with your real questions about the part just finished.",
+        "questions": [
+          {
+            "id": "mid_q1",
+            "type": "likert",
+            "required": true,
+            "label": "Placeholder Likert: I understood how the AI went about this part."
+          },
+          {
+            "id": "mid_q2",
+            "type": "likert",
+            "required": true,
+            "label": "Placeholder Likert: I trusted the AI's suggestions in this part."
+          },
+          {
+            "id": "mid_q3",
+            "type": "text",
+            "required": false,
+            "label": "Placeholder open question: What did you notice about how the AI worked?"
           }
         ]
       },

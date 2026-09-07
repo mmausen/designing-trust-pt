@@ -1,0 +1,1239 @@
+{
+  "tasks": [
+    {
+      "id": "T1",
+      "de": {
+        "title": "Transportwesen"
+      },
+      "en": {
+        "title": "Transportation"
+      },
+      "ai-order": {
+        "bold": [
+          0,
+          1,
+          3,
+          2,
+          5,
+          4
+        ],
+        "cautious": [
+          0,
+          1,
+          4,
+          3,
+          5,
+          2
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Gefährliche Straßenschäden",
+            "description": "Ein Anwohner meldet Schäden an einer Straße, die die Verkehrssicherheit beeinträchtigen können."
+          },
+          "en": {
+            "text": "Dangerous road damage",
+            "description": "A resident reports damage to a road that may affect traffic safety."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Störung einer Ampelanlage",
+            "description": "Eine Ampel an einer stark befahrenen Kreuzung scheint fehlerhaft zu funktionieren."
+          },
+          "en": {
+            "text": "Traffic signal malfunction",
+            "description": "A traffic signal at a busy intersection appears to be operating incorrectly."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Antrag auf Parkausweis",
+            "description": "Ein Anwohner beantragt einen Anwohnerparkausweis."
+          },
+          "en": {
+            "text": "Request for parking permit",
+            "description": "A resident applies for a residential parking permit."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Beschwerde über Radweg",
+            "description": "Bürgerinnen und Bürger melden Probleme, die die sichere Nutzung eines Radwegs beeinträchtigen."
+          },
+          "en": {
+            "text": "Bicycle lane complaint",
+            "description": "Citizens report issues affecting the safe use of a bicycle lane."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Anfrage zum öffentlichen Nahverkehr",
+            "description": "Ein Anwohner bittet um Informationen zu Angeboten des öffentlichen Nahverkehrs."
+          },
+          "en": {
+            "text": "Public transportation inquiry",
+            "description": "A resident requests information about public transportation services."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Antrag auf Ersatz eines Straßenschilds",
+            "description": "Ein beschädigtes Straßenschild wurde gemeldet und muss möglicherweise ersetzt werden."
+          },
+          "en": {
+            "text": "Street sign replacement request",
+            "description": "A damaged street sign has been reported and may need replacement."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T2",
+      "de": {
+        "title": "Wohnungsanträge"
+      },
+      "en": {
+        "title": "Housing Requests"
+      },
+      "ai-order": {
+        "bold": [
+          3,
+          1,
+          0,
+          4,
+          2,
+          5
+        ],
+        "cautious": [
+          0,
+          3,
+          1,
+          2,
+          4,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Familie von Wohnungsräumung bedroht",
+            "description": "Eine Familie wendet sich an die Verwaltung, nachdem sie eine Kündigung ihrer derzeitigen Wohnung erhalten hat."
+          },
+          "en": {
+            "text": "Family facing eviction",
+            "description": "A family contacts the municipality after receiving notice to leave their current housing."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Antrag auf Wohnberechtigungsschein",
+            "description": "Ein Anwohner beantragt eine Bescheinigung, die für einen wohnungsbezogenen Antrag erforderlich ist."
+          },
+          "en": {
+            "text": "Request for housing certificate",
+            "description": "A resident requests a certificate required for a housing-related application."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Defekte Heizungsanlage",
+            "description": "Ein Mieter meldet, dass die Heizung in seiner Wohnung nicht funktioniert."
+          },
+          "en": {
+            "text": "Broken heating system",
+            "description": "A tenant reports that the heating system in their apartment is not working."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Anfrage zu Wohngeld",
+            "description": "Ein Anwohner bittet um Informationen zur Anspruchsberechtigung für Wohnungsunterstützung."
+          },
+          "en": {
+            "text": "Housing subsidy inquiry",
+            "description": "A resident requests information about eligibility for housing support."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Antrag auf Adressänderung",
+            "description": "Ein Bürger beantragt die Aktualisierung seiner gemeldeten Adresse."
+          },
+          "en": {
+            "text": "Address change request",
+            "description": "A citizen submits a request to update their registered address."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Allgemeine Informationsanfrage",
+            "description": "Ein Anwohner stellt eine allgemeine Frage zu den kommunalen Wohnungsdienstleistungen."
+          },
+          "en": {
+            "text": "General information request",
+            "description": "A resident asks a general question about municipal housing services."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T3",
+      "de": {
+        "title": "Gewerbeanmeldung"
+      },
+      "en": {
+        "title": "Business Registration"
+      },
+      "ai-order": {
+        "bold": [
+          0,
+          1,
+          2,
+          5,
+          3,
+          4
+        ],
+        "cautious": [
+          1,
+          2,
+          3,
+          0,
+          4,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Anmeldung eines neuen Restaurants",
+            "description": "Ein Antragsteller reicht Unterlagen zur Anmeldung eines neuen Restaurantbetriebs ein."
+          },
+          "en": {
+            "text": "New restaurant registration",
+            "description": "An applicant submits documents to register a new restaurant business."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Anmeldung eines mobilen Imbisswagens",
+            "description": "Ein Unternehmer beantragt den Betrieb eines mobilen Imbisswagens im Stadtgebiet."
+          },
+          "en": {
+            "text": "Mobile food truck registration",
+            "description": "An entrepreneur applies to operate a mobile food truck within the city."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Anmeldung eines Handwerksbetriebs",
+            "description": "Ein Anwohner reicht einen Antrag zur Anmeldung eines kleinen Handwerksbetriebs ein."
+          },
+          "en": {
+            "text": "Craft business registration",
+            "description": "A resident submits an application to register a small craft business."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Gewerbeanmeldung mit fehlenden Unterlagen",
+            "description": "Ein Antrag auf Gewerbeanmeldung wurde mit unvollständigen Unterlagen eingereicht."
+          },
+          "en": {
+            "text": "Missing-document registration",
+            "description": "A business registration application has been submitted with incomplete documentation."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Änderung einer Gewerbeanmeldung",
+            "description": "Ein Gewerbetreibender beantragt Änderungen an einer bestehenden Gewerbeanmeldung."
+          },
+          "en": {
+            "text": "Registration amendment",
+            "description": "A business owner requests changes to an existing registration record."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Gewerbeabmeldung",
+            "description": "Ein Gewerbetreibender teilt der Verwaltung mit, dass der Betrieb eingestellt wurde."
+          },
+          "en": {
+            "text": "Business closure notification",
+            "description": "A business owner informs the municipality that operations have ceased."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T4",
+      "de": {
+        "title": "Bürgerbeschwerden"
+      },
+      "en": {
+        "title": "Citizen Complaints"
+      },
+      "ai-order": {
+        "bold": [
+          2,
+          0,
+          1,
+          3,
+          5,
+          4
+        ],
+        "cautious": [
+          0,
+          2,
+          3,
+          1,
+          5,
+          4
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Gefährlicher Baum neben Spielplatz",
+            "description": "Ein Anwohner meldet, dass ein großer Baum neben einem öffentlichen Spielplatz instabil erscheint."
+          },
+          "en": {
+            "text": "Dangerous tree near playground",
+            "description": "A resident reports that a large tree next to a public playground appears unstable."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Lärmbeschwerde über Baustelle",
+            "description": "Mehrere Anwohner beschweren sich über anhaltenden Lärm einer nahegelegenen Baustelle."
+          },
+          "en": {
+            "text": "Noise complaint from construction site",
+            "description": "Several residents complain about ongoing noise from a nearby construction project."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Beschwerde über Falschparken",
+            "description": "Ein Bürger meldet Fahrzeuge, die wiederholt die Zufahrt zu einer Wohnstraße blockieren."
+          },
+          "en": {
+            "text": "Illegal parking complaint",
+            "description": "A citizen reports vehicles repeatedly blocking access to a residential street."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Defekte Straßenlaterne",
+            "description": "Ein Anwohner meldet, dass eine Straßenlaterne im Wohnviertel nicht mehr funktioniert."
+          },
+          "en": {
+            "text": "Broken streetlight",
+            "description": "A resident reports that a streetlight in a neighborhood has stopped working."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Graffiti-Meldung",
+            "description": "An einem öffentlichen Gebäude in der Innenstadt wurde Graffiti gemeldet."
+          },
+          "en": {
+            "text": "Graffiti report",
+            "description": "Graffiti has been reported on a public building in the city center."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Zugewachsener öffentlicher Weg",
+            "description": "Ein Fußweg ist aufgrund starken Bewuchses nur noch schwer nutzbar."
+          },
+          "en": {
+            "text": "Overgrown public pathway",
+            "description": "A pedestrian path has become difficult to use because of overgrown vegetation."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T5",
+      "de": {
+        "title": "Öffentliche Sicherheit"
+      },
+      "en": {
+        "title": "Public Safety"
+      },
+      "ai-order": {
+        "bold": [
+          2,
+          0,
+          1,
+          3,
+          4,
+          5
+        ],
+        "cautious": [
+          1,
+          0,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Wiederholte Ruhestörungen im Wohngebiet",
+            "description": "Anwohner melden anhaltende Störungen in einem Wohnviertel."
+          },
+          "en": {
+            "text": "Repeated neighborhood disturbances",
+            "description": "Residents report ongoing disturbances in a local neighborhood."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Bedenken zum Brandschutz",
+            "description": "Ein Bürger meldet einen möglichen Brandschutzmangel in einem öffentlichen Bereich."
+          },
+          "en": {
+            "text": "Fire safety concern",
+            "description": "A citizen reports a possible fire safety issue in a public area."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Verdächtiges abgestelltes Fahrzeug",
+            "description": "Ein unbeaufsichtigtes Fahrzeug wurde an einem öffentlichen Ort gemeldet."
+          },
+          "en": {
+            "text": "Suspicious abandoned vehicle",
+            "description": "An unattended vehicle has been reported in a public location."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Anmeldung einer öffentlichen Veranstaltung",
+            "description": "Veranstalter reichen Unterlagen für eine geplante öffentliche Veranstaltung ein."
+          },
+          "en": {
+            "text": "Public event registration",
+            "description": "Organizers submit documentation for a planned public event."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Fundsachen-/Verlustmeldung",
+            "description": "Ein Anwohner meldet den Verlust persönlicher Gegenstände an einem öffentlichen Ort."
+          },
+          "en": {
+            "text": "Lost property report",
+            "description": "A resident reports losing personal property in a public place."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Allgemeine Auskunftsanfrage zur Polizei",
+            "description": "Ein Bürger bittet um allgemeine Informationen zu Leistungen der öffentlichen Sicherheit."
+          },
+          "en": {
+            "text": "General police information request",
+            "description": "A citizen requests general information related to public safety services."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T6",
+      "de": {
+        "title": "Öffentliche Gesundheit"
+      },
+      "en": {
+        "title": "Public Health"
+      },
+      "ai-order": {
+        "bold": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "cautious": [
+          0,
+          1,
+          3,
+          4,
+          2,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Meldung einer möglichen Lebensmittelvergiftung",
+            "description": "Mehrere Personen melden, nach dem Besuch desselben Betriebs erkrankt zu sein."
+          },
+          "en": {
+            "text": "Possible food poisoning report",
+            "description": "Several individuals report becoming ill after visiting the same establishment."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Hygienebeschwerde über ein Restaurant",
+            "description": "Ein Bürger meldet Bedenken hinsichtlich der Hygienebedingungen in einem Restaurant."
+          },
+          "en": {
+            "text": "Hygiene complaint against restaurant",
+            "description": "A citizen reports concerns about hygiene conditions at a restaurant."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Antrag auf Gesundheitszuschuss",
+            "description": "Ein Anwohner beantragt finanzielle Unterstützung für gesundheitsbezogene Kosten."
+          },
+          "en": {
+            "text": "Healthcare subsidy request",
+            "description": "A resident applies for financial support for healthcare-related costs."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Anfrage zu Impfangeboten",
+            "description": "Ein Bürger bittet um Informationen zu verfügbaren Impfangeboten."
+          },
+          "en": {
+            "text": "Vaccination information inquiry",
+            "description": "A citizen requests information about available vaccination services."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Lärmbeschwerde in der Nähe einer Klinik",
+            "description": "Personal und Besucher melden wiederkehrenden Lärm in der Nähe einer Gesundheitseinrichtung."
+          },
+          "en": {
+            "text": "Noise complaint near clinic",
+            "description": "Staff and visitors report recurring noise near a healthcare facility."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Antrag auf eine amtliche Bescheinigung",
+            "description": "Ein Anwohner beantragt ein gesundheitsbezogenes Verwaltungsdokument."
+          },
+          "en": {
+            "text": "Administrative certificate request",
+            "description": "A resident requests a health-related administrative document."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T7",
+      "de": {
+        "title": "Soziale Unterstützung"
+      },
+      "en": {
+        "title": "Social Support"
+      },
+      "ai-order": {
+        "bold": [
+          0,
+          1,
+          3,
+          2,
+          4,
+          5
+        ],
+        "cautious": [
+          1,
+          3,
+          0,
+          2,
+          4,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Finanzielle Nothilfe",
+            "description": "Ein Anwohner bittet aufgrund unerwarteter finanzieller Schwierigkeiten um sofortige Unterstützung."
+          },
+          "en": {
+            "text": "Emergency financial assistance",
+            "description": "A resident requests immediate support due to unexpected financial difficulties."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Antrag auf Kinderbetreuungszuschuss",
+            "description": "Eine Familie beantragt finanzielle Unterstützung zur Deckung der Kinderbetreuungskosten."
+          },
+          "en": {
+            "text": "Childcare subsidy application",
+            "description": "A family applies for financial assistance to help cover childcare costs."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Antrag auf Behindertenhilfe",
+            "description": "Ein Anwohner bittet um Informationen und Unterstützung im Zusammenhang mit einer Behinderung."
+          },
+          "en": {
+            "text": "Disability support request",
+            "description": "A resident requests information and support related to a disability."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Antrag auf Wohngeld",
+            "description": "Es wurde ein Antrag auf wohnungsbezogene finanzielle Unterstützung eingereicht."
+          },
+          "en": {
+            "text": "Housing allowance application",
+            "description": "An application has been submitted for housing-related financial assistance."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Anfrage zum Bearbeitungsstand einer Leistung",
+            "description": "Ein Bürger bittet um eine Auskunft zum Stand eines Leistungsantrags."
+          },
+          "en": {
+            "text": "Benefit-status inquiry",
+            "description": "A citizen requests an update on the status of a benefits application."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Allgemeine Beratungsanfrage",
+            "description": "Ein Anwohner sucht Orientierung zu verfügbaren sozialen Unterstützungsangeboten."
+          },
+          "en": {
+            "text": "General consultation request",
+            "description": "A resident seeks guidance about available social support services."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T8",
+      "de": {
+        "title": "Umweltmeldungen"
+      },
+      "en": {
+        "title": "Environmental Reports"
+      },
+      "ai-order": {
+        "bold": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "cautious": [
+          0,
+          2,
+          1,
+          4,
+          3,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Möglicher Chemikalienaustritt",
+            "description": "Ein Bürger meldet eine ungewöhnliche Substanz in der Nähe eines örtlichen Gewässers."
+          },
+          "en": {
+            "text": "Possible chemical spill",
+            "description": "A citizen reports an unusual substance near a local waterway."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Illegale Abfallentsorgung",
+            "description": "An einem nicht für die Entsorgung vorgesehenen Ort wurde Abfall gemeldet."
+          },
+          "en": {
+            "text": "Illegal waste disposal",
+            "description": "Waste has been reported at a location not designated for disposal."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Beschwerde über Luftverschmutzung",
+            "description": "Anwohner melden Bedenken wegen Emissionen eines nahegelegenen Industriestandorts."
+          },
+          "en": {
+            "text": "Air pollution complaint",
+            "description": "Residents report concerns about emissions from a nearby industrial site."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Lärmbeschwerde",
+            "description": "Bürgerinnen und Bürger melden wiederkehrenden Umgebungslärm, der die Umgebung beeinträchtigt."
+          },
+          "en": {
+            "text": "Noise complaint",
+            "description": "Citizens report recurring environmental noise affecting the surrounding area."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Antrag auf Baumfällung",
+            "description": "Es wurde ein Antrag auf Fällung eines Baums auf öffentlichem Grund eingereicht."
+          },
+          "en": {
+            "text": "Tree removal request",
+            "description": "A request has been submitted to remove a tree on public property."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Anfrage zu Recyclingangeboten",
+            "description": "Ein Anwohner bittet um Informationen zu örtlichen Recyclingangeboten."
+          },
+          "en": {
+            "text": "Recycling information request",
+            "description": "A resident requests information about local recycling services."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T9",
+      "de": {
+        "title": "Bau- und Bauwesen"
+      },
+      "en": {
+        "title": "Building & Construction"
+      },
+      "ai-order": {
+        "bold": [
+          0,
+          2,
+          1,
+          3,
+          4,
+          5
+        ],
+        "cautious": [
+          0,
+          1,
+          2,
+          4,
+          3,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Meldung eines unsicheren Gebäudes",
+            "description": "Ein Bürger meldet Bedenken hinsichtlich des Zustands eines Gebäudes."
+          },
+          "en": {
+            "text": "Unsafe building report",
+            "description": "A citizen reports concerns about the condition of a building structure."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Bauantrag",
+            "description": "Für ein geplantes Bauvorhaben wurde ein Antrag eingereicht."
+          },
+          "en": {
+            "text": "Construction permit application",
+            "description": "An application has been submitted for a planned construction project."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Beschwerde über Schwarzbau",
+            "description": "Anwohner melden Bauarbeiten, für die möglicherweise keine erforderliche Genehmigung vorliegt."
+          },
+          "en": {
+            "text": "Unauthorized construction complaint",
+            "description": "Residents report construction activity that may not have the required authorization."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Anzeige einer Renovierung",
+            "description": "Ein Eigentümer zeigt der Verwaltung geplante Renovierungsarbeiten an."
+          },
+          "en": {
+            "text": "Renovation notification",
+            "description": "A property owner notifies the municipality about planned renovation work."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Streit über einen Grenzzaun",
+            "description": "Zwei benachbarte Eigentümer sind sich über den Verlauf eines Grenzzauns uneinig."
+          },
+          "en": {
+            "text": "Fence dispute",
+            "description": "Two neighboring property owners disagree about the location of a boundary fence."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Anfrage zu Bauvorschriften",
+            "description": "Ein Bürger bittet um Informationen zu Bauvorschriften."
+          },
+          "en": {
+            "text": "Construction information request",
+            "description": "A citizen requests information about construction regulations."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T10",
+      "de": {
+        "title": "Inspektionsplanung"
+      },
+      "en": {
+        "title": "Inspection Planning"
+      },
+      "ai-order": {
+        "bold": [
+          1,
+          3,
+          0,
+          5,
+          4,
+          2
+        ],
+        "cautious": [
+          2,
+          1,
+          0,
+          4,
+          5,
+          3
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Restaurant mit mehreren Beschwerden",
+            "description": "Zu einem Restaurant sind kürzlich mehrere Beschwerden eingegangen."
+          },
+          "en": {
+            "text": "Restaurant with multiple complaints",
+            "description": "Several complaints have recently been received regarding a restaurant."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Kinderbetreuungseinrichtung mit anstehender Prüfung",
+            "description": "Für eine Kinderbetreuungseinrichtung steht eine routinemäßige Prüfung an."
+          },
+          "en": {
+            "text": "Childcare facility due for inspection",
+            "description": "A childcare facility is scheduled for routine inspection activities."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Meldung eines Vorfalls auf einer Baustelle",
+            "description": "Auf einer aktiven Baustelle wurde ein Vorfall gemeldet."
+          },
+          "en": {
+            "text": "Construction site incident report",
+            "description": "An incident has been reported at an active construction site."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Routinemäßige Jahresprüfung",
+            "description": "Für eine Einrichtung steht die regulär geplante Jahresprüfung an."
+          },
+          "en": {
+            "text": "Routine annual inspection",
+            "description": "A facility is due for its regularly scheduled annual inspection."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Kürzlich eröffneter Betrieb",
+            "description": "Ein neu gegründeter Betrieb wurde in die kommunalen Register aufgenommen."
+          },
+          "en": {
+            "text": "Recently opened business",
+            "description": "A newly established business has entered municipal records."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Antrag auf Nachkontrolle",
+            "description": "Es wurde beantragt, eine zuvor geprüfte Einrichtung erneut zu kontrollieren."
+          },
+          "en": {
+            "text": "Follow-up inspection request",
+            "description": "A request has been submitted to revisit a previously inspected facility."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T11",
+      "de": {
+        "title": "Einhaltung von Vorschriften"
+      },
+      "en": {
+        "title": "Regulatory Compliance"
+      },
+      "ai-order": {
+        "bold": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "cautious": [
+          0,
+          2,
+          3,
+          1,
+          4,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Wiederholte Sicherheitsverstöße eines Betriebs",
+            "description": "Ein Betrieb wurde mehrfach wegen möglicher sicherheitsrelevanter Mängel gemeldet."
+          },
+          "en": {
+            "text": "Repeated safety violations by business",
+            "description": "A business has been reported multiple times for possible safety-related issues."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Meldung einer abgelaufenen Genehmigung",
+            "description": "Eine Meldung deutet darauf hin, dass eine erforderliche Genehmigung möglicherweise nicht mehr gültig ist."
+          },
+          "en": {
+            "text": "Expired permit report",
+            "description": "A report suggests that a required permit may no longer be valid."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Antrag auf neue Compliance-Prüfung",
+            "description": "Es wurde beantragt, eine Prüfung zur Einhaltung von Vorschriften durchzuführen."
+          },
+          "en": {
+            "text": "New compliance inspection request",
+            "description": "A request has been submitted to conduct a compliance inspection."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Fehlende Steuerunterlagen",
+            "description": "Erforderliche steuerbezogene Unterlagen scheinen unvollständig zu sein."
+          },
+          "en": {
+            "text": "Missing tax documentation",
+            "description": "Required tax-related documentation appears to be incomplete."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Antrag auf Berichtigung von Verwaltungsdaten",
+            "description": "Ein Betrieb beantragt die Korrektur von Angaben in einem amtlichen Register."
+          },
+          "en": {
+            "text": "Administrative correction request",
+            "description": "A business requests a correction to information in an official record."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Allgemeine Anfrage zu Compliance-Anforderungen",
+            "description": "Ein Betrieb bittet um Informationen zu Anforderungen an die Einhaltung von Vorschriften."
+          },
+          "en": {
+            "text": "General compliance inquiry",
+            "description": "A business requests information about compliance requirements."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T12",
+      "de": {
+        "title": "Bildungsdienstleistungen"
+      },
+      "en": {
+        "title": "Education Services"
+      },
+      "ai-order": {
+        "bold": [
+          2,
+          3,
+          0,
+          4,
+          1,
+          5
+        ],
+        "cautious": [
+          1,
+          0,
+          2,
+          4,
+          3,
+          5
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Antrag auf Schülerbeförderung",
+            "description": "Eine Familie beantragt Unterstützung für den täglichen Schulweg eines Kindes."
+          },
+          "en": {
+            "text": "School transport request",
+            "description": "A family requests transportation support for a student's daily commute."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Antrag auf sonderpädagogische Unterstützung",
+            "description": "Eltern beantragen zusätzliche schulische Unterstützung für ein Kind."
+          },
+          "en": {
+            "text": "Special-needs support request",
+            "description": "Parents request additional educational assistance for a student."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Schulanmeldung",
+            "description": "Eine Familie reicht einen Antrag auf Einschulung eines Kindes ein."
+          },
+          "en": {
+            "text": "School registration",
+            "description": "A family submits an application to enroll a child in school."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Anfrage zu Stipendien",
+            "description": "Ein Schüler bittet um Informationen zu Stipendienmöglichkeiten."
+          },
+          "en": {
+            "text": "Scholarship inquiry",
+            "description": "A student requests information about scholarship opportunities."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Fehlende Schulunterlagen",
+            "description": "Ein Antrag auf Schulanmeldung wurde ohne alle erforderlichen Unterlagen eingereicht."
+          },
+          "en": {
+            "text": "Missing school documents",
+            "description": "A school registration application has been submitted without all required documents."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Allgemeine Informationsanfrage",
+            "description": "Ein Elternteil bittet um allgemeine Informationen zu Bildungsangeboten."
+          },
+          "en": {
+            "text": "General information request",
+            "description": "A parent requests general information about educational services."
+          }
+        }
+      ]
+    },
+    {
+      "id": "T13",
+      "de": {
+        "title": "Bürgerkorrespondenz"
+      },
+      "en": {
+        "title": "Citizen Correspondence"
+      },
+      "ai-order": {
+        "bold": [
+          1,
+          2,
+          0,
+          3,
+          4,
+          5
+        ],
+        "cautious": [
+          0,
+          2,
+          1,
+          5,
+          4,
+          3
+        ]
+      },
+      "tiles": [
+        {
+          "key": 0,
+          "de": {
+            "text": "Eskalierte Beschwerde aus dem Büro des Bürgermeisters",
+            "description": "Eine Bürgerbeschwerde wurde vom Büro des Bürgermeisters zur weiteren Bearbeitung weitergeleitet."
+          },
+          "en": {
+            "text": "Escalated complaint from mayor's office",
+            "description": "A citizen complaint has been forwarded by the mayor's office for further handling."
+          }
+        },
+        {
+          "key": 1,
+          "de": {
+            "text": "Antrag nach dem Informationsfreiheitsgesetz",
+            "description": "Ein Bürger beantragt Zugang zu bei der Verwaltung vorliegenden öffentlichen Informationen."
+          },
+          "en": {
+            "text": "Freedom-of-information request",
+            "description": "A citizen requests access to public information held by the municipality."
+          }
+        },
+        {
+          "key": 2,
+          "de": {
+            "text": "Beschwerde mit näher rückender Frist",
+            "description": "Eine zuvor eingereichte Beschwerde erfordert eine Antwort innerhalb einer begrenzten Frist."
+          },
+          "en": {
+            "text": "Complaint with approaching deadline",
+            "description": "A previously submitted complaint requires a response within a limited timeframe."
+          }
+        },
+        {
+          "key": 3,
+          "de": {
+            "text": "Bürgervorschlag",
+            "description": "Ein Anwohner reicht einen Vorschlag zur Verbesserung einer kommunalen Leistung ein."
+          },
+          "en": {
+            "text": "Citizen suggestion",
+            "description": "A resident submits a suggestion for improving a municipal service."
+          }
+        },
+        {
+          "key": 4,
+          "de": {
+            "text": "Rückmeldung zu einer Verwaltungsleistung",
+            "description": "Ein Bürger gibt eine Rückmeldung zu einem kürzlichen Kontakt mit der Verwaltung."
+          },
+          "en": {
+            "text": "Feedback on public service",
+            "description": "A citizen provides feedback about a recent interaction with the municipality."
+          }
+        },
+        {
+          "key": 5,
+          "de": {
+            "text": "Doppelte Anfrage",
+            "description": "Eine Anfrage ähnelt offenbar einer bereits zuvor eingereichten Anfrage."
+          },
+          "en": {
+            "text": "Duplicate inquiry",
+            "description": "A request appears similar to one that was previously submitted."
+          }
+        }
+      ]
+    }
+  ]
+}
