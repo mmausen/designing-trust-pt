@@ -47,7 +47,6 @@
           "handoff": "KI übernimmt im Feld",
           "hidden": "KI setzt auf Knopfdruck"
         },
-        "speedLabel": "Tempo der KI",
         "aiDone": "Alle Fälle sind platziert. Sehen Sie die Reihenfolge in Ruhe durch und ziehen Sie jeden Fall, den Sie ändern möchten — bestätigen Sie dann.",
         "startAi": "KI starten"
       },
@@ -253,7 +252,6 @@
           "handoff": "AI takes over in the box",
           "hidden": "AI places on request"
         },
-        "speedLabel": "AI speed",
         "aiDone": "All cases are placed. Look the order over and drag any case you'd like to move, then confirm.",
         "startAi": "Start AI"
       },

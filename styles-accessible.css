@@ -161,7 +161,8 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 
 /* ── AI cursor (handoff): pointer + an "AI" tag that travels with it, in the
       prototype's purple. Positioned purely by transform, so the arrow tip
-      sits on (x, y). ── */
+      sits on (x, y). How it MOVES is the session's character — see
+      js/cursor.js and cursors.json. ── */
 #ai-cursor{position:fixed;left:0;top:0;width:26px;height:30px;pointer-events:none;z-index:9999;
   display:none;opacity:0;will-change:transform,opacity}
 #ai-cursor .ai-arrow{position:relative;display:block;filter:drop-shadow(0 2px 3px rgba(0,0,0,.3))}
@@ -209,17 +210,6 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 #ai-zone.ai-zone--btn:disabled{opacity:.55;cursor:default;transform:none}
 /* the resting dot belongs to the zone, not to a button you click once */
 #ai-zone.ai-zone--btn .ai-zone-dot{display:none}
-
-/* ── participant-facing AI speed slider ── */
-.speed-ctl{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;
-  color:var(--muted);white-space:nowrap;cursor:pointer}
-.speed-ctl input[type=range]{-webkit-appearance:none;appearance:none;width:110px;height:4px;
-  border-radius:4px;background:var(--border);outline:none;cursor:pointer}
-.speed-ctl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;
-  border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid #fff;
-  box-shadow:0 1px 4px rgba(0,0,0,.25)}
-.speed-ctl input[type=range]::-moz-range-thumb{width:16px;height:16px;border:2px solid #fff;
-  border-radius:50%;background:var(--accent);cursor:pointer}
 
 /* ── language switcher (fixed top-right, on every screen) ── */
 #lang-switch{position:fixed;top:12px;right:16px;z-index:10001;display:flex;gap:2px;

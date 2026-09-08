@@ -252,6 +252,16 @@
       });
     });
 
+    /* Same reasoning for the cursor's motion: a character with no preset in
+       cursors.json still runs, with every dial off — a bland straight-line
+       cursor that looks like a design choice rather than a missing file. The
+       failure mode is "both conditions felt the same", discovered in analysis. */
+    Config.CHARACTERS.forEach(c => {
+      if (Cursor.has(c)) return;
+      console.error(`[BDR] no cursor motion profile for "${c}" in cursors.json — ` +
+                    `its handoff rounds will use a plain straight-line cursor.`);
+    });
+
     Task.wire();
     Prolific.wire();
 
@@ -344,8 +354,9 @@
     Flow.showScreen("screen-end");
   }
 
-  // Load the interface strings and the bilingual task content, then boot.
-  // (fetch works while served over http; inline both when baking to one file.)
+  // Load the interface strings, the bilingual task content and the AI
+  // cursor's motion presets, then boot.
+  // (fetch works while served over http; inline all three when baking to one file.)
   document.addEventListener("DOMContentLoaded", () => {
     // `no-cache` forces revalidation: these content files change often and the
     // server sends no ETag, so a plain fetch happily serves a stale copy.
@@ -353,15 +364,17 @@
       if (!r.ok) throw new Error(`${url} → HTTP ${r.status}`);
       return r.json();
     });
-    Promise.all([grab("strings.json"), grab("tasks.json")])
-      .then(([strings, tasks]) => {
+    Promise.all([grab("strings.json"), grab("tasks.json"), grab("cursors.json")])
+      .then(([strings, tasks, cursors]) => {
         I18n.load(strings);
         Tasks.load(tasks);
+        Cursor.load(cursors);
       })
       .catch(err => {
         console.error("Failed to load content:", err);
         I18n.load({ de: {}, en: {} });
         Tasks.load({ tasks: [] });
+        Cursor.load({ presets: {} });
       })
       .finally(boot);
   });

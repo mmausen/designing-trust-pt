@@ -1,0 +1,92 @@
+{
+  "format": "moveme.gym.preset",
+  "version": 1,
+  "exported": "2026-09-04T09:44:32.570Z",
+  "dials": [
+    "B1",
+    "B3",
+    "B5",
+    "A8",
+    "B10",
+    "B8"
+  ],
+  "note": "`params` holds the gym dials js/cursor.js implements — the gym exports all fifteen, the other nine are retired; a retired dial switched ON is reported at boot, as is any value outside its range. `travel` and `afterPlace` are NOT gym dials: travel is the Fitts pair that sets a character's pace (baseMs + slopeMs per bit of difficulty), afterPlace is the pause after letting a case go (seconds give or take jitter of itself, redrawn per placement). Both fall back to gym behaviour when absent, so a raw gym export still loads. Speed is the one thing the gym cannot tune any more.",
+  "presets": {
+    "bold": {
+      "saved": "2026-09-04T09:44:31.553Z",
+      "from": "bold.gym.json · gym preset \"coffe2\"",
+      "travel": {
+        "baseMs": 275.105,
+        "slopeMs": 391.496
+      },
+      "afterPlace": {
+        "seconds": 0.25,
+        "jitter": 0.6
+      },
+      "params": {
+        "B1": {
+          "on": false,
+          "v": 0.55
+        },
+        "B3": {
+          "on": false,
+          "v": 0.06
+        },
+        "B5": {
+          "on": true,
+          "v": 0.96
+        },
+        "A8": {
+          "on": false,
+          "v": -0.12
+        },
+        "B10": {
+          "on": true,
+          "v": 0.73
+        },
+        "B8": {
+          "on": false,
+          "v": 0.73
+        }
+      }
+    },
+    "cautious": {
+      "saved": "2026-09-04T09:36:06.445Z",
+      "from": "cautious.gym.json · gym preset \"hesitant\"",
+      "travel": {
+        "baseMs": 299.0,
+        "slopeMs": 425.5
+      },
+      "afterPlace": {
+        "seconds": 2.5,
+        "jitter": 0.5
+      },
+      "params": {
+        "B1": {
+          "on": true,
+          "v": 0.55
+        },
+        "B3": {
+          "on": true,
+          "v": 0.06
+        },
+        "B5": {
+          "on": true,
+          "v": 0.2
+        },
+        "A8": {
+          "on": true,
+          "v": 0.28
+        },
+        "B10": {
+          "on": false,
+          "v": 0.17
+        },
+        "B8": {
+          "on": true,
+          "v": 0.99
+        }
+      }
+    }
+  }
+}

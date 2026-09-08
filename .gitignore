@@ -14,5 +14,11 @@ package-lock.json
 *.swp
 *~
 
+# ── the Cursor Gym ──────────────────────────────────────────────────
+# moveMe/ is a separate project with its own .git — the sandbox the two
+# cursor characters were tuned in (see cursors.json). Committing it here
+# would add it as a gitlink, not as files.
+moveMe/
+
 # ── local tool state (machine-specific, not shared) ─────────────────
 .claude/settings.local.json

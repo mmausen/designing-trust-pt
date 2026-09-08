@@ -37,30 +37,16 @@ window.Task = (function () {
   }
   const DRAG_THRESHOLD = 5;
 
-  /* Fixed motion constants. The study-facing knobs (speed, pauseAfterPlaceMs,
-     hesitate, userSpeedControl) live in Config.AI_CURSOR and are resolved per
-     stage into `hcfg` — see resolveCursorCfg(). */
-  const AUTO = {
-    /* px/sec at slider 0 / 100. Halved twice on 2026-08-12 (230/3200 →
-       115/1600 → here) to make the AI's movement slower. Both ends are halved
-       each time rather than just lowering the default `speed`, so every
-       position of the participant's speed slider moves with it — otherwise
-       someone pushing the slider up would land straight back at the old pace.
-       The pauses between moves (planJob's beats, and pauseAfterPlaceMs) are
-       separate: this is travel speed, not deliberation. */
-    speedMin: 57.5, speedMax: 800,
-    fadeInMs: 420, fadeOutMs: 240, returnMs: 190,
-  };
-  let hcfg = null;        // this stage's resolved cursor settings
+  /* How the cursor APPEARS and disappears, and how it hands itself back.
 
-  // Config.AI_CURSOR, with any inline per-condition overrides applied.
-  function resolveCursorCfg(condition) {
-    const base = Object.assign({}, Config.AI_CURSOR);
-    ["speed", "pauseAfterPlaceMs", "hesitate", "userSpeedControl"].forEach(k => {
-      if (condition && condition[k] !== undefined) base[k] = condition[k];
-    });
-    return base;
-  }
+     Nothing here moves it while it is SORTING — that is entirely the session's
+     character, tuned in the gym and loaded from cursors.json (see
+     js/cursor.js). These three are the takeover choreography around it: the
+     fades, and the sweep back to the participant's own pointer when they take
+     control. There is deliberately no second pacing knob; the one that used to
+     sit here (pauseAfterPlaceMs) was removed on 2026-09-08 so that cursors.json
+     is the only thing that decides how the cursor moves. */
+  const AUTO = { fadeInMs: 420, fadeOutMs: 240, returnMs: 190 };
 
   // per-task state
   let stage, group, cond, aiMode, cards, byId, aiRanking, inbox, slots, taskStart;
@@ -107,11 +93,8 @@ window.Task = (function () {
 
   const lerp = (a, b, t) => a + (b - a) * t;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const rand = (a, b) => a + Math.random() * (b - a);
   const dist = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by);
   const easeInOutCubic = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-  const easeOutBack = (t, s) => { s = s == null ? 1.1 : s; return 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2); };
-  const speedPPS = () => lerp(AUTO.speedMin, AUTO.speedMax, (hcfg ? hcfg.speed : 28) / 100);
 
   /* ── wire footer controls + cache overlays (once) ── */
   function wire() {
@@ -152,17 +135,6 @@ window.Task = (function () {
     document.addEventListener("mousemove", e => {
       lastPointer = { x: e.clientX, y: e.clientY };
     }, { passive: true });
-
-    // Participant-facing speed control (Config.AI_CURSOR.userSpeedControl).
-    const speed = $("ai-speed");
-    if (speed) {
-      speed.addEventListener("input", () => { if (hcfg) hcfg.speed = +speed.value; });
-      // Log on release, not on every pixel of drag.
-      speed.addEventListener("change", () => {
-        if (!hcfg) return;
-        Store.log("ai_speed_changed", { speed: hcfg.speed, taskId, condition: cond ? cond.key : null });
-      });
-    }
   }
 
   /* The block's caption. In a hidden stage it is a button and always says the
@@ -193,7 +165,11 @@ window.Task = (function () {
     aiMode = cond.ai;
     handoff = (aiMode === "handoff");
     hiddenAi = (aiMode === "hidden");
-    hcfg = resolveCursorCfg(cond);
+    /* Pin the cursor's motion character alongside its ranking. Both come from
+       the same `character`, so the AI that recommends this order is also the
+       one that moves this way — re-pinned per round rather than once, because
+       the dev group picker can change the session's character between rounds. */
+    if (handoff) Cursor.use(character);
     aiTakeovers = 0; userTakebacks = 0; aiPlacedCount = 0;
     taskDef = Tasks.get(taskId);
 
@@ -500,17 +476,6 @@ window.Task = (function () {
     const badgeTxt = (aiMode === "solo") ? null : I18n.t(`ui.task.badges.${aiMode}`);
     if (badgeTxt) { badge.hidden = false; badge.textContent = badgeTxt; }
     else badge.hidden = true;
-
-    // Participant speed control — only where an AI cursor actually moves.
-    const speedCtl = $("ai-speed-ctl");
-    if (speedCtl) {
-      const show = handoff && !!hcfg.userSpeedControl;
-      speedCtl.hidden = !show;
-      if (show) {
-        $("ai-speed").value = hcfg.speed;
-        $("ai-speed-label").textContent = I18n.t("ui.task.speedLabel");
-      }
-    }
 
     /* The AI control block: the handoff activation zone, or the hidden
        mechanic's "Start AI" button. Both mechanics retire it once the board is
@@ -899,30 +864,45 @@ window.Task = (function () {
   }
 
   /* ═══ the AI cursor ═══════════════════════════════════════════
-     A fake cursor that plans human-ish motion: think → curve toward the
-     step → grab → carry → drop. Driven by rAF (with a setInterval
-     watchdog, because background tabs throttle rAF). It follows
-     `aiRanking`, so a scripted error is placed exactly as suggested.
+     A fake cursor that reaches for a tile, picks it up, carries it to the
+     slot the AI chose, and lets go. It follows `aiRanking` — it never
+     decides WHAT to place, only how it gets there.
+
+     HOW it moves is the session's CHARACTER: bold or cautious, tuned in the
+     Cursor Gym (moveMe/gym) and loaded from cursors.json. Every dial reads
+     through the Cursor module, and with a profile missing or every dial off
+     this collapses to a plain min-jerk straight line — so a broken preset
+     file degrades to bland motion, not to a broken cursor.
+
+     Everything is planned into a queue of segments and then consumed by dt,
+     rather than awaited: background tabs throttle rAF, and a promise chain
+     would stall there. The watchdog in driveStart() is why.
      ══════════════════════════════════════════════════════════════════ */
 
   function hideCursor() {
     if (!aiCursor) return;
     aiCursor.style.display = "none";
     aiCursor.style.opacity = "0";
+    aiCursor.style.transform = "";
   }
 
-  /* ── geometry ── */
+  /* ── geometry ──
+     `w` is the target's SHORT side, which is the accuracy demand a reach
+     actually faces: our tiles and slots are wide and shallow, so their width
+     would make every move look trivially easy to Fitts' law. */
+  const fittsW = r => clamp(Math.min(r.width, r.height), 30, 200);
+
   function tileCenter(id) {
     const el = document.querySelector(`#inbox [data-id="${id}"]`);
     if (!el) return null;
     const r = el.getBoundingClientRect();
-    return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width };
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, fw: fittsW(r) };
   }
   function slotCenter(i) {
     const el = document.querySelector(`#ladder [data-slot="${i}"]`);
     if (!el) return null;
     const r = el.getBoundingClientRect();
-    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2, fw: fittsW(r) };
   }
   function highlightSlotAt(x, y) {
     document.querySelectorAll(".slot.drop-target").forEach(s => s.classList.remove("drop-target"));
@@ -932,16 +912,60 @@ window.Task = (function () {
     });
   }
 
-  /* ── motion queue ── */
-  function pushMove(tx, ty, ease, curve) {
-    fc.queue.push({ type: "move", to: { x: tx, y: ty }, ease: ease || "cubic", curve: curve == null ? 0.12 : curve, t: 0 });
+  /* ── motion queue ──
+     A move carries its TARGET and its shaping context, not a path: the path
+     is built in startSegment() from wherever the cursor actually is when the
+     leg begins, so an interrupted plan can never bend toward a stale origin.
+       shaped — apply A8 / B7 / B10 (the ballistic leg). Corrections go straight.
+       competitors — the targets it is NOT going to, which B7 bows away from
+                     and B10 leans toward.
+       w — the target's short side, for the Fitts term in Cursor.legMs. */
+  function pushMove(to, opts) {
+    fc.queue.push({
+      type: "move", to,
+      shaped: !!(opts && opts.shaped),
+      competitors: (opts && opts.competitors) || null,
+      w: (opts && opts.w) || 56,
+      fixedMs: (opts && opts.fixedMs) || null,   // beats have their own duration
+      correction: !!(opts && opts.correction),
+      t: 0,
+    });
   }
-  function pushPause(ms) { fc.queue.push({ type: "pause", dur: ms, t: 0 }); }
+  function pushPause(ms) { if (ms > 0) fc.queue.push({ type: "pause", dur: ms, t: 0 }); }
   function pushGrab(id) { fc.queue.push({ type: "grab", id }); }
   function pushDrop(slot) { fc.queue.push({ type: "drop", slot }); }
 
-  // Plan one pick-up-and-place: nearest remaining step → the slot the AI wants.
+  /* One reach, as the gym builds it: response latency → forethought beat →
+     a ballistic leg that undershoots → correction legs. `from` is where the
+     cursor will be when the reach starts; the caller knows that because the
+     queue is planned as one whole job from a standstill. */
+  function pushReach(from, to, competitors, w) {
+    let at = from;
+    const fore = Cursor.forethought();                        // B8: pull back, then go
+    if (fore) {
+      const dx = to.x - from.x, dy = to.y - from.y, d = Math.hypot(dx, dy) || 1;
+      at = { x: from.x - dx / d * fore.backPx, y: from.y - dy / d * fore.backPx };
+      pushMove(at, { fixedMs: fore.glideMs });
+      pushPause(fore.holdMs);
+    }
+
+    // ...from wherever the pull-back left it, not from where the reach was planned
+    const legs = Cursor.subTargets(at, to);                   // B3
+    legs.forEach((leg, i) => pushMove(leg, {
+      shaped: i === 0, competitors: i === 0 ? competitors : null,
+      w, correction: i > 0,
+    }));
+  }
+
+  /* Plan one pick-up-and-place: the nearest remaining tile → the slot the AI
+     wants it in. "Nearest" is not a strategy choice, it is the only sane
+     order for a cursor that has to physically travel; WHICH slot each tile
+     goes to is fixed by aiRanking. */
   function planJob() {
+    /* Holding the cursor with nothing it is allowed to place. Only reachable
+       in the gap between the last case landing and autoFinish() noticing, so
+       it just waits out a beat. (B21 used to drift the cursor around here;
+       neither character switched it on, so it went.) */
     const free = inbox.filter(c => c.id !== fc.carrying && aiRanking.indexOf(c.id) !== -1);
     if (!free.length) { pushPause(300); return; }
 
@@ -953,58 +977,51 @@ window.Task = (function () {
     const cc = tileCenter(target.id);
     const slotIdx = aiRanking.indexOf(target.id);
     if (!cc || slotIdx < 0) { pushPause(300); return; }
-    const hes = !!(hcfg && hcfg.hesitate);
 
-    pushPause(hes ? rand(350, 1000) : rand(120, 260));            // a beat of "thinking"
-    if (hes && Math.random() < 0.6) {                             // second-guess approach
-      pushMove(cc.x + rand(-40, 40), cc.y + rand(-44, -14), "cubic", 0.18);
-      pushPause(rand(180, 480));
-      pushMove(cc.x, cc.y, "back", 0.05);
-    } else {
-      pushMove(cc.x, cc.y, "back", 0.13);
-    }
+    // reach for the tile — the other tiles are the roads not taken
+    const others = free.filter(c => c.id !== target.id).map(c => tileCenter(c.id)).filter(Boolean);
+    pushReach({ x: fc.x, y: fc.y }, cc, others, cc.fw);
+    pushPause(Cursor.MOTION.grabDwell);                       // settle before lifting
     pushGrab(target.id);
-    pushPause(hes ? rand(160, 360) : rand(90, 170));
 
-    const sc = slotCenter(slotIdx) || { x: fc.x, y: fc.y };
-    if (hes && Math.random() < 0.5) {
-      pushMove(sc.x + rand(-30, 30), sc.y - rand(40, 80), "cubic", 0.10);
-      pushPause(rand(200, 520));
-      pushMove(sc.x, sc.y, "cubic", 0.04);
-    } else {
-      pushMove(sc.x, sc.y, "back", 0.08);
-    }
+    // carry it to its slot — the other free slots are the competing goals
+    const sc = slotCenter(slotIdx) || { x: fc.x, y: fc.y, fw: 56 };
+    const otherSlots = slots.map((id, i) => (id || i === slotIdx) ? null : slotCenter(i)).filter(Boolean);
+    pushReach(cc, sc, otherSlots, sc.fw);
+    pushPause(Cursor.MOTION.dropDwell);                       // settle before letting go
     pushDrop(slotIdx);
-    // Rest after the placement (Config.AI_CURSOR.pauseAfterPlaceMs). A fixed,
-    // configurable value rather than the old random beat, so "the AI waits a
-    // second between steps" is something the study can state exactly.
-    const rest = hcfg && hcfg.pauseAfterPlaceMs != null ? hcfg.pauseAfterPlaceMs : 0;
-    if (rest > 0) pushPause(rest);
+
+    const fore = Cursor.forethought();                        // B8: the settle after letting go
+    if (fore) pushMove({ x: sc.x, y: sc.y - fore.beatPx }, { fixedMs: fore.beatMs });
+
+    /* The beat between cases. Cursor.MOTION.beat, which is the gym's own
+       value — so the rhythm the character was tuned against is the rhythm it
+       runs at here. It used to be a separate 400 ms study parameter in
+       config.js, which meant the prototype was paced 4× slower between cases
+       than anything you could hear in the gym. */
+    pushPause(Cursor.MOTION.beat);
+
+    /* ...and then the character's own pause before starting the next case —
+       cursors.json `afterPlace`, redrawn here so each of the six gets its own
+       length. This is the ONLY wait that lengthens after a placement rather
+       than before an action, which is why no gym dial reaches it.
+       Zero unless the preset asks for it. */
+    pushPause(Cursor.afterPlaceMs());
   }
 
   function startSegment() {
     fc.seg = fc.queue.shift() || null;
     if (!fc.seg || fc.seg.type !== "move") return;
-    // Curve the travel: a quadratic bezier bowed off the straight line.
-    const p0 = { x: fc.x, y: fc.y }, p1 = fc.seg.to;
-    const d = Math.max(1, dist(p0.x, p0.y, p1.x, p1.y));
-    const mx = (p0.x + p1.x) / 2, my = (p0.y + p1.y) / 2;
-    const nx = -(p1.y - p0.y) / d, ny = (p1.x - p0.x) / d;
-    const amp = d * fc.seg.curve * (Math.random() < 0.5 ? -1 : 1);
-    fc.seg.p0 = p0; fc.seg.p1 = p1;
-    fc.seg.ctrl = { x: mx + nx * amp, y: my + ny * amp };
-    /* The ceiling is a safety valve against nonsense geometry (a zero-size or
-       off-screen rect would otherwise plan a minutes-long crawl), NOT a pacing
-       device — it has to stay well above the slowest legitimate travel, or it
-       would silently cap the speed setting on a large screen. At the default
-       slider the longest realistic move is ~4.5 s. */
-    fc.seg.dur = clamp(d / speedPPS() * 1000 * ((hcfg && hcfg.hesitate) ? 1.22 : 1), 170, 12000);
-    fc.seg.t = 0;
-  }
-  function bezier(p0, ctrl, p1, t) {
-    const u = 1 - t;
-    return { x: u * u * p0.x + 2 * u * t * ctrl.x + t * t * p1.x,
-             y: u * u * p0.y + 2 * u * t * ctrl.y + t * t * p1.y };
+    const s = fc.seg;
+    const p0 = { x: fc.x, y: fc.y };
+    const d = Math.max(1, dist(p0.x, p0.y, s.to.x, s.to.y));
+    s.path = s.shaped ? Cursor.buildLeg(p0, s.to, s.competitors)
+                      : Cursor.buildPath([p0, s.to]);
+    const base = Cursor.legMs(d, s.w);                        // Fitts + this character's travel pair
+    s.dur = s.fixedMs != null ? s.fixedMs
+          : s.correction ? Cursor.correctionMs(base)
+          : base;
+    s.t = 0;
   }
 
   function updateMotion(dt) {
@@ -1021,12 +1038,10 @@ window.Task = (function () {
 
     } else if (s.type === "move") {
       s.t += dt / s.dur;
-      const tt = clamp(s.t, 0, 1);
-      const e = s.ease === "back" ? easeOutBack(tt) : easeInOutCubic(tt);
-      const pos = bezier(s.p0, s.ctrl, s.p1, e);
+      const pos = s.path.at(Cursor.ease(clamp(s.t, 0, 1)));     // B1
       fc.x = pos.x; fc.y = pos.y;
       if (fc.carrying != null) { ghostMoveTo(fc.x - 26, fc.y - 20); highlightSlotAt(fc.x, fc.y); }
-      if (s.t >= 1) { fc.x = s.p1.x; fc.y = s.p1.y; fc.seg = null; }
+      if (s.t >= 1) { fc.x = s.to.x; fc.y = s.to.y; fc.seg = null; }
 
     } else if (s.type === "grab") {
       const ctr = tileCenter(s.id);
@@ -1081,7 +1096,8 @@ window.Task = (function () {
     aiCursor.style.transform = `translate(${fc.x}px,${fc.y}px)`;
     aiState = "idle";                    // the participant has control first
     Store.log("handoff_armed", {
-      taskId, speed: hcfg.speed, hesitate: !!hcfg.hesitate,
+      taskId, character,
+      cursorDials: Cursor.dials(), travel: Cursor.travel(), afterPlace: Cursor.afterPlace(),
     });
     render();
     driveStart();
@@ -1100,8 +1116,7 @@ window.Task = (function () {
     if (zoneEl) zoneEl.classList.add("active");
     updateZoneLabel();
     Store.log("ai_took_over", {
-      taskId, nth: aiTakeovers, placedSoFar: slots.filter(Boolean).length,
-      speed: hcfg.speed,
+      taskId, nth: aiTakeovers, placedSoFar: slots.filter(Boolean).length, character,
     });
   }
 
@@ -1215,11 +1230,14 @@ window.Task = (function () {
     } else if (fc.returning) updateReturn(dt);
 
     if (fc.opacity > 0) {
-      // a hair of organic jitter so the cursor never looks mechanically still
-      const jx = Math.sin(now / 180) * 1.0 + Math.sin(now / 70) * 0.5;
-      const jy = Math.cos(now / 160) * 1.0 + Math.cos(now / 90) * 0.5;
+      /* The drawn position is the planned one plus B5's coherent drift. That
+         moves the GLYPH only — fc.x/fc.y, which is what a grab and a drop are
+         measured against, stays exactly on the path, so no amount of noise
+         can make it miss a tile. */
+      const off = Cursor.offset(now);
+      const dx = fc.x + off.x, dy = fc.y + off.y;
       aiCursor.style.opacity = fc.opacity.toFixed(3);
-      aiCursor.style.transform = `translate(${(fc.x + jx).toFixed(1)}px,${(fc.y + jy).toFixed(1)}px)`;
+      aiCursor.style.transform = `translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`;
     } else {
       aiCursor.style.opacity = "0";
       // Only tear the engine down once the task is finished. In a handoff
@@ -1285,11 +1303,17 @@ window.Task = (function () {
       /* Shared-control behaviour. aiTakeovers counts every time the AI was
          handed the work — a zone entry in a handoff stage, the button press in
          a hidden one — so the two mechanics stay comparable; the rest is 0
-         outside them. The cursor settings are null wherever no cursor runs,
-         rather than reporting the speed of a cursor that never appeared. */
+         outside them. The cursor fields are null wherever no cursor runs,
+         rather than describing motion nobody saw; where one does,
+         `cursorDials` is the character's ON dials and `cursorTravel` /
+         `cursorAfterPlace` its two millisecond settings (js/cursor.js), so a
+         row of data says how the AI moved without anyone having to dig out
+         which cursors.json this build shipped with. */
       aiTakeovers, userTakebacks, placedByAi: aiPlacedCount,
-      cursorSpeed: (handoff && hcfg) ? hcfg.speed : null,
-      cursorHesitate: (handoff && hcfg) ? !!hcfg.hesitate : null,
+      cursorCharacter: handoff ? character : null,
+      cursorDials: handoff ? Cursor.dials() : null,
+      cursorTravel: handoff ? Cursor.travel() : null,
+      cursorAfterPlace: handoff ? Cursor.afterPlace() : null,
       ...timing,
     };
     Store.log("task_confirm", { stage, group, character, block, taskId, finalRanking: [...slots], ...timing });

@@ -43,11 +43,11 @@ window.Config = (function () {
      indexes the steps array whose shape these switches decide. Finish or
      discard a pilot session before flipping one. */
   const STEPS = {
-    consent:    true,   // the privacy / consent statement, and the Begin gate
+    consent:    false,   // the privacy / consent statement, and the Begin gate
     prolificId: true,   // ask for the participant's Prolific ID, and log it
-    preSurvey:  true,   // questionnaire before the first task
-    midSurvey:  true,   // questionnaire between the two AI blocks
-    postSurvey: true,   // questionnaire after the last task
+    preSurvey:  false,   // questionnaire before the first task
+    midSurvey:  false,   // questionnaire between the two AI blocks
+    postSurvey: false,   // questionnaire after the last task
   };
 
   // Fixed seed for the per-task tile shuffle. Because it is constant, every
@@ -72,13 +72,17 @@ window.Config = (function () {
      — each GROUP names its character (see below), and the session pins it at
      creation. This list exists to validate that name.
 
-     NOTE — this currently changes the AI's RANKING only. The study design also
-     describes bold and cautious as differing in observable BEHAVIOUR (bold:
-     fast, few revisits, quick decisions; cautious: inspects every case,
-     revisits, adjusts the ranking repeatedly). That half is not built: it
-     would live in AI_CURSOR below, as a per-character profile of `speed`,
-     `pauseAfterPlaceMs` and `hesitate`, and would only be visible in the
-     handoff mechanic — the hidden one shows an outcome, not a process. */
+     The character drives TWO things:
+       · WHAT the AI recommends — the task's `ai-order` for this character.
+       · HOW its cursor moves — a motion profile in cursors.json, tuned in the
+         Cursor Gym (moveMe/gym) and applied by js/cursor.js. Bold and
+         cautious differ in velocity profile, hesitation, curvature and
+         restlessness, not only in the order they hand you.
+
+     The motion half is visible in the HANDOFF mechanic only. The hidden one
+     shows an outcome, not a process: six tiles fly at one constant speed with
+     no cursor at all (HIDDEN_PLACE_MS). That difference is deliberate — it is
+     most of what separates the two mechanics. */
   const CHARACTERS = ["bold", "cautious"];
 
   function isCharacter(c) { return CHARACTERS.indexOf(c) !== -1; }
@@ -103,27 +107,22 @@ window.Config = (function () {
   const ASSIGN_URL = "/assign-group";
   const ASSIGN_TIMEOUT_MS = 4000;   // never leave a participant staring at a dead Begin button
 
-  /* AI cursor behaviour for the "handoff" mechanic (G1/G2).
-     These are study parameters, so they live here rather than in task.js.
-     Any group may override a value inline, e.g.
-         G1: { key: "g1", ai: "handoff", speed: 40, hesitate: true } */
-  const AI_CURSOR = {
-    speed: 55,              // 0–100 → cursor travel speed (57.5–800 px/s)
-    pauseAfterPlaceMs: 400, // the cursor sits still for this long after dropping each
-                            //   step, before it goes for the next one — a beat to take in
-                            //   what just happened rather than a continuous sweep.
-                            //   Applies whether or not `hesitate` is on, and replaces the
-                            //   short random beat that used to sit there.
-                            //   0 = sort straight through with no rest.
-    hesitate: false,        // thinking pauses + second-guess approach curves
-    userSpeedControl: false, // show the PARTICIPANT a speed slider. OFF for the study:
-                            //   it makes AI speed a participant-controlled variable, so
-                            //   timing stops being comparable across people and it may
-                            //   interact with perceived agency. Set true if a pilot needs
-                            //   it (fast cursor motion is disorienting for some people);
-                            //   every change is logged as ai_speed_changed, and the value
-                            //   in force is on each result as cursorSpeed either way.
-  };
+  /* ═══ the AI cursor is NOT configured here ════════════════════════
+     There is deliberately nothing in this file that touches how the handoff
+     cursor moves. All of it — pace (`travel`), the wait after a placement
+     (`afterPlace`), hesitation, curvature, restlessness — is the session's
+     character, in cursors.json. What is left in js/cursor.js is the shared
+     baseline: the two dwells, the beat between cases, and the coefficients
+     that decide what each dial's 0…1 MEANS. Those are shared by both
+     characters by design, so none of them can separate bold from cautious.
+
+     An AI_CURSOR block used to sit here with a `pauseAfterPlaceMs` of 400 ms.
+     It was removed on 2026-09-08: it paced the cursor 4× slower between cases
+     than the gym's own 90 ms beat, so what you tuned was not what the
+     participant saw — and being overridable per group, it could have given the
+     two characters different rhythms without that being visible in cursors.json.
+     Do not reintroduce a knob here. If the pacing is wrong, it is wrong in the
+     gym too: fix it there and re-export. */
 
   /* ═══ study design: unassisted baseline, then ONE AI mechanic ══════
      Between-subjects. Every participant runs the unassisted baseline rounds
@@ -144,8 +143,9 @@ window.Config = (function () {
                      (see HIDDEN_PLACE_MS). The participant can then rearrange
                      anything before confirming, exactly as after a handoff.
 
-     The AI never explains itself: there is no reasoning panel and no
-     `thoughts` switch. What it recommends is set by the group's CHARACTER.
+     The AI never explains itself: no reasoning panel, no narration. What it
+     recommends is set by the group's CHARACTER, and nothing tells the
+     participant why.
 
      Label / banner / onboarding text lives in strings.json under
      conditions.<key>, in both languages — e.g. conditions.handoff.onboarding,
@@ -217,39 +217,33 @@ window.Config = (function () {
      pilot, extend it to add rounds.
 
      BASELINE_TASKS runs first, unassisted, for everyone. The two AI blocks
-     then draw from TASK_BLOCKS. */
+     then run in the order TASK_BLOCKS lists them.
+
+     ── the task order is the same for every group ──────────────────
+     TASK_BLOCKS is an ARRAY, not a map, because its order IS the running
+     order: block [0] always runs first and block [1] second, in every one of
+     the four setups. So the sequence of tasks a participant meets —
+     T1…T3, then T4…T8, then T9…T13 — is identical whatever group they drew.
+
+     What the group counterbalances is only WHICH MECHANIC sits on each block
+     (see GROUPS). That is the whole point of the four setups: every block of
+     tasks meets BOTH mechanics across participants, so a content effect can
+     never be mistaken for a mechanic effect. Nothing here may be made to
+     depend on the group — a mechanic that dragged its tasks along with it
+     would tie content permanently to behaviour and confound the two.
+
+     Each round still records its `taskBlock` name, so the analysis never has
+     to re-derive which content set it came from. */
   const BASELINE_TASKS = ["T1", "T2", "T3"];
 
-  const TASK_BLOCKS = {
-    blockA: ["T4", "T5", "T6", "T7", "T8"],
-    blockB: ["T9", "T10", "T11", "T12", "T13"],
-  };
-
-  /* ═══ how those blocks reach the two mechanics ═════════════════════
-     "position"  — blockA runs FIRST and blockB SECOND, whatever mechanic is
-                   in that position. Since GROUPS counterbalances the order,
-                   each block of tasks meets BOTH mechanics across
-                   participants, so task content is NOT confounded with
-                   mechanic. This is the default, and the reason the four
-                   setups exist.
-
-     "mechanic"  — each block is pinned to a named mechanic by MECHANIC_BLOCKS
-                   below, and travels with it into whichever position that
-                   mechanic occupies. Task content is then permanently tied to
-                   the mechanic, so a content effect and a mechanic effect
-                   cannot be told apart. Only choose this if the two blocks are
-                   deliberately matched to the two mechanics.
-
-     Both modes keep the ORDER counterbalanced; they differ only in whether the
-     TASKS travel with the position or with the mechanic. Whichever is in force,
-     each round records its `taskBlock`, so the analysis never has to re-derive
-     which content set a round came from. */
-  const TASK_BINDING = "position";                              // "position" | "mechanic"
-  const MECHANIC_BLOCKS = { hidden: "blockA", handoff: "blockB" };  // used when "mechanic"
+  const TASK_BLOCKS = [
+    { name: "blockA", tasks: ["T4", "T5", "T6", "T7", "T8"] },
+    { name: "blockB", tasks: ["T9", "T10", "T11", "T12", "T13"] },
+  ];
 
   /* The study plan marks T6 and T11 as the tasks whose AI recommendation is
      questionable — one in each block above, so a participant meets one under
-     each mechanic however the blocks are bound. There is no per-round error
+     each mechanic whichever way their group orders the two. There is no per-round error
      flag: with no correct order there is nothing to swap away from, so a
      questionable recommendation is authored into that task's `ai-order`.
 
@@ -263,21 +257,20 @@ window.Config = (function () {
         { stage:"ai", mechanic, block:1, taskBlock, taskId }, …
         { stage:"ai", mechanic, block:2, taskBlock, taskId }, …]
 
-     Depends on the group, since the group is what fixes the order — so
-     Store.newSession builds it once the draw is in and pins it onto the
-     session. `block` (1 or 2) is the POSITION and is what tells the two AI
-     sections apart for the onboarding; `taskBlock` is which CONTENT set the
-     round came from; `mechanic` is what each round resolves its interaction
-     through (see conditionFor). */
+     The TASKS do not depend on the group: block i is TASK_BLOCKS[i] for
+     everyone. Only the MECHANIC on each block comes from the group, which is
+     why this takes one at all — Store.newSession builds the plan once the
+     draw is in and pins it onto the session. `block` (1 or 2) is the POSITION
+     and is what tells the two AI sections apart for the onboarding;
+     `taskBlock` is the content set's name; `mechanic` is what each round
+     resolves its interaction through (see conditionFor). */
   function buildTaskPlan(group) {
     const plan = BASELINE_TASKS.map(taskId => ({ stage: "baseline", taskId }));
-    const names = Object.keys(TASK_BLOCKS);
     orderFor(group).forEach((mechanic, i) => {
-      const taskBlock = (TASK_BINDING === "mechanic")
-        ? MECHANIC_BLOCKS[mechanic]     // content follows the mechanic
-        : names[i];                     // content follows the position
-      (TASK_BLOCKS[taskBlock] || []).forEach(taskId =>
-        plan.push({ stage: "ai", mechanic, block: i + 1, taskBlock, taskId }));
+      const set = TASK_BLOCKS[i];
+      if (!set) return;               // fewer blocks listed than mechanics ordered
+      set.tasks.forEach(taskId =>
+        plan.push({ stage: "ai", mechanic, block: i + 1, taskBlock: set.name, taskId }));
     });
     return plan;
   }
@@ -299,11 +292,15 @@ window.Config = (function () {
   // Supported types: "likert" (1–5 radios) and "text" (free text).
   // Question ids are DATA KEYS — keep them identical across languages.
 
+  /* Everything, including the settings no code reads back. This is the study's
+     settings surface: BASELINE, BASELINE_TASKS and TASK_BLOCKS are spent inside
+     buildTaskPlan and conditionFor and never fetched from outside, but they are
+     what a run IS, so they stay readable from the console alongside the rest. */
   return {
-    CONFIG, STEPS, ENDPOINT_URL, ASSIGN_URL, ASSIGN_TIMEOUT_MS, SHUFFLE_SEED, AI_CURSOR,
+    CONFIG, STEPS, ENDPOINT_URL, ASSIGN_URL, ASSIGN_TIMEOUT_MS, SHUFFLE_SEED,
     HIDDEN_PLACE_MS, CHARACTERS, isCharacter,
     BASELINE, MECHANICS, GROUPS, GROUP_KEYS,
-    BASELINE_TASKS, TASK_BLOCKS, TASK_BINDING, MECHANIC_BLOCKS,
+    BASELINE_TASKS, TASK_BLOCKS,
     buildTaskPlan, conditionFor, isGroup, characterFor, orderFor,
   };
 })();

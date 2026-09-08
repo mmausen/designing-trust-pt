@@ -58,8 +58,8 @@ npm start       # → http://localhost:8080
 
 `server.js` serves the prototype **and** collects the logs on the same origin — no
 CORS, and the client can read the response to confirm each save. It must be served
-over http either way: `main.js` fetches `strings.json` and `tasks.json`, which
-`file://` blocks.
+over http either way: `main.js` fetches `strings.json`, `tasks.json` and
+`cursors.json`, which `file://` blocks.
 
 Set a different port with `PORT=9000 npm start`.
 
@@ -91,6 +91,8 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 | `styles-accessible.css` | The active stylesheet |
 | `strings.json` | **All interface text + the questionnaires**, `de` and `en` side by side |
 | `tasks.json` | Task content — 13 bilingual prioritisation tasks (T1–T13), each with a per-character `ai-order` |
+| `cursors.json` | The AI cursor's motion presets, one per character — the seven dials this build implements |
+| `moveMe/gym/` | The **Cursor Gym**: the sandbox those presets were tuned in. Its own repo, kept beside the prototype — not tracked here, and not part of the study build |
 | `js/config.js` | **Study settings** — groups, rounds, task assignment, seed, endpoints |
 | `js/groups.js` | Draws this participant's group from the server; local fallback + dev override |
 | `js/i18n.js` | Active language + string lookup with cross-language fallback |
@@ -98,6 +100,7 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 | `js/store.js` | Session state, localStorage autosave, sync to the collector |
 | `js/flow.js` | The linear step machine |
 | `js/survey.js` | Renders/validates the pre & post questionnaires |
+| `js/cursor.js` | The AI cursor's motion **character** — seven tuned dials, driven by `cursors.json` |
 | `js/task.js` | The ranking interaction: custom drag, the AI cursor engine (handoff), the one-second flight (hidden) |
 | `js/results.js` | The final debrief screen (no feedback — see the note above) |
 | `js/main.js` | Boot: fetch content, consent, resume offer, wiring |
@@ -167,30 +170,40 @@ Adding or removing a group is a one-entry edit: add its text under `conditions.<
 ```js
 const BASELINE_TASKS = ["T1", "T2", "T3"];        // unassisted, everyone
 
-const TASK_BLOCKS = {
-  blockA: ["T4", "T5", "T6", "T7", "T8"],
-  blockB: ["T9", "T10", "T11", "T12", "T13"],
-};
-
-const TASK_BINDING    = "position";                              // "position" | "mechanic"
-const MECHANIC_BLOCKS = { hidden: "blockA", handoff: "blockB" }; // used when "mechanic"
+const TASK_BLOCKS = [                             // an ARRAY: its order IS the running order
+  { name: "blockA", tasks: ["T4", "T5", "T6", "T7", "T8"] },
+  { name: "blockB", tasks: ["T9", "T10", "T11", "T12", "T13"] },
+];
 ```
 
 **One entry = one round**, in the order listed — that is where you set how many rounds
-each block runs. `TASK_BINDING` decides how the two blocks reach the two mechanics:
+each block runs.
 
-| Mode | blockA runs under | Content is… |
+**Every participant meets the same tasks in the same order**, whatever group they drew:
+
+```
+T1 T2 T3   T4 T5 T6 T7 T8   T9 T10 T11 T12 T13
+└ baseline ┘└─  block 1  ─┘└─────  block 2  ────┘
+```
+
+`TASK_BLOCKS` is an array rather than a map precisely so this cannot drift: block `[0]`
+runs first and block `[1]` second, and nothing in `buildTaskPlan` consults the group when
+choosing them.
+
+What the group counterbalances is **which mechanic sits on each block**:
+
+| | block 1 — `blockA` | block 2 — `blockB` |
 |---|---|---|
-| `"position"` *(default)* | whichever mechanic is **first** — hidden for G1/G3, handoff for G2/G4 | **counterbalanced** against mechanic |
-| `"mechanic"` | always the mechanic `MECHANIC_BLOCKS` names it | **tied** to that mechanic |
+| G1, G3 | hidden | handoff |
+| G2, G4 | handoff | hidden |
 
-Both modes keep the *order* counterbalanced; they differ only in whether the *tasks*
-travel with the position or with the mechanic. `"position"` is the default because it is
-the one that lets a mechanic effect be told apart from a content effect — under
-`"mechanic"`, whatever is special about blockA is permanently a hidden-block property.
+So each block of tasks meets **both** mechanics across participants, which is what lets a
+mechanic effect be told apart from a content effect. Tying content to a mechanic instead
+would make whatever is special about `blockA` permanently a property of that mechanic —
+which is why there is no switch for it.
 
-Whichever is in force, every round records its `taskBlock`, so the analysis never has to
-re-derive which content set a round came from.
+Every round still records its `taskBlock`, so the analysis never has to re-derive which
+content set a round came from.
 
 The study plan marks **T6 and T11** as the tasks whose AI recommendation is questionable —
 one in each block, so a participant meets one under each mechanic either way.
@@ -246,14 +259,17 @@ recruited participant out.
 for every participant, different per task. Change the string to reshuffle all tasks
 reproducibly.
 
-**Character** (`CHARACTER`) — `"bold"` or `"cautious"`, pinned onto each session at
-creation so a mid-study edit can never retroactively change a running participant's
-condition. It currently selects the AI's *ranking* only. The study plan also describes
-the two as differing in observable *behaviour* (bold: fast, few revisits, quick
-decisions; cautious: inspects every case, revisits, adjusts repeatedly) — that half is
-not built. It would go in `AI_CURSOR` as a per-character profile of `speed`,
-`pauseAfterPlaceMs` and `hesitate`, and would only be visible in the handoff mechanic,
-since the hidden one shows an outcome rather than a process.
+**Character** — `"bold"` or `"cautious"`, named by the group and pinned onto each
+session at creation, so a mid-study edit can never retroactively change a running
+participant's condition. It drives two things:
+
+* **What the AI recommends** — the task's `ai-order` for that character (`tasks.json`).
+* **How its cursor moves** — a motion profile in `cursors.json`, applied by
+  `js/cursor.js`. See *AI cursor character* below.
+
+The motion half is visible in the **handoff** mechanic only. The hidden one shows an
+outcome, not a process: six tiles fly at one constant speed with no cursor at all. That
+difference is deliberate — it is most of what separates the two mechanics.
 
 **Surveys** — in `strings.json` under `surveys.pre` / `surveys.post`, per language.
 Question types are `likert` (1–5) and `text`. **Question ids are data keys**: keep them
@@ -288,25 +304,165 @@ records `newSection` / `explainerAutoShown`, and each OK logs `explainer_step`, 
 reading path is visible in the data.
 
 <details>
-<summary><b>AI cursor settings</b> (<code>Config.AI_CURSOR</code>) — speed, the rest after each placement, the participant slider</summary>
+<summary><b>AI cursor character</b> (<code>cursors.json</code>, <code>js/cursor.js</code>) — how bold and cautious move</summary>
 
-Used by the `handoff` mechanic. A condition can override a value inline,
-e.g. `handoff: { key: "handoff", ai: "handoff", speed: 40, hesitate: true }`.
+The handoff cursor's motion is a **tuned character**, not a speed setting. Each dial is a
+toggle and one number, reaching the engine only through `Cursor.k(id)`, which returns `0`
+when the toggle is off. Every dial off collapses to a plain min-jerk straight line, so a
+missing or broken preset degrades to bland motion rather than to a broken cursor.
 
-| Key | Meaning |
+The dials, the parameter ids and the maths all come from the **Cursor Gym**
+(`moveMe/gym`), the sandbox the two characters were actually tuned in. What did *not*
+come across, deliberately: its take-over modes (the prototype has its own activation
+zone) and its sorting strategies (the AI here does not choose *what* to place — that is
+the task's `ai-order`). A preset's `strategy` field is read and ignored.
+
+**Six of the gym's fifteen dials are implemented here** — these set the *shape* of the
+motion, and are the part you can still tune in the gym:
+
+| | |
 |---|---|
-| `speed` | 0–100 → cursor travel speed (maps to 57.5–800 px/s) |
-| `pauseAfterPlaceMs` | How long the cursor rests after dropping each step before going for the next (default 1000) |
-| `hesitate` | Thinking pauses and second-guess approach curves — makes the AI look deliberative |
-| `userSpeedControl` | Show the **participant** a speed slider in the footer (off — see below) |
+| `B1` | velocity profile shape — flat ↔ impulse & glide |
+| `B3` | submovement count — undershoot, then corrections |
+| `B5` | coherent noise — smooth drift on the drawn glyph |
+| `B8` | forethought & reaction **beats** — pull back before going, settle after |
+| `A8` | path curvature bias — jagged ↔ smooth arc |
+| `B10` | competing-target pull — leans toward the case it did not pick |
 
-> **On `userSpeedControl`:** now `false`. It is good for accessibility — fast cursor
-> motion is genuinely disorienting for some people — but it makes AI speed a
-> participant-controlled variable, so `workMs` stops being comparable across people and
-> it may interact with perceived agency. The accessibility case also weakened once the
-> cursor slowed to 265 px/s with a 1 s rest between steps. Set it `true` to bring the
-> slider back; every change is logged (`ai_speed_changed`) and the value in force is
-> stored on each result as `cursorSpeed` either way.
+**Two more settings sit outside `params`**, because they are milliseconds rather than
+0…1 knobs and the gym has no equivalent:
+
+```json
+"travel":     { "baseMs": 299, "slopeMs": 425.5 },
+"afterPlace": { "seconds": 2.5, "jitter": 0.5 }
+```
+
+`travel` is the character's **pace** — a leg takes `baseMs + slopeMs × log2(distance /
+target width + 1)`, so a 630 px reach at those numbers is about 1.6 s. Raise both to slow
+the character overall; raise only `slopeMs` to make long reaches disproportionately slower
+than short ones. Both fall back to the gym's 130 / 185 when absent, so a raw gym export
+travels at gym pace.
+
+> **`travel` replaced the `A9` dial on 2026-09-08.** A9 scaled a baseline shared by both
+> characters, so at its floor (−1) a character could get no slower — which is exactly
+> where cautious had ended up. Stating the constants outright has no such floor, and any
+> A9 setting is expressible as a `travel` pair, so nothing was lost.
+>
+> **The cost is real:** pace is now the one thing the gym *cannot* tune. Shape still
+> transfers exactly; speed must be set by editing these two numbers and reloading.
+
+> **No dial lengthens a pause — the pauses are `afterPlace` and the two fixed dwells.**
+> `B8` looks like it should, and does not: its beats are small *movements* around a
+> placement (a pull-back before reaching, a 5–16 px drift after releasing), never a hold.
+> The holds are the two `MOTION` dwells — 140 ms over a case before lifting, 120 ms over
+> a slot before releasing, the same for both characters — and `afterPlace`, below.
+> (`B13` scaled those two dwells and was implemented for part of 2026-09-08; it lengthens
+> the hold *before* an action, which turned out not to be the wanted one.)
+
+> **The pause after a placement is `afterPlace`**, authored in `cursors.json` outside
+> `params` because nothing in the gym reaches that moment:
+>
+> ```json
+> "afterPlace": { "seconds": 1.0, "jitter": 0.5 }
+> ```
+>
+> Each placement draws its own wait — `seconds` give or take `jitter` of itself, uniform.
+> `1.0 ± 50%` is 0.5–1.5 s, redrawn six times a round, because a fixed pause repeated six
+> times reads as a machine ticking rather than as someone taking a moment. `jitter: 0`
+> gives exactly `seconds`; `seconds: 0` or the key missing gives no wait at all, which is
+> why a raw gym export still behaves exactly as it does in the gym.
+>
+> It sits outside `params` deliberately: it takes two numbers rather than a 0…1 knob, and
+> it has no gym equivalent, so it must not look like something you can tune there. Both
+> values are clamped (`seconds` 0–10, `jitter` 0–1) and anything outside is reported at
+> boot.
+
+> **`afterPlace` and `B5` belong together.** `B5`'s coherent drift is the only thing
+> moving while the cursor waits, so a long `afterPlace` with `B5` off is a glyph frozen
+> solid for seconds at a time — it reads as a crash, not as thinking. Keep `B5` well
+> below the other character's value if that character is meant to be the restless one;
+> the contrast is what carries the difference.
+
+The other nine were cut on 2026-09-08 rather than left as code nothing runs: `A9` speed
+scale (replaced by `travel`), `B2` speed–curvature coupling, `B7` intent broadcasting,
+`B13` dwell duration, `B18` proxemics, `B19` response latency, `B21` idle behaviour,
+`B22` arousal decay, `A13` glyph aim. All of them but `A9` were off
+in both presets, so nothing about how the cursor moves changed. (`B13` came back for part
+of that day and went again — see the note above.)
+
+> The gym can still author all fifteen, so `Cursor.load` **reports any retired dial a
+> preset switches on** — otherwise a preset that felt right in the gym would just be
+> blander here, with nothing to say why. To bring one back, port it from
+> `moveMe/gym/js/agent.js`; the ids and the maths are unchanged.
+
+**What the two characters do**, as shipped:
+
+| | bold | cautious |
+|---|---|---|
+| pace (`travel`) | 275 / 391 ms | 299 / 426 ms |
+| idle drift (`B5`) | 0.96 — never still | 0.2 — breathes gently while it waits |
+| after a placement (`afterPlace`) | 0.10–0.40 s | takes in what it just did |
+| reads as | restless, quick, visibly tempted by the case it *didn't* pick | deliberate: winds up before each move, arcs, lingers, then corrects itself |
+
+Check the live values with `Cursor.dials()` in the console rather than reading them off
+this page — `cursors.json` is tuned often. A dial set outside its legal range is clamped
+**and reported at boot**, so a preset asking for `A9` −1.8 will say so rather than
+quietly behave like −1.
+
+**The file holds exactly those seven**, same keys in the same order under both
+characters, so the two presets read as a straight comparison and nothing in it is inert.
+The gym's other eight dials — and its `strategy` field, which the prototype does not
+implement — were stripped out; all of them were off, so nothing was lost. A top-level
+`dials` array and a `note` record what is in force and why.
+
+**To retune:** open `moveMe/gym/index.html`, dial it in **within the seven above**, save
+the preset under the character's name (`bold` / `cautious`), export, and drop the file in
+as `cursors.json`. Nothing in the code needs editing, and a raw fifteen-dial export drops
+in unmodified — extra dials are ignored, a missing one falls back to off, a retired one
+that is switched **on** is reported at boot, and a character with no preset at all is
+reported too. Stripping it back to seven afterwards is tidiness, not a requirement.
+
+**What is logged:** every handoff result carries `cursorCharacter`, the character's *on*
+dials as `cursorDials`, and its two millisecond settings as `cursorTravel` and
+`cursorAfterPlace` — so a row of data says how the AI moved without anyone having to work
+out which `cursors.json` that build shipped with. `handoff_armed` carries the same at the
+start of each round. (`cursorAfterPlace` records the authored `seconds`/`jitter`, not the
+individual draws.)
+
+**`cursors.json` is the only thing that decides how the cursor moves.** Nothing in
+`config.js` touches it — there is no speed setting, no pacing knob, no per-group
+override. Speed is the `A9` dial; the rhythm between cases is `Cursor.MOTION.beat`.
+
+> **`Config.AI_CURSOR` is gone** (removed 2026-09-08). It held a `pauseAfterPlaceMs` of
+> 400 ms — a second pacing parameter that `cursors.json` could not reach. It paced the
+> cursor 4× slower between cases than the gym's own 90 ms beat, so what you tuned in the
+> gym was not what the participant saw; and because a group could override it inline, it
+> could have given the two characters different rhythms without that being visible
+> anywhere in `cursors.json`. A full six-case round is now 1.9 s shorter for both
+> characters (bold 11.0 s, cautious 21.9 s); nothing else about the motion changed.
+> Do not reintroduce a knob there — if the pacing is wrong, it is wrong in the gym too.
+
+**What is left in `js/cursor.js` is the shared baseline**, and all of it is the gym's,
+unchanged. Three real timings — `grabDwell` 140 ms (the hold over a case before lifting),
+`dropDwell` 120 ms (over a slot before releasing), `beat` 90 ms (between cases) — plus the
+coefficients that decide what each dial's 0…1 *means*: the noise amplitude and frequency,
+the curvature and pull amounts, the submovement figures, the `B8` beat sizes, the ease
+curve, the leg clamp. They are shared by both characters by design, so none of them can
+separate bold from cautious; editing one without the matching edit in
+`moveMe/gym/js/agent.js` breaks the correspondence the shape dials rest on.
+
+The only cursor motion the character does **not** govern is the hand-back: when the
+participant takes control, the cursor sweeps to their pointer in `AUTO.returnMs` (190 ms,
+`js/task.js`) on a plain ease. That is UI feedback — "here, it's yours again" — rather
+than the AI doing its task, and the gym keeps its own homing outside the character too.
+`AUTO.fadeInMs` / `fadeOutMs` are opacity only and move nothing.
+
+> **The participant-facing speed slider is gone** (`userSpeedControl`, removed
+> 2026-09-08). It was off for the study anyway — it made AI speed a participant-controlled
+> variable, so `workMs` stopped being comparable across people — and with motion
+> character as the manipulated variable it could no longer coexist honestly with it.
+> The accessibility case it was written for is now served by lowering `A9` for both
+> characters together.
 
 > **There is no longer a reading window.** `startGraceMs` used to hold the AI back for
 > the first few seconds of a stage, because the onboarding is dismissed at the same
@@ -569,8 +725,9 @@ reload. `Store.download()` exports it as JSON from the console.
   `aiSuggestion` (what they were departing from), `overrides` (how many tiles they placed
   somewhere other than the AI did), `lang`, the shared-control counts (`aiTakeovers` — a zone entry in a handoff stage, the button
   press in a hidden one, so the two stay comparable — `userTakebacks`, `placedByAi`,
-  `cursorSpeed`, `cursorHesitate`, the last two null wherever no cursor runs), plus the
-  timing block below
+  `cursorCharacter`, `cursorDials`, `cursorTravel`, `cursorAfterPlace` — the motion
+  character in force, its *on* dials and its two millisecond settings, all null wherever
+  no cursor runs), plus the timing block below
 - `events` — timestamped log (`ts` absolute, `tRel` ms since page load):
   - session — `session_start`, `group_assigned` (group, source, and the counts at draw
     time — the study's randomisation record), `consent`, `session_resumed`,
@@ -579,11 +736,11 @@ reload. `Store.download()` exports it as JSON from the console.
   - task — `task_start` (incl. `inboxOrder`, `aiSuggestion`, `aiSwappedKeys`), `task_confirm`
   - interaction — `drag_start`, `drag_drop`, `explainer_shown`, `explainer_step`
     (which onboarding step they advanced to), `explainer_dismissed`
-  - AI (handoff) — `handoff_armed` (stage ready; the AI acts once the cursor enters the
-    activation zone),
+  - AI (handoff) — `handoff_armed` (stage ready — with the `character` and its
+    `cursorDials`; the AI acts once the cursor enters the activation zone),
     `ai_took_over` / `user_took_back` (each with `nth`
     and `placedSoFar`, so the whole tug-of-war is reconstructable), `ai_placement`,
-    `handoff_done`, `ai_speed_changed`
+    `handoff_done`
   - AI (hidden) — `hidden_started` (with `before`: what the participant had sorted
     themselves before pressing the button, and `placedSoFar`), six `ai_placement`,
     `hidden_done`
@@ -634,9 +791,8 @@ participant accepted the AI's order without inspecting it.
 - [ ] Decide where the collector runs (port-forwarded machine vs. hosted) and confirm
       `logs/` is backed up — it is the only copy once a participant clears their browser
 - [ ] Set the number of rounds — `BASELINE_TASKS` runs 3 (`T1`–`T3`) and each
-      `TASK_BLOCKS` block runs 5, so a session is 13 rounds
-- [ ] Confirm `TASK_BINDING` — `"position"` counterbalances task content against
-      mechanic; `"mechanic"` ties them together
+      `TASK_BLOCKS` block runs 5, so a session is 13 rounds. Every group runs them
+      in the same order; only the mechanic on each block is counterbalanced
 - [ ] Confirm `STEPS` matches how this run is administered — consent, Prolific ID and
       the three questionnaires each switch off independently
 - [ ] Replace the placeholder questions in `surveys.mid` alongside `pre` and `post`
