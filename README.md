@@ -41,7 +41,7 @@ prioritises, which a per-round switch would destroy.
 > nothing is scored. The only ranking measure is `overrides` — how far the participant's
 > final order departs from the AI's. The debrief shows the participant no feedback at all.
 
-Flow: **consent → Prolific ID → pre-survey → baseline rounds → AI block 1 → mid-survey
+Flow: **Prolific ID → pre-survey → baseline rounds → AI block 1 → mid-survey
 → AI block 2 → post-survey → debrief → end**. Each block opens with its own onboarding
 for the mechanic it introduces; later rounds in the same block go straight to work.
 **Every non-task step can be switched off** in `Config.STEPS` — see below.
@@ -103,7 +103,7 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 | `js/cursor.js` | The AI cursor's motion **character** — seven tuned dials, driven by `cursors.json` |
 | `js/task.js` | The ranking interaction: custom drag, the AI cursor engine (handoff), the one-second flight (hidden) |
 | `js/results.js` | The final debrief screen (no feedback — see the note above) |
-| `js/main.js` | Boot: fetch content, consent, resume offer, wiring |
+| `js/main.js` | Boot: fetch content, resume offer, wiring |
 | `js/prolific.js` | The optional Prolific-ID step |
 
 </details>
@@ -219,7 +219,6 @@ task's `ai-order`. Nothing in the code marks such a task, and nothing scores the
 
 ```js
 const STEPS = {
-  consent:    true,   // the privacy / consent statement, and the Begin gate
   prolificId: true,   // ask for the participant's Prolific ID, and log it
   preSurvey:  true,   // questionnaire before the first task
   midSurvey:  true,   // questionnaire between the two AI blocks
@@ -232,10 +231,14 @@ and each session snapshots the switches it ran under (`session.steps`), so a run
 interpretable after the toggles change — "no pre-survey answers" then reads as *the step
 was off*, not as missing data.
 
+There is **no consent screen** — it was removed on 2026-09-08 along with its `consent`
+event and strings. The flow opens on whatever the first enabled step is; consent is handled
+outside the prototype.
+
 **Resume is independent of all of them.** An interrupted session gets its own screen,
-shown ahead of whatever the first one would have been — so switching consent off no longer
-takes the resume offer with it. `Resume` returns to the exact saved step; `Start new`
-discards the session and continues to the normal first screen.
+shown ahead of whatever the first one would have been, rather than riding on whichever
+slide happens to come first. `Resume` returns to the exact saved step; `Start new`
+discards the session (archiving it — see *Nothing is overwritten* below) and continues.
 
 > ⚠️ **Changing a switch invalidates any session saved under the old set.** `currentStep`
 > indexes the steps array whose shape these switches decide, so resuming across a change
@@ -251,9 +254,10 @@ stored on the session as `prolificId` and logged. It deliberately does **not** b
 `participantId`: that names a file in `logs/sessions/` and keys the group ledger, and is
 generated before this screen is reached (the group draw needs it), so letting typed text
 take that role would put user input on the filesystem. The two ride side by side instead.
-Validation is soft on purpose — a non-empty value always proceeds, and one that doesn't
-look like a Prolific ID warns once then records `looksValid: false` rather than locking a
-recruited participant out.
+**There is no format check.** Any non-empty value is taken as given: a guess about
+Prolific's format is not worth nagging a recruited participant at the door, and matching
+ids against Prolific's own records is an analysis job. Only `length` is logged, never a
+verdict.
 
 **Tile shuffle** (`SHUFFLE_SEED`) — the inbox order is seeded, not random: identical
 for every participant, different per task. Change the string to reshuffle all tasks
@@ -671,6 +675,42 @@ failed POST is repaired by the next one, so a network drop costs nothing. Verifi
 killing the server mid-session — 12 events accumulated locally and were recovered
 intact, in order, with no duplication (including the failed-sync records themselves).
 
+### Nothing is overwritten
+
+A **server restart clears nothing.** `logs/sessions/` holds one atomically-written file per
+`participantId`, ids are unique per run so two participants can never collide,
+`events.jsonl` is append-only and `groups.json` is read-modify-write. Twenty participants
+leave twenty files, uncapped.
+
+localStorage was the weak point: it held **one** session under one key, replaced wholesale
+by the next run. With `loggingEnabled` off — or with the collector unreachable — that was
+the only copy, so a second run destroyed the first silently. Since 2026-09-08 a session
+being replaced is archived first, under `bdr_triage_archive`:
+
+| | |
+|---|---|
+| archived on | starting a new run, and `Start new` on the resume screen — each stamped with `archivedBecause` |
+| cap | newest **10**, and it sheds oldest entries if the browser refuses the write |
+| `Store.archive()` | read them back from the console |
+| `Store.downloadArchive()` | the live session plus every archived one, as one JSON file |
+| `Store.flushArchive()` | runs at boot; re-POSTs anything the collector never acknowledged |
+
+> **The cap is per browser, and has nothing to do with how many participants you collect.**
+> `localStorage` is roughly a 5 MB box per site per browser, and a full session runs to a
+> few hundred KB — an uncapped archive would eventually fill it, and a full box makes the
+> browser refuse writes, which would break the *live* session's autosave. Losing the
+> current run to preserve old copies would be exactly backwards. A real participant runs
+> once and archives nothing; the cap only ever matters to whoever is testing.
+
+A successful POST stamps `collectedAt`, so a later flush skips that session. The collector
+is idempotent per `participantId` — it overwrites the snapshot and appends only unseen
+events — so re-sending costs nothing.
+
+> The archive is a **safety net, not a collector.** It keeps ~10 runs in one browser
+> profile. If a participant's browser can never reach the collector and they never return
+> to the URL, their data stays in their browser and you never see it — which is the
+> argument for hosting the collector somewhere always-on rather than on a laptop.
+
 <details>
 <summary><b>What the server writes</b>, and the privacy guards around it</summary>
 
@@ -723,19 +763,39 @@ reload. `Store.download()` exports it as JSON from the console.
 - `results` — per round: `stage`, `group`, `condition` (the mechanic), `character`,
   `block` (1 or 2 — which half of the session this round sat in), `ranking`,
   `aiSuggestion` (what they were departing from), `overrides` (how many tiles they placed
-  somewhere other than the AI did), `lang`, the shared-control counts (`aiTakeovers` — a zone entry in a handoff stage, the button
-  press in a hidden one, so the two stay comparable — `userTakebacks`, `placedByAi`,
-  `cursorCharacter`, `cursorDials`, `cursorTravel`, `cursorAfterPlace` — the motion
-  character in force, its *on* dials and its two millisecond settings, all null wherever
-  no cursor runs), plus the timing block below
+  somewhere other than the AI did), `lang`, the shared-control block below, the cursor
+  block (`cursorCharacter`, `cursorDials`, `cursorTravel`, `cursorAfterPlace` — the motion
+  character in force, its *on* dials and its two millisecond settings, all null wherever no
+  cursor runs), plus the timing block below
+
+  **Who did the work**, counted two ways because they answer different questions:
+
+  | | |
+  |---|---|
+  | `aiTakeovers` / `userTakebacks` | how often control changed hands — a zone entry in a handoff round, the button press in a hidden one, so the two mechanics stay comparable |
+  | `placedByAi` / `placedByUser` | **actions.** A case the AI placed and the participant then moved counts for both |
+  | `finalPlacedByAi` / `finalPlacedByUser` | the **six confirmed slots**, so these sum to the board |
+  | `slotAuthor` | array of 6 — `"ai"` or `"user"` per slot, the raw form of the two above |
+  | `ladderReorders` | moves that never touched the inbox (slot → slot): revising a ranking rather than building one |
+
+  > The two counts diverge more than you'd expect: a participant can place three cases and
+  > still end with `finalPlacedByUser: 0`, because the AI displaces anything sitting in a
+  > slot it wants back into the inbox and re-places it. Either number alone tells a
+  > misleading story.
 - `events` — timestamped log (`ts` absolute, `tRel` ms since page load):
   - session — `session_start`, `group_assigned` (group, source, and the counts at draw
-    time — the study's randomisation record), `consent`, `session_resumed`,
+    time — the study's randomisation record), `session_resumed`,
     `session_end`, `session_closed`, `dev_skip`, `group_override` (dev picker),
     `language_switch` (which language, and at which step)
-  - task — `task_start` (incl. `inboxOrder`, `aiSuggestion`, `aiSwappedKeys`), `task_confirm`
-  - interaction — `drag_start`, `drag_drop`, `explainer_shown`, `explainer_step`
-    (which onboarding step they advanced to), `explainer_dismissed`
+  - task — `task_start` (incl. `inboxOrder`, `aiSuggestion`), `task_confirm` (incl. the
+    who-did-what counts above)
+  - interaction — `drag_start`, `drag_drop` (with `reorder` / `nthReorder`, so
+    right-hand-side revisions are separable from placements), `explainer_shown`,
+    `explainer_step` (which onboarding step they advanced to), `explainer_dismissed`
+
+  > Every AI event also carries **`atMs`** — milliseconds into that round. `ts` and `tRel`
+  > say when something happened in the session; `atMs` says *where in the round*, which is
+  > the question a takeover timeline actually asks.
   - AI (handoff) — `handoff_armed` (stage ready — with the `character` and its
     `cursorDials`; the AI acts once the cursor enters the activation zone),
     `ai_took_over` / `user_took_back` (each with `nth`
@@ -747,7 +807,7 @@ reload. `Store.download()` exports it as JSON from the console.
   - `ai_override` — per tile the participant moved away from the AI's suggestion. With
     nothing scored, this and the `overrides` count are the ranking measure
   - surveys — `survey_view`, `survey_submit` (`id` is `pre` / `mid` / `post`)
-  - Prolific — `prolific_view`, `prolific_id_entered` (`looksValid`, `length` — the value
+  - Prolific — `prolific_view`, `prolific_id_entered` (`length` only — the value
     itself is on the session, not repeated into the event stream)
 
 </details>
@@ -785,7 +845,7 @@ participant accepted the AI's order without inspecting it.
       participant out of the balancing counts)
 - [ ] Confirm `CONFIG.loggingEnabled` is `true` — with it off a completed session leaves
       no file at all (already the default; the console warns on boot when it is off)
-- [ ] Replace the placeholder consent text, group labels/onboarding steps, and both surveys
+- [ ] Replace the placeholder group labels/onboarding steps and both surveys
 - [ ] Clear the pilot data out of `logs/` — `sessions/`, `events.jsonl` and `groups.json`
       all still hold test runs
 - [ ] Decide where the collector runs (port-forwarded machine vs. hosted) and confirm
@@ -793,7 +853,7 @@ participant accepted the AI's order without inspecting it.
 - [ ] Set the number of rounds — `BASELINE_TASKS` runs 3 (`T1`–`T3`) and each
       `TASK_BLOCKS` block runs 5, so a session is 13 rounds. Every group runs them
       in the same order; only the mechanic on each block is counterbalanced
-- [ ] Confirm `STEPS` matches how this run is administered — consent, Prolific ID and
+- [ ] Confirm `STEPS` matches how this run is administered — Prolific ID and
       the three questionnaires each switch off independently
 - [ ] Replace the placeholder questions in `surveys.mid` alongside `pre` and `post`
 - [ ] Check `GET /assign-group/status` reads 0/0/0/0 before the first real participant, and

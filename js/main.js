@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
-   MAIN — boot: load the task content, wire the consent screen, optional
-   resume, survey + dev controls, task controls, then show the first screen.
+   MAIN — boot: load the task content, wire the optional resume, survey +
+   dev controls, task controls, then show the first screen.
    ═══════════════════════════════════════════════════════════════════ */
 (function () {
   const $ = id => document.getElementById(id);
@@ -64,22 +64,20 @@
     if (!I18n.set(lang)) return;          // fires onLanguageChanged
     if (Store.get()) {
       Store.setLang(lang);
-      Store.log("language_switch", { lang, atStep: cur ? cur.type : "consent" });
+      Store.log("language_switch", { lang, atStep: cur ? cur.type : "start" });
     }
   }
 
   /* ── resume ────────────────────────────────────────────────────────
      Its own screen, shown instead of the normal first one when an
-     interrupted session is in localStorage. It used to be a banner on the
-     consent slide, which meant switching consent off (Config.STEPS) silently
-     took resume with it. */
+     interrupted session is in localStorage — rather than a banner riding on
+     whichever slide happens to come first. */
   let savedSession = null;
 
-  // The first screen of a NORMAL start — whatever the toggles leave standing.
-  function showFirstScreen() {
-    if (Config.STEPS.consent) Flow.showScreen("screen-consent");
-    else startSession();   // no consent gate: create the session and get going
-  }
+  /* The first screen of a NORMAL start. There is no gate in front of it any
+     more — the session is created and the flow begins at whatever the STEPS
+     toggles leave standing. */
+  function showFirstScreen() { startSession(); }
 
   // Fill the resume screen's text. Safe to call any time; no-ops without an offer.
   function renderResume() {
@@ -146,10 +144,9 @@
         counts: assignment.counts || null,
         reason: assignment.reason || null,
       });
-      Store.log("consent", { agreed: true });
       syncDevGroup();
       Flow.build();
-      Flow.begin();   // past the consent screen, into whatever comes first
+      Flow.begin();
     } finally {
       starting = false;
     }
@@ -158,7 +155,7 @@
   // Dev-only: jump to the next stage from wherever we are.
   function devSkip() {
     const cur = Flow.current();
-    if (!Store.get() || !cur) { startSession(); return; }   // from consent → begin
+    if (!Store.get() || !cur) { startSession(); return; }   // nothing running yet
     if (cur.type === "debrief") return;                     // nothing after the end
     if (cur.type === "task") Task.stop();                   // halt any running AI cursor
     Store.log("dev_skip", { from: cur.type });
@@ -262,6 +259,14 @@
                     `its handoff rounds will use a plain straight-line cursor.`);
     });
 
+    /* Anything an earlier run left in the browser that the collector never
+       acknowledged — a session from a spell when it was unreachable, or one
+       replaced before it could be sent. Fire and forget: it must never hold
+       up a participant, and a failure just leaves the copy for next time. */
+    Store.flushArchive().then(n => {
+      if (n) console.log(`[BDR] uploaded ${n} archived session(s) the collector had not seen`);
+    });
+
     Task.wire();
     Prolific.wire();
 
@@ -270,13 +275,6 @@
     document.querySelectorAll("#lang-switch .lang-btn").forEach(btn => {
       btn.addEventListener("click", () => switchLanguage(btn.dataset.lang));
     });
-
-    // ── consent gating (just the agreement checkbox now) ──
-    const agree = $("consent-agree");
-    const begin = $("btn-begin");
-    const updateBegin = () => { begin.disabled = !agree.checked; };
-    agree.addEventListener("change", updateBegin);
-    begin.addEventListener("click", startSession);
 
     /* ── resume offer ──
        Only offer a session this build can actually run. Two gates, because
@@ -334,9 +332,8 @@
     window.addEventListener("orientationchange", enforceDesktopGate);
 
     /* An interrupted session takes precedence over everything: ask before
-       starting a new one, whatever the first normal screen would have been.
-       Otherwise go straight there — which, with no consent gate, means
-       creating the session and dropping into the first enabled step. */
+       starting a new one. Otherwise go straight ahead — create the session
+       and drop into the first enabled step. */
     if (savedSession) { renderResume(); Flow.showScreen("screen-resume"); }
     else showFirstScreen();
   }

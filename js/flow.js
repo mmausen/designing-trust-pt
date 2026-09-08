@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
    FLOW — the step machine. One linear sequence:
-     consent → prolificId → pre-survey → [baseline rounds] → [AI block 1]
+     prolificId → pre-survey → [baseline rounds] → [AI block 1]
        → mid-survey → [AI block 2] → post-survey → debrief
 
    Every non-task step is optional — Config.STEPS switches each on or off, and
@@ -21,7 +21,6 @@ window.Flow = (function () {
     const S = Config.STEPS;
     steps = [];
 
-    if (S.consent) steps.push({ type: "consent" });
     if (S.prolificId) steps.push({ type: "prolific" });
     if (S.preSurvey) steps.push({ type: "survey", id: "pre" });
 
@@ -59,7 +58,6 @@ window.Flow = (function () {
     if (!step) return;
     Store.setStep(i);
     switch (step.type) {
-      case "consent":  showScreen("screen-consent"); break;
       case "prolific": Prolific.render(); break;
       case "survey":   Survey.render(step.id); break;
       case "task":     Task.start(step); break;
@@ -67,14 +65,8 @@ window.Flow = (function () {
     }
   }
 
-  /* Enter the flow once the session exists. The consent screen is shown before
-     any session is created (main.js does that at boot), so starting means
-     jumping past it — to whatever the first remaining step happens to be,
-     which is not a fixed index once the toggles are in play. */
-  function begin() {
-    const at = steps.findIndex(s => s.type !== "consent");
-    go(at === -1 ? 0 : at);
-  }
+  // Enter the flow once the session exists.
+  function begin() { go(0); }
 
   function go(n) { i = n; render(); }
   function next() { go(i + 1); }

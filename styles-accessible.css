@@ -40,12 +40,10 @@ input,textarea{font-family:inherit;-webkit-user-select:text;user-select:text}
 .explainer-body{font-size:15.5px;color:var(--txt2);line-height:1.65}
 .explainer-card .btn-primary{align-self:flex-start;margin-top:6px}
 
-/* ── consent ── */
+/* ── the boxed intro screens (resume, Prolific ID) ── */
 .consent-box{border:1px solid var(--border);border-radius:10px;padding:26px 28px;display:flex;flex-direction:column;gap:14px}
 .consent-box h2{font-size:18px;font-weight:700}
 .consent-box p{font-size:14.5px;color:var(--txt2);line-height:1.65}
-.check-row{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;cursor:pointer;margin-top:6px}
-.check-row input{margin-top:3px;width:18px;height:18px}
 /* Prolific ID entry — same box as the consent statement, one labelled field */
 .pid-row{display:flex;flex-direction:column;gap:7px;margin-top:6px;font-size:13px;
   font-weight:700;letter-spacing:.02em;color:var(--muted);text-transform:uppercase}

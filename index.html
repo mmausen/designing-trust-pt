@@ -5,7 +5,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>BDR x DFKI</title>
-<link rel="stylesheet" href="styles-accessible.css?v=61"/>
+<link rel="stylesheet" href="styles-accessible.css?v=63"/>
 </head>
 <body>
 
@@ -33,9 +33,8 @@
 
 <!-- ════════════ RESUME ════════════
      Shown INSTEAD of the normal first screen, and only when an interrupted
-     session for this build is in localStorage. Its own screen rather than a
-     banner on the consent slide, because consent is optional (Config.STEPS) —
-     hung off that screen, the offer disappeared whenever it was switched off. -->
+     session for this build is in localStorage. Its own screen, so the offer
+     does not ride on whichever slide happens to come first. -->
 <section id="screen-resume" class="screen" hidden>
   <div class="centered">
     <h1 class="screen-kicker">BDR x DFKI</h1>
@@ -46,24 +45,6 @@
     <div class="start-row">
       <button class="btn btn-primary" id="btn-resume-sess"></button>
       <button class="btn" id="btn-discard-sess"></button>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════ CONSENT ════════════ -->
-<section id="screen-consent" class="screen" hidden>
-  <div class="centered">
-    <h1 class="screen-kicker">BDR x DFKI</h1>
-    <div class="consent-box">
-      <h2 data-i18n="ui.consent.heading"></h2>
-      <p data-i18n="ui.consent.body"></p>
-      <label class="check-row">
-        <input type="checkbox" id="consent-agree"/>
-        <span data-i18n="ui.consent.agree"></span>
-      </label>
-    </div>
-    <div class="start-row">
-      <button class="btn btn-primary" id="btn-begin" data-i18n="ui.consent.begin" disabled></button>
     </div>
   </div>
 </section>
@@ -214,18 +195,18 @@
 </div>
 
 <!-- ════════════ SCRIPTS (load order = dependency order) ════════════ -->
-<script src="js/config.js?v=61"></script>
-<script src="js/cursor.js?v=61"></script>
-<script src="js/i18n.js?v=61"></script>
-<script src="js/tasks.js?v=61"></script>
+<script src="js/config.js?v=63"></script>
+<script src="js/cursor.js?v=63"></script>
+<script src="js/i18n.js?v=63"></script>
+<script src="js/tasks.js?v=63"></script>
 <!-- balanced G1–G4 assignment (needs Config; used by main.js) -->
-<script src="js/groups.js?v=61"></script>
-<script src="js/store.js?v=61"></script>
-<script src="js/prolific.js?v=61"></script>
-<script src="js/survey.js?v=61"></script>
-<script src="js/task.js?v=61"></script>
-<script src="js/results.js?v=61"></script>
-<script src="js/flow.js?v=61"></script>
-<script src="js/main.js?v=61"></script>
+<script src="js/groups.js?v=63"></script>
+<script src="js/store.js?v=63"></script>
+<script src="js/prolific.js?v=63"></script>
+<script src="js/survey.js?v=63"></script>
+<script src="js/task.js?v=63"></script>
+<script src="js/results.js?v=63"></script>
+<script src="js/flow.js?v=63"></script>
+<script src="js/main.js?v=63"></script>
 </body>
 </html>

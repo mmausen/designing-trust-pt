@@ -8,20 +8,13 @@
         "continue": "Fortsetzen",
         "startNew": "Neu starten"
       },
-      "consent": {
-        "heading": "Einwilligungserklärung (Platzhalter)",
-        "body": "Platzhalter-Text zur Einwilligung. Ersetzen Sie diesen Abschnitt durch die von Ihrer Ethikkommission freigegebene Fassung: worum es in der Studie geht, dass die Teilnahme freiwillig ist, wie die Daten gespeichert und verwendet werden und an wen Sie sich bei Fragen wenden können. Der Übergang zur Studie wird protokolliert.",
-        "agree": "Ich habe die obigen Informationen gelesen und nehme freiwillig teil.",
-        "begin": "Beginnen"
-      },
       "prolific": {
         "heading": "Ihre Prolific-ID",
         "body": "Bitte geben Sie Ihre Prolific-ID ein, damit Ihre Teilnahme zugeordnet und vergütet werden kann. Sie finden sie in Ihrem Prolific-Konto.",
         "label": "Prolific-ID",
         "placeholder": "z. B. 5f2a9c1e4b7d3a8e6c0f1b2d",
         "next": "Weiter",
-        "required": "Bitte geben Sie Ihre Prolific-ID ein.",
-        "checkFormat": "Das sieht nicht wie eine übliche Prolific-ID aus. Bitte prüfen Sie die Eingabe — oder klicken Sie erneut auf „Weiter“, um sie trotzdem zu verwenden."
+        "required": "Bitte geben Sie Ihre Prolific-ID ein."
       },
       "task": {
         "inboxHd": "Eingang — offene Fälle ({n} übrig)",
@@ -213,20 +206,13 @@
         "continue": "Resume",
         "startNew": "Start new"
       },
-      "consent": {
-        "heading": "Consent (placeholder)",
-        "body": "Placeholder consent text. Replace this with your IRB / ethics-approved wording: what the study involves, that participation is voluntary, how data is stored and used, and whom to contact. This screen is logged when the participant proceeds.",
-        "agree": "I have read the above and agree to participate.",
-        "begin": "Begin"
-      },
       "prolific": {
         "heading": "Your Prolific ID",
         "body": "Please enter your Prolific ID so your participation can be matched and paid. You can find it in your Prolific account.",
         "label": "Prolific ID",
         "placeholder": "e.g. 5f2a9c1e4b7d3a8e6c0f1b2d",
         "next": "Continue",
-        "required": "Please enter your Prolific ID.",
-        "checkFormat": "That doesn't look like a usual Prolific ID. Please check it — or press “Continue” again to use it anyway."
+        "required": "Please enter your Prolific ID."
       },
       "task": {
         "inboxHd": "Inbox — open cases ({n} remaining)",

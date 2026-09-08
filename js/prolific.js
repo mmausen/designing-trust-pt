@@ -13,21 +13,18 @@
    Treat it as personal data: it identifies a payable account, so it lands in
    logs/ under the same handling as the rest of the session.
 
-   Validation is deliberately soft. A Prolific ID is 24 hex characters today,
-   but a participant who pastes something slightly different — or a format
-   Prolific changes later — must not be locked out of a study they were
-   recruited for. So a non-empty value always proceeds; a value that does not
-   look like an ID is recorded with `looksValid: false` for the analysis to
-   filter on, and the participant is warned once rather than blocked.
+   There is NO format check. A Prolific ID is 24 hex characters today, but a
+   participant who pastes something slightly different — or a format Prolific
+   changes later — must not be nagged or blocked in a study they were
+   recruited for, and a guess about the format is not worth a moment of doubt
+   at the door. Any non-empty value is taken as given; matching it up against
+   Prolific's own records is an analysis job, not this screen's.
    ═══════════════════════════════════════════════════════════════════ */
 window.Prolific = (function () {
   const $ = id => document.getElementById(id);
-  const LOOKS_LIKE_ID = /^[A-Za-z0-9]{20,32}$/;   // 24 hex chars today; kept loose on purpose
-  let warned = false;
 
   function render() {
     Flow.showScreen("screen-prolific");
-    warned = false;
     const input = $("prolific-input");
     // Restore what they already typed — a language switch re-renders this screen.
     input.value = Store.prolificId() || "";
@@ -51,18 +48,13 @@ window.Prolific = (function () {
 
   function submit() {
     const value = ($("prolific-input").value || "").trim();
+    // Empty is the only refusal: without an id the session cannot be paid out.
     if (!value) { showError("ui.prolific.required"); return; }
 
-    const looksValid = LOOKS_LIKE_ID.test(value);
-    // Warn once on an odd-looking id, then take it anyway on the second press.
-    if (!looksValid && !warned) {
-      warned = true;
-      showError("ui.prolific.checkFormat");
-      return;
-    }
     hideError();
     Store.setProlificId(value);
-    Store.log("prolific_id_entered", { looksValid, length: value.length });
+    // Length only — the id itself is on the session, and nothing here judges it.
+    Store.log("prolific_id_entered", { length: value.length });
     Store.sendRemote();
     Flow.next();
   }

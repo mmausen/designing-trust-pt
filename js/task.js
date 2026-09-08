@@ -54,6 +54,18 @@ window.Task = (function () {
   let handoff = false;      // shared-cursor stage: the AI takes over from the activation zone
   let hiddenAi = false;     // "Start AI" stage: one press places everything, no cursor
   let aiTakeovers = 0, userTakebacks = 0, aiPlacedCount = 0;
+  /* Who did the work, counted two ways because they answer different questions.
+       *PlacedCount  — ACTIONS. A case the AI placed and the participant then
+                       moved counts for both, which is what "how much did each
+                       of them do" means.
+       slotAuthor    — who last placed each of the six slots, so the FINAL
+                       ranking can be attributed. Sums to six once the board is
+                       full; nulls while it is not.
+     ladderReorders counts moves that never touch the inbox — a case dragged
+     from one slot to another. That is the participant revising a ranking
+     rather than building one, so it is worth separating from placements. */
+  let userPlacedCount = 0, ladderReorders = 0;
+  let slotAuthor = Array(6).fill(null);
 
   /* ── timing ──────────────────────────────────────────────────────────
      The explainer opens on top of the task, so raw wall-clock time would
@@ -66,6 +78,11 @@ window.Task = (function () {
   let explainerOpens = 0;        // how many times it was opened
   let firstActionAt = null;      // first drag of the task
   let allPlacedAt = null;        // the AI finished the board — start of the review window
+
+  /* Milliseconds since this round appeared. Every event already carries `ts`
+     (absolute) and `tRel` (since page load); neither says WHERE IN THE ROUND
+     something happened, which is the question a takeover timeline asks. */
+  const sinceStart = () => (taskStart != null ? Math.round(performance.now() - taskStart) : null);
 
   // Explainer time so far, including a currently-open one.
   function explainerElapsed() {
@@ -171,6 +188,7 @@ window.Task = (function () {
        the dev group picker can change the session's character between rounds. */
     if (handoff) Cursor.use(character);
     aiTakeovers = 0; userTakebacks = 0; aiPlacedCount = 0;
+    userPlacedCount = 0; ladderReorders = 0; slotAuthor = Array(6).fill(null);
     taskDef = Tasks.get(taskId);
 
     cards = Tasks.inboxCardsFor(taskId, Config.SHUFFLE_SEED); // deterministic per task
@@ -691,10 +709,19 @@ window.Task = (function () {
     drag = null;
 
     if (targetSlot != null) {
-      Store.log("drag_drop", { cardId: id, from: from === "inbox" ? "inbox" : `slot_${from}`, to: `slot_${targetSlot}` });
+      const reorder = from !== "inbox";     // slot → slot: the right-hand side only
+      if (reorder) ladderReorders++;
+      userPlacedCount++;
+      slotAuthor[targetSlot] = "user";
+      if (reorder) slotAuthor[from] = null;   // it left that slot
+      Store.log("drag_drop", {
+        cardId: id, from: from === "inbox" ? "inbox" : `slot_${from}`, to: `slot_${targetSlot}`,
+        reorder, nthReorder: reorder ? ladderReorders : null,
+      });
       placeCard(id, from, targetSlot);
     } else if (droppedInInbox && from !== "inbox") {
-      Store.log("drag_drop", { cardId: id, from: `slot_${from}`, to: "inbox" });
+      slotAuthor[from] = null;
+      Store.log("drag_drop", { cardId: id, from: `slot_${from}`, to: "inbox", reorder: false });
       returnToInbox(id, from);
     }
     render();
@@ -812,6 +839,7 @@ window.Task = (function () {
     order.forEach((id, i) => {
       if (!id) return;
       aiPlacedCount++;
+      slotAuthor[i] = "ai";
       Store.log("ai_placement", { cardId: id, slot: i });
       const a = from[id], b = to[id];
       const real = document.querySelector(`#ladder [data-id="${id}"]`);
@@ -859,7 +887,10 @@ window.Task = (function () {
     render();
     allPlacedAt = performance.now();
     Store.log("hidden_done", {
-      taskId, slots: [...slots], placedByAi: aiPlacedCount, durationMs: Config.HIDDEN_PLACE_MS,
+      taskId, slots: [...slots], atMs: sinceStart(),
+      placedByAi: aiPlacedCount, placedByUser: userPlacedCount,
+      ladderReorders, slotAuthor: [...slotAuthor],
+      durationMs: Config.HIDDEN_PLACE_MS,
     });
   }
 
@@ -1063,7 +1094,8 @@ window.Task = (function () {
         clearSlotMarks();
         clickPulse();
         aiPlacedCount++;
-        Store.log("ai_placement", { cardId: id, slot: s.slot });
+        slotAuthor[s.slot] = "ai";
+        Store.log("ai_placement", { cardId: id, slot: s.slot, atMs: sinceStart() });
         placeCard(id, "inbox", s.slot);
         render();
       }
@@ -1116,7 +1148,9 @@ window.Task = (function () {
     if (zoneEl) zoneEl.classList.add("active");
     updateZoneLabel();
     Store.log("ai_took_over", {
-      taskId, nth: aiTakeovers, placedSoFar: slots.filter(Boolean).length, character,
+      taskId, nth: aiTakeovers, atMs: sinceStart(),
+      placedSoFar: slots.filter(Boolean).length,
+      placedByAi: aiPlacedCount, placedByUser: userPlacedCount, character,
     });
   }
 
@@ -1137,8 +1171,10 @@ window.Task = (function () {
     render();
     allPlacedAt = performance.now();
     Store.log("handoff_done", {
-      taskId, slots: [...slots],
-      aiTakeovers, userTakebacks, placedByAi: aiPlacedCount,
+      taskId, slots: [...slots], atMs: sinceStart(),
+      aiTakeovers, userTakebacks,
+      placedByAi: aiPlacedCount, placedByUser: userPlacedCount,
+      ladderReorders, slotAuthor: [...slotAuthor],
     });
   }
 
@@ -1166,7 +1202,9 @@ window.Task = (function () {
     updateZoneLabel();
     clearSlotMarks();
     Store.log("user_took_back", {
-      taskId, nth: userTakebacks, placedSoFar: slots.filter(Boolean).length,
+      taskId, nth: userTakebacks, atMs: sinceStart(),
+      placedSoFar: slots.filter(Boolean).length,
+      placedByAi: aiPlacedCount, placedByUser: userPlacedCount,
     });
     render();
   }
@@ -1309,14 +1347,31 @@ window.Task = (function () {
          `cursorAfterPlace` its two millisecond settings (js/cursor.js), so a
          row of data says how the AI moved without anyone having to dig out
          which cursors.json this build shipped with. */
-      aiTakeovers, userTakebacks, placedByAi: aiPlacedCount,
+      aiTakeovers, userTakebacks,
+      /* Two ways of splitting the work, because they answer different
+         questions. placedBy* count ACTIONS, so a case the AI placed and the
+         participant then moved counts for both. finalPlacedBy* attribute the
+         SIX SLOTS as they were confirmed, so they sum to the board.
+         ladderReorders counts moves that never touched the inbox — revising a
+         ranking rather than building one. */
+      placedByAi: aiPlacedCount,
+      placedByUser: userPlacedCount,
+      finalPlacedByAi: slotAuthor.filter(a => a === "ai").length,
+      finalPlacedByUser: slotAuthor.filter(a => a === "user").length,
+      slotAuthor: [...slotAuthor],
+      ladderReorders,
       cursorCharacter: handoff ? character : null,
       cursorDials: handoff ? Cursor.dials() : null,
       cursorTravel: handoff ? Cursor.travel() : null,
       cursorAfterPlace: handoff ? Cursor.afterPlace() : null,
       ...timing,
     };
-    Store.log("task_confirm", { stage, group, character, block, taskId, finalRanking: [...slots], ...timing });
+    Store.log("task_confirm", {
+      stage, group, character, block, taskId, finalRanking: [...slots],
+      placedByAi: aiPlacedCount, placedByUser: userPlacedCount,
+      slotAuthor: [...slotAuthor], ladderReorders,
+      ...timing,
+    });
     Store.addResult(result);
     hideCursor();
     // No per-task summary — go straight to the next stage.

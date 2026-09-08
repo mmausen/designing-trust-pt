@@ -7,6 +7,24 @@
    ═══════════════════════════════════════════════════════════════════ */
 window.Store = (function () {
   const KEY = "bdr_triage_session";
+  /* ── the archive ────────────────────────────────────────────────────
+     KEY holds ONE session, and starting a run replaces it. That is fine while
+     the collector is recording — logs/sessions/ keeps a file per participant
+     forever, and a server restart clears nothing — but it is the only copy
+     whenever the collector is not: logging switched off, or a POST that never
+     landed. A second run would then destroy the first silently.
+
+     So a session that is being replaced is pushed here first. Newest first,
+     capped, and trimmed further if the browser refuses the write — an archive
+     that fills the quota and breaks the live save would be worse than no
+     archive. Read them back with Store.archive(), or Store.downloadArchive().
+
+     flushArchive() re-POSTs anything the collector never acknowledged, the
+     next time it is reachable. The collector is idempotent per participantId
+     (it overwrites the snapshot and appends only unseen events), so sending a
+     session twice costs nothing. */
+  const ARCHIVE_KEY = "bdr_triage_archive";
+  const ARCHIVE_MAX = 10;
   const perfStart = performance.now();
   let data = null;
 
@@ -32,6 +50,8 @@ window.Store = (function () {
   const SCHEMA_VERSION = 5;
 
   function newSession(pid, assignment) {
+    // Never let a previous run be overwritten without a copy surviving.
+    archiveCurrent("replaced by a new session");
     const a = assignment || {};
     data = {
       schemaVersion: SCHEMA_VERSION,
@@ -129,8 +149,76 @@ window.Store = (function () {
     catch (e) { return null; }
   }
   function clear() {
+    archiveCurrent("discarded");
     try { localStorage.removeItem(KEY); } catch (e) {}
     data = null;
+  }
+
+  // ── archive ──
+  function readArchive() {
+    try { const a = JSON.parse(localStorage.getItem(ARCHIVE_KEY) || "[]"); return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+
+  /* Write, shedding the oldest entries until it fits. A browser that refuses
+     even one entry gets an empty archive rather than a thrown save. */
+  function writeArchive(list) {
+    let keep = list.slice(0, ARCHIVE_MAX);
+    for (;;) {
+      try { localStorage.setItem(ARCHIVE_KEY, JSON.stringify(keep)); return keep.length; }
+      catch (e) {
+        if (!keep.length) { try { localStorage.removeItem(ARCHIVE_KEY); } catch (e2) {} return 0; }
+        keep = keep.slice(0, keep.length - 1);
+      }
+    }
+  }
+
+  /* Move whatever is in KEY into the archive. `why` records how the run
+     ended, since an archived session is by definition one nobody confirmed
+     was safely collected. */
+  function archiveCurrent(why) {
+    const prev = load();
+    if (!prev || !prev.participantId) return false;
+    const list = readArchive().filter(s => s.participantId !== prev.participantId);
+    list.unshift({ ...prev, archivedAt: new Date().toISOString(), archivedBecause: why });
+    return writeArchive(list) > 0;
+  }
+
+  const archive = () => readArchive();
+
+  /* Re-POST archived sessions the collector has not acknowledged. Marks each
+     as sent so a later flush skips it; a failure simply leaves it for next
+     time. Safe to call whenever — it no-ops with logging off. */
+  async function flushArchive() {
+    const url = Config.ENDPOINT_URL;
+    if (!url || !logging()) return 0;
+    const list = readArchive();
+    const pending = list.filter(s => !s.collectedAt);
+    if (!pending.length) return 0;
+    let sent = 0;
+    for (const sess of pending) {
+      try {
+        const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" },
+                                       body: JSON.stringify(sess) });
+        if (!res.ok) continue;
+        sess.collectedAt = new Date().toISOString();
+        sent++;
+      } catch (e) { /* still offline; leave it for next time */ }
+    }
+    if (sent) writeArchive(list);
+    return sent;
+  }
+
+  // Everything the browser still holds, live session included, as one file.
+  function downloadArchive() {
+    const all = { exportedAt: new Date().toISOString(), live: load(), archive: readArchive() };
+    const blob = new Blob([JSON.stringify(all, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "bdr-sessions-" + Date.now() + ".json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    return (readArchive().length + (load() ? 1 : 0));
   }
 
   function exportJSON() { return JSON.stringify(data, null, 2); }
@@ -162,6 +250,8 @@ window.Store = (function () {
       });
       if (!res.ok) throw new Error("HTTP " + res.status);
       const out = await res.json().catch(() => ({}));
+      // The collector has it, so the archive copy is a duplicate, not a rescue.
+      data.collectedAt = new Date().toISOString();
       log("remote_sync", { ok: true, appendedEvents: out.appendedEvents });
       return true;
     } catch (e) {
@@ -191,5 +281,6 @@ window.Store = (function () {
     setProlificId, prolificId,
     log, addResult, setSurvey, markComplete,
     load, clear, download, sendRemote, flush,
+    archive, flushArchive, downloadArchive,
   };
 })();
