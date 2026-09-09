@@ -68,7 +68,7 @@ window.Store = (function () {
       steps: { ...Config.STEPS },
       lang: window.I18n ? I18n.get() : "de",  // language the session runs in (study data)
       group: a.group || null,         // the setup this participant runs (G1–G4)
-      groupSource: a.source || null,  // "server" (balanced) | "local" (fallback) | "dev" (forced)
+      groupSource: a.source || null,  // "config" (Config.FIXED_GROUP) | "dev" (forced)
       /* The group's two halves, spent here and then pinned, so a mid-study
          edit to Config.GROUPS can never retroactively alter a running
          participant: the AI's strategy all session, and the mechanic order

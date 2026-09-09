@@ -93,18 +93,26 @@ window.Config = (function () {
   // absolute URL to point at a hosted collector later.
   const ENDPOINT_URL = "/collect-logs";
 
-  /* Group assignment endpoint (server.js → /assign-group). The server keeps
-     the global tally and hands back the least-used group, so four unattended
-     participants spread evenly instead of four coin flips landing on G2.
-     Set "" to disable the draw entirely — every participant is then assigned
-     a group at random in the browser, which balances only in the long run.
+  /* ═══ which setup this build runs ═════════════════════════════════
+     ONE of the four setups below (G1–G4), fixed here and used by every
+     participant this build serves. Set it before each batch of sessions and
+     redeploy; the value is pinned onto each session at creation, so editing
+     it can never retroactively change a run already in progress.
 
-     NOTE: this is the ONLY part of the study that needs a live server of our
-     own. If the collector is ever moved to a Power-Automate / OneDrive flow,
-     this endpoint has to move with it, or balancing silently degrades to the
-     local random fallback (visible in the data as groupSource: "local"). */
-  const ASSIGN_URL = "/assign-group";
-  const ASSIGN_TIMEOUT_MS = 4000;   // never leave a participant staring at a dead Begin button
+     There is no automatic assignment any more. The prototype used to ask the
+     server for the least-used group and balance the four cells by itself
+     (POST /assign-group, a ledger in logs/groups.json, a reservation window
+     for sessions still in flight). That was removed on 2026-09-09: groups are
+     now assigned by hand, outside the prototype, and a balancer that quietly
+     disagreed with a hand-picked assignment would be worse than none.
+
+     Balance is therefore YOURS to keep. Nothing here counts how many
+     participants have run under a setup, and nothing warns when the cells go
+     uneven — `group` on each session is the record to count.
+
+     The dev picker still overrides this per session for testing; such
+     sessions are marked groupSource "dev". */
+  const FIXED_GROUP = "G1";
 
   /* ═══ the AI cursor is NOT configured here ════════════════════════
      There is deliberately nothing in this file that touches how the handoff
@@ -124,9 +132,9 @@ window.Config = (function () {
      gym too: fix it there and re-export. */
 
   /* ═══ study design: unassisted baseline, then ONE AI mechanic ══════
-     Between-subjects. Every participant runs the unassisted baseline rounds
-     first, then the AI rounds with exactly one of the two mechanics, decided
-     by the balanced draw — see ASSIGN_URL.
+     Every participant runs the unassisted baseline rounds first, then both
+     AI mechanics in the order their setup fixes. Which setup they run is
+     FIXED_GROUP above — set by hand, not drawn.
 
      One switch describes every group:
 
@@ -181,10 +189,13 @@ window.Config = (function () {
                      "second block" effects (practice, fatigue, having already
                      seen an AI act) don't load onto one mechanic.
 
-     Crossing them gives exactly four cells, which is what the server's
-     balanced draw fills — so a run needs BDR_GROUPS=G1,G2,G3,G4 (its default).
-     Fixing the character by hand is no longer necessary or possible: the draw
-     assigns it with the order, in one decision, and the session pins both. */
+     Crossing them gives exactly four cells. Which one this build runs is
+     FIXED_GROUP above; character and order are not set separately, because a
+     setup is one decision and the session pins both halves of it together.
+
+     Counterbalancing is now a manual job: nothing here spreads participants
+     across the four, so keep the tally yourself and change FIXED_GROUP
+     between batches. */
   const GROUPS = {
     G1: { character: "bold",     order: ["hidden", "handoff"] },
     G2: { character: "bold",     order: ["handoff", "hidden"] },
@@ -296,9 +307,9 @@ window.Config = (function () {
      buildTaskPlan and conditionFor and never fetched from outside, but they are
      what a run IS, so they stay readable from the console alongside the rest. */
   return {
-    CONFIG, STEPS, ENDPOINT_URL, ASSIGN_URL, ASSIGN_TIMEOUT_MS, SHUFFLE_SEED,
+    CONFIG, STEPS, ENDPOINT_URL, SHUFFLE_SEED,
     HIDDEN_PLACE_MS, CHARACTERS, isCharacter,
-    BASELINE, MECHANICS, GROUPS, GROUP_KEYS,
+    FIXED_GROUP, BASELINE, MECHANICS, GROUPS, GROUP_KEYS,
     BASELINE_TASKS, TASK_BLOCKS,
     buildTaskPlan, conditionFor, isGroup, characterFor, orderFor,
   };

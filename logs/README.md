@@ -10,11 +10,11 @@ It is blocked from HTTP, so it is never reachable from the browser.
 - `events.jsonl` — append-only event stream across all participants, one JSON object
   per line, each tagged with `participantId`, `lang` and `serverTimestamp`. Only
   events the server has not already seen are appended, so there are no duplicates.
-- `groups.json` — the group ledger behind the balanced G1–G4 assignment: one record
-  per participant, `{group, at, completedAt, dev, source}`. The server reads it to
-  decide which group the next participant gets, so **deleting it resets the balance**
-  (existing sessions keep the group already pinned to them). `GET /assign-group/status`
-  reports the current counts without opening the file.
+- `groups.json` — **no longer used.** It was the ledger behind the automatic G1–G4
+  assignment, removed on 2026-09-09; the setup is now fixed by hand in `js/config.js`
+  (`FIXED_GROUP`). Nothing reads or writes this file any more, and a copy left here is
+  just a record of earlier runs — safe to keep or delete. Which setup a participant
+  actually ran is on their own session file, as `group` and `groupSource`.
 
 Load the event stream for analysis:
 

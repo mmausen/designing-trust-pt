@@ -116,14 +116,12 @@
      whatever happens — but Begin is disabled meanwhile, so a double click
      cannot start two sessions and burn two group slots. */
   let starting = false;
-  async function startSession() {
+  function startSession() {
     if (starting || Store.get()) return;
     starting = true;
-    const begin = $("btn-begin");
-    if (begin) begin.disabled = true;
     try {
       const pid = genParticipantId();
-      const assignment = await Groups.draw(pid);
+      const assignment = Groups.resolve();
       Store.newSession(pid, assignment);
       Store.log("session_start", {
         participantId: pid,
@@ -136,13 +134,13 @@
         config: Store.get().config,
         lang: I18n.get(),
       });
-      // Kept as its own event: the assignment is the study's randomisation
-      // record, and it must be legible without parsing session_start.
+      /* Kept as its own event: which setup a participant ran is the fact the
+         analysis groups by, and it must be legible without parsing
+         session_start. */
       Store.log("group_assigned", {
         group: assignment.group,
         source: assignment.source,
-        counts: assignment.counts || null,
-        reason: assignment.reason || null,
+        invalid: assignment.invalid || null,   // FIXED_GROUP named no known setup
       });
       syncDevGroup();
       Flow.build();
@@ -253,6 +251,19 @@
        cursors.json still runs, with every dial off — a bland straight-line
        cursor that looks like a design choice rather than a missing file. The
        failure mode is "both conditions felt the same", discovered in analysis. */
+    /* Loud on purpose, and the loudest of the three: with the balancer gone,
+       FIXED_GROUP alone decides what every participant of this build runs. A
+       typo would put a whole batch under the wrong condition, silently, and
+       only the data would show it — afterwards. */
+    if (!Config.isGroup(Config.FIXED_GROUP)) {
+      console.error(`[BDR] Config.FIXED_GROUP is "${Config.FIXED_GROUP}", which is not one of ` +
+                    `${Config.GROUP_KEYS.join(" / ")} — every session will fall back to ` +
+                    `${Config.GROUP_KEYS[0]}. Fix it before running anyone.`);
+    } else {
+      console.log(`[BDR] setup ${Config.FIXED_GROUP}: ${Config.characterFor(Config.FIXED_GROUP)}, ` +
+                  `${Config.orderFor(Config.FIXED_GROUP).join(" → ")}`);
+    }
+
     Config.CHARACTERS.forEach(c => {
       if (Cursor.has(c)) return;
       console.error(`[BDR] no cursor motion profile for "${c}" in cursors.json — ` +

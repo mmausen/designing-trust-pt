@@ -9,7 +9,7 @@ the unassisted baseline rounds first, then **both** AI mechanics, one block each
 | **AI character** | between subjects | `bold` · `cautious` |
 | **Mechanic order** | within subjects, counterbalanced | hidden-first · handoff-first |
 
-Crossing them gives the four setups the balanced draw fills, one per participant:
+Crossing them gives four setups; one is fixed per build (`FIXED_GROUP`):
 
 | Setup | Character | Block 1 | Block 2 |
 |---|---|---|---|
@@ -85,7 +85,7 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 
 | File | Role |
 |---|---|
-| `server.js` | Serves the app, hands out balanced groups (`/assign-group`), and collects logs (`/collect-logs`) |
+| `server.js` | Serves the app and collects logs (`/collect-logs`) |
 | `logs/` | Participant data — session snapshots, the event stream, and the group ledger (never web-readable) |
 | `index.html` | All screens as `<section class="screen">`, toggled via `[hidden]` |
 | `styles-accessible.css` | The active stylesheet |
@@ -123,7 +123,7 @@ const MECHANICS = {                  // the interactions — everyone meets both
   hidden:  { key: "hidden",  ai: "hidden"  },
 };
 
-const GROUPS = {                     // one per participant, filled by the balanced draw
+const GROUPS = {                     // the four setups; FIXED_GROUP picks one
   G1: { character: "bold",     order: ["hidden", "handoff"] },
   G2: { character: "bold",     order: ["handoff", "hidden"] },
   G3: { character: "cautious", order: ["hidden", "handoff"] },
@@ -134,8 +134,7 @@ const GROUPS = {                     // one per participant, filled by the balan
 A group no longer names a mechanic — it fixes the **character** and the **order**, and
 `buildTaskPlan(group)` spends both to lay out the rounds. Each plan entry then carries its
 own `mechanic`, so `conditionFor(step)` resolves the interaction per round rather than per
-session. Keep `GROUPS` in step with the server's list: `BDR_GROUPS=G1,G2,G3,G4` is its
-default. `conditions.<key>` in `strings.json` is keyed by **mechanic** (`c1`, `handoff`,
+session. `conditions.<key>` in `strings.json` is keyed by **mechanic** (`c1`, `handoff`,
 `hidden`), not by group, since both groups sharing an order share their wording.
 
 One switch describes every group. `ai` picks the mechanic:
@@ -161,9 +160,8 @@ setting rather than a group.
 the first round's onboarding hides the ladder column and reveals it as the participant
 steps through. By the AI rounds the board is familiar and both columns stay put.
 
-Adding or removing a group is a one-entry edit: add its text under `conditions.<key>` in
-`strings.json` (both languages) and the balancer picks it up on the next restart. Set
-`BDR_GROUPS` if the server should balance a different set than its default `G1,G2`.
+Adding or removing a setup is a one-entry edit: add its text under `conditions.<key>` in
+`strings.json` (both languages). The server has no group list to keep in step any more.
 
 **Rounds and which task runs in each** (`BASELINE_TASKS`, `TASK_BLOCKS`):
 
@@ -516,47 +514,39 @@ themselves) → six `ai_placement` → `hidden_done`.
 
 </details>
 
-## Group assignment (how the four cells stay even)
+## Which setup a participant runs
 
-The study is unattended, so nobody is standing by to keep the four setups
-balanced — and a coin flip per participant does not do it: at n ≈ 40 a fair random draw
-still lands cells of 6 and 14 often enough to matter. The tally therefore lives on the
-server.
+**One line in `js/config.js`:**
 
-```
-POST /assign-group          {participantId}  →  {group, counts, reused}
-GET  /assign-group/status                    →  per-group counts, mid-study
+```js
+const FIXED_GROUP = "G1";     // G1 · G2 · G3 · G4 — see GROUPS
 ```
 
-`js/groups.js` draws **once**, at Begin, and the group is pinned onto the session — a
-reload or a resume reuses it, and the server is idempotent per participant id as a
-second guard, so one participant can never occupy two cells.
+Every participant this build serves runs that setup. Set it before each batch of
+sessions and redeploy. The value is pinned onto each session at creation, so editing it
+can never retroactively change a run already in progress, and boot prints the setup in
+force (`[BDR] setup G1: bold, hidden → handoff`) — or an error, if the name matches no
+known setup.
 
-**What counts towards a cell** (`logs/groups.json`, one record per participant):
+**Balance is yours to keep.** Nothing counts how many participants have run under a
+setup and nothing warns when the cells go uneven. `group` on each session file is the
+record to count.
 
-- every **finished** session, forever
-- every assignment still **in flight**, until it expires (`BDR_RESERVE_MS`, default
-  45 min)
-
-The expiry is what makes this dropout-proof: someone handed G2 who closes the tab during
-the pre-survey holds the slot only until the window passes, after which the next
-participant is sent to G2. The cells therefore even out in *completed* participants,
-which is what the analysis needs. Ties are broken at random, and every read-modify-write
-runs on one queue, so two people arriving in the same millisecond cannot both be sent to
-the same cell.
-
-Each session records **how** its group was decided, as `groupSource`:
+Each session still records **how** its setup was decided, as `groupSource`:
 
 | Value | Meaning |
 |---|---|
-| `server` | The balanced draw — the normal case |
-| `local` | The endpoint was unreachable, so the browser picked at random. A participant is never blocked by our infrastructure; the collector still learns the group on the first sync and compensates for it in later draws. |
-| `dev` | Forced from the dev picker. **Excluded from the counts entirely**, so testing never distorts the balance. |
+| `config` | `Config.FIXED_GROUP` — the normal case |
+| `dev` | Forced from the dev picker, so a test session stays legible as one when the data is counted |
 
-Set `ASSIGN_URL = ""` in `js/config.js` to skip the draw altogether (every participant
-then gets a local random group). Verified: 20 simulated participants — including 12
-arriving simultaneously — landed exactly 5/5/5/5; 12 abandoned assignments expired and
-the following draws refilled the emptied cells.
+> **The automatic balancer was removed on 2026-09-09.** The prototype used to ask the
+> server for the least-used cell (`POST /assign-group`), backed by a ledger in
+> `logs/groups.json` and a reservation window so a dropout did not strand its slot.
+> Groups are assigned by hand now, and a balancer quietly disagreeing with a hand-picked
+> assignment would be worse than none. Gone with it: `ASSIGN_URL`, `ASSIGN_TIMEOUT_MS`,
+> both `/assign-group` routes, `BDR_GROUPS`, `BDR_RESERVE_MS`, and the `local` random
+> fallback — there is no longer anything to fall back *from*. A `logs/groups.json` still
+> on disk is an old record; nothing reads or writes it.
 
 ### Dev controls
 
@@ -569,8 +559,7 @@ Changing the setup mid-session rebuilds the plan (the order changed, so the roun
 too) and re-renders the current step. Both orders run the same number of rounds, so the
 step index stays valid; results already recorded keep their own `taskId`, `condition` and
 `character`, so they stay readable even though they came from the previous plan. It marks
-the session `groupSource: "dev"`, so it is
-kept out of the balancing counts.
+the session `groupSource: "dev"`, so a test run is recognisable as one in the data.
 
 <details>
 <summary><b>Languages</b> — DE/EN side by side, live switching, and why the switch is safe mid-task</summary>
@@ -679,8 +668,7 @@ intact, in order, with no duplication (including the failed-sync records themsel
 
 A **server restart clears nothing.** `logs/sessions/` holds one atomically-written file per
 `participantId`, ids are unique per run so two participants can never collide,
-`events.jsonl` is append-only and `groups.json` is read-modify-write. Twenty participants
-leave twenty files, uncapped.
+and `events.jsonl` is append-only. Twenty participants leave twenty files, uncapped.
 
 localStorage was the weak point: it held **one** session under one key, replaced wholesale
 by the next run. With `loggingEnabled` off — or with the collector unreachable — that was
@@ -719,7 +707,8 @@ events — so re-sending costs nothing.
 - `logs/events.jsonl` — append-only stream across participants, one event per line,
   tagged with `participantId`, `lang` and `serverTimestamp`. Only events the server
   hasn't seen are appended, so there are no duplicates.
-- `logs/groups.json` — the group ledger the balancer reads and writes.
+- `logs/groups.json` — **no longer used.** The ledger the removed balancer read and
+  wrote; a copy left on disk is a record of earlier runs and is safe to delete.
 
 > Two files, not one, because the client re-sends the whole session every time —
 > blindly appending would grow quadratically. The snapshot's event count tells the
@@ -841,13 +830,13 @@ participant accepted the AI's order without inspecting it.
 ## Before the real study
 
 - [ ] Confirm `CONFIG.devMode` is `false` — it hides the bottom-right dev bar (the
-      "Skip ▸" button and the group picker, which would force a group and drop that
-      participant out of the balancing counts)
+      "Skip ▸" button and the setup picker, which would override `FIXED_GROUP` and mark
+      that session `groupSource: "dev"`)
 - [ ] Confirm `CONFIG.loggingEnabled` is `true` — with it off a completed session leaves
       no file at all (already the default; the console warns on boot when it is off)
 - [ ] Replace the placeholder group labels/onboarding steps and both surveys
-- [ ] Clear the pilot data out of `logs/` — `sessions/`, `events.jsonl` and `groups.json`
-      all still hold test runs
+- [ ] Clear the pilot data out of `logs/` — `sessions/` and `events.jsonl` still hold
+      test runs (`groups.json` is unused now and can simply go)
 - [ ] Decide where the collector runs (port-forwarded machine vs. hosted) and confirm
       `logs/` is backed up — it is the only copy once a participant clears their browser
 - [ ] Set the number of rounds — `BASELINE_TASKS` runs 3 (`T1`–`T3`) and each
@@ -856,8 +845,8 @@ participant accepted the AI's order without inspecting it.
 - [ ] Confirm `STEPS` matches how this run is administered — Prolific ID and
       the three questionnaires each switch off independently
 - [ ] Replace the placeholder questions in `surveys.mid` alongside `pre` and `post`
-- [ ] Check `GET /assign-group/status` reads 0/0/0/0 before the first real participant, and
-      **delete `logs/groups.json`** — pilot records under the old G1–G4 scheme are still in
-      it, and G1–G4 have since changed meaning, so stale records would skew the draw
+- [ ] Set `FIXED_GROUP` to the setup this batch runs, and check the boot console says so
+      (`[BDR] setup G1: bold, hidden → handoff`). Nothing balances the four cells any
+      more — keep the tally yourself and change it between batches
 - [ ] Decide whether mid-task language switching is acceptable, or should be locked
       once a task starts (it is currently allowed and logged)
