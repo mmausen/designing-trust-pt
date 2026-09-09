@@ -142,13 +142,23 @@ One switch describes every group. `ai` picks the mechanic:
 | `ai` | What the participant sees |
 |---|---|
 | `solo` | No assistance. Establishes that they understood the task. |
-| `handoff` | **Shared cursor.** The participant works normally, but while the cursor rests inside the activation zone the AI takes the cursor and carries on; leaving the zone hands it straight back. |
+| `handoff` | **Shared cursor.** The participant works normally, but while the cursor rests inside the activation zone the AI takes the cursor and carries on; leaving the zone hands it straight back. It works **strictly down its own ranking** — the case it rates first, then second, on to sixth — so the sequence of its moves is readable as its priority order. |
 | `hidden` | **No cursor.** That same block under the board is a "Start AI" button instead. One press and every step flies from wherever it currently sits — inbox or ladder, already-sorted or not — to the slot the AI chose, all at once, linearly, in `Config.HIDDEN_PLACE_MS` (1000 ms). It runs once per task: like the handoff zone, the button retires when the board is full. |
 
 The two AI mechanics deliberately share a layout and a lifecycle — the same block in the
 same place under the board, the same review phase afterwards, the same footer line once
 the board is full (`ui.task.aiDone`). What differs is only how control changes hands:
 hover-and-hold versus one press.
+
+> **Both characters place in ranking order** (changed 2026-09-09). The handoff cursor used
+> to reach for whichever case sat *nearest*, which is cheaper to travel but hid the AI's
+> priority order behind the accident of where the cases happened to lie. It now goes for
+> its top-ranked case first and works down to sixth, so a participant can read the
+> ordering off the sequence of its moves — which is the thing they are being asked to
+> form a view about. If the slot it wants is already occupied, the occupant returns to the
+> inbox and is picked up again at its own position; each placement is final, so it still
+> converges in at most six. The hidden mechanic already committed the whole ranking at
+> once, so it is unchanged.
 
 There is no longer a `thoughts` switch: **the AI never explains itself**. The
 `#ai-thought` panel, `Config.explainsItself()`, the `ai_thought_shown` event, the
@@ -249,9 +259,9 @@ just finished, so it lands before the next one introduces itself. Its questions 
 
 **Prolific ID** (`STEPS.prolificId`) — a screen asking for the participant's Prolific ID,
 stored on the session as `prolificId` and logged. It deliberately does **not** become the
-`participantId`: that names a file in `logs/sessions/` and keys the group ledger, and is
-generated before this screen is reached (the group draw needs it), so letting typed text
-take that role would put user input on the filesystem. The two ride side by side instead.
+`participantId`: that names the participant's **folder** under `logs/`, and is generated
+before this screen is reached, so letting typed text take that role would put user input
+on the filesystem as a path. The two ride side by side instead.
 **There is no format check.** Any non-empty value is taken as given: a guess about
 Prolific's format is not worth nagging a recruited participant at the door, and matching
 ids against Prolific's own records is an analysis job. Only `length` is logged, never a
@@ -666,9 +676,10 @@ intact, in order, with no duplication (including the failed-sync records themsel
 
 ### Nothing is overwritten
 
-A **server restart clears nothing.** `logs/sessions/` holds one atomically-written file per
-`participantId`, ids are unique per run so two participants can never collide,
-and `events.jsonl` is append-only. Twenty participants leave twenty files, uncapped.
+A **server restart clears nothing.** Each participant has their own folder under `logs/`,
+holding an atomically-written session snapshot and their own append-only `events.jsonl`;
+ids are unique per run so two participants can never collide. Twenty participants leave
+twenty folders, uncapped.
 
 localStorage was the weak point: it held **one** session under one key, replaced wholesale
 by the next run. With `loggingEnabled` off — or with the collector unreachable — that was
@@ -702,13 +713,26 @@ events — so re-sending costs nothing.
 <details>
 <summary><b>What the server writes</b>, and the privacy guards around it</summary>
 
-- `logs/sessions/<participantId>.json` — the full session, rewritten each sync
-  (atomically, via temp file + rename). **The record of truth.**
-- `logs/events.jsonl` — append-only stream across participants, one event per line,
+**One folder per participant** (changed 2026-09-09 — it used to be split by kind, one
+shared `events.jsonl` plus a `sessions/` folder):
+
+```
+logs/<participantId>/events.jsonl
+logs/<participantId>/sessions/<participantId>.json
+```
+
+- `<id>/sessions/<id>.json` — the full session, rewritten each sync (atomically, via temp
+  file + rename). **The record of truth.**
+- `<id>/events.jsonl` — that participant's append-only event stream, one event per line,
   tagged with `participantId`, `lang` and `serverTimestamp`. Only events the server
   hasn't seen are appended, so there are no duplicates.
-- `logs/groups.json` — **no longer used.** The ledger the removed balancer read and
-  wrote; a copy left on disk is a record of earlier runs and is safe to delete.
+
+Everything from one run sits together, so a participant can be handed on, archived or
+**deleted as a unit** — which is what a withdrawal request needs. The cost is the
+cross-participant read: `pd.read_json("logs/events.jsonl", lines=True)` becomes a glob
+and concat over `logs/*/events.jsonl` (see `logs/README.md`). `participantId` now names a
+**directory**, so the path sanitising that keeps a hostile id inside `logs/` matters more
+than it did — verified against `../../etc/…`, `a/b/c` and friends, all flattened.
 
 > Two files, not one, because the client re-sends the whole session every time —
 > blindly appending would grow quadratically. The snapshot's event count tells the
@@ -835,8 +859,8 @@ participant accepted the AI's order without inspecting it.
 - [ ] Confirm `CONFIG.loggingEnabled` is `true` — with it off a completed session leaves
       no file at all (already the default; the console warns on boot when it is off)
 - [ ] Replace the placeholder group labels/onboarding steps and both surveys
-- [ ] Clear the pilot data out of `logs/` — `sessions/` and `events.jsonl` still hold
-      test runs (`groups.json` is unused now and can simply go)
+- [ ] Clear the pilot data out of `logs/` — one folder per participant, so deleting the
+      test runs is `rm -rf logs/<id>/` per pilot participant
 - [ ] Decide where the collector runs (port-forwarded machine vs. hosted) and confirm
       `logs/` is backed up — it is the only copy once a participant clears their browser
 - [ ] Set the number of rounds — `BASELINE_TASKS` runs 3 (`T1`–`T3`) and each

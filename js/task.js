@@ -988,10 +988,21 @@ window.Task = (function () {
     }));
   }
 
-  /* Plan one pick-up-and-place: the nearest remaining tile → the slot the AI
-     wants it in. "Nearest" is not a strategy choice, it is the only sane
-     order for a cursor that has to physically travel; WHICH slot each tile
-     goes to is fixed by aiRanking. */
+  /* Plan one pick-up-and-place: the highest-priority case the AI has not
+     placed yet → the slot it belongs in.
+
+     Both characters work STRICTLY down their own ranking — slot 1 first, then
+     2, on to 6 — rather than picking whatever is nearest to the cursor. It
+     costs travel, and that is the point: the participant can read the AI's
+     priority order off the sequence of its moves, which is the thing the
+     study is asking them to form a view about. A proximity heuristic hid that
+     behind the accident of where the cases happened to sit.
+
+     The only backtracking is a displacement: if the slot this case belongs in
+     is already occupied, placeCard returns the occupant to the inbox, and if
+     that occupant outranks what is left the AI goes back up for it next. Each
+     placement puts one case in its final slot for good, so it still converges
+     in at most six. */
   function planJob() {
     /* Holding the cursor with nothing it is allowed to place. Only reachable
        in the gap between the last case landing and autoFinish() noticing, so
@@ -1000,14 +1011,14 @@ window.Task = (function () {
     const free = inbox.filter(c => c.id !== fc.carrying && aiRanking.indexOf(c.id) !== -1);
     if (!free.length) { pushPause(300); return; }
 
-    let target = free[0], best = Infinity;
+    // lowest index in aiRanking = highest priority = the next one it reaches for
+    let target = null, slotIdx = Infinity;
     free.forEach(c => {
-      const ctr = tileCenter(c.id);
-      if (ctr) { const d = dist(fc.x, fc.y, ctr.x, ctr.y); if (d < best) { best = d; target = c; } }
+      const r = aiRanking.indexOf(c.id);
+      if (r < slotIdx) { slotIdx = r; target = c; }
     });
-    const cc = tileCenter(target.id);
-    const slotIdx = aiRanking.indexOf(target.id);
-    if (!cc || slotIdx < 0) { pushPause(300); return; }
+    const cc = target && tileCenter(target.id);
+    if (!cc) { pushPause(300); return; }
 
     // reach for the tile — the other tiles are the roads not taken
     const others = free.filter(c => c.id !== target.id).map(c => tileCenter(c.id)).filter(Boolean);

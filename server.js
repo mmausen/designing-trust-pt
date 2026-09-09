@@ -18,8 +18,10 @@
       rows), so blindly appending would duplicate everything quadratically.
       The per-participant snapshot is the source of truth; only events the
       server has not seen yet are appended to the JSONL stream.
-   2. One file per participant instead of one shared file, so two people
-      running at once can never interleave inside a line.
+   2. One FOLDER per participant — their events.jsonl and their session
+      snapshot together — so two people running at once never share a file
+      and can never interleave inside a line, and one person's whole run can
+      be handed on or deleted as a unit.
    3. participantId is sanitised before it touches a path — an id like
       "../../etc/foo" must not escape ./logs.
    4. The JSON body limit is raised; a full 30-task session blows past
@@ -36,15 +38,29 @@ const path = require("path");
 
 const PORT = process.env.PORT || 8080;
 const LOG_DIR = path.join(__dirname, "logs");
-const SESSION_DIR = path.join(LOG_DIR, "sessions");
-const EVENT_LOG = path.join(LOG_DIR, "events.jsonl");
+
+/* ── one folder per participant ──────────────────────────────────────
+       logs/<participantId>/events.jsonl
+       logs/<participantId>/sessions/<participantId>.json
+
+   Everything from one person's run sits together, so a single run can be
+   handed on, archived or deleted as a unit — which is what a participant
+   withdrawing actually requires.
+
+   Before 2026-09-09 the two were split by KIND instead: one shared
+   logs/events.jsonl across everybody, and logs/sessions/<id>.json beside
+   it. The trade is deliberate — see logs/README.md — and it costs the
+   one-line cross-participant read, which is now a glob. */
+const runDir      = id => path.join(LOG_DIR, id);
+const sessionFile = id => path.join(runDir(id), "sessions", id + ".json");
+const eventLog    = id => path.join(runDir(id), "events.jsonl");
 
 
 /* No IP address is ever recorded. An IP is personal data under GDPR and
    would pull this study into heavier consent/retention obligations for no
    research benefit — the participant id already links the rows. */
 
-fs.mkdirSync(SESSION_DIR, { recursive: true });
+fs.mkdirSync(LOG_DIR, { recursive: true });   // each participant's folder is made on their first sync
 
 const app = express();
 app.use(express.json({ limit: "25mb" }));
@@ -91,12 +107,15 @@ app.post("/collect-logs", async (req, res) => {
   }
 
   const id = safeId(session.participantId);
-  const snapshot = path.join(SESSION_DIR, id + ".json");
+  const snapshot = sessionFile(id);
   const receivedAt = new Date().toISOString();
   const events = Array.isArray(session.events) ? session.events : [];
 
   try {
     const appended = await queue(id, async () => {
+      // The participant's folder, made on their first sync and never again.
+      await fsp.mkdir(path.dirname(snapshot), { recursive: true });
+
       // How many of this participant's events are already on disk?
       let known = 0;
       try {
@@ -119,7 +138,7 @@ app.post("/collect-logs", async (req, res) => {
           ...ev,
           serverTimestamp: receivedAt,
         })).join("\n") + "\n";
-        await fsp.appendFile(EVENT_LOG, lines, "utf8");
+        await fsp.appendFile(eventLog(id), lines, "utf8");
       }
       return fresh.length;
     });
@@ -135,8 +154,10 @@ app.post("/collect-logs", async (req, res) => {
 // Quick check that the collector is alive and where it is writing.
 app.get("/collect-logs/health", async (_req, res) => {
   let sessions = 0;
-  try { sessions = (await fsp.readdir(SESSION_DIR)).filter(f => f.endsWith(".json")).length; }
-  catch (e) { /* none yet */ }
+  try {
+    const entries = await fsp.readdir(LOG_DIR, { withFileTypes: true });
+    sessions = entries.filter(e => e.isDirectory() && e.name !== "sessions").length;
+  } catch (e) { /* none yet */ }
   res.json({ ok: true, logDir: LOG_DIR, sessions });
 });
 
@@ -157,7 +178,7 @@ app.use((err, req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`BDR x DFKI — prototype + collector on http://localhost:${PORT}`);
-  console.log(`saving sessions to ${SESSION_DIR}`);
-  console.log(`appending events to ${EVENT_LOG}`);
+  console.log(`one folder per participant under ${LOG_DIR}`);
+  console.log("  <participantId>/events.jsonl  +  <participantId>/sessions/<participantId>.json");
   console.log("groups are fixed in js/config.js (FIXED_GROUP) — nothing is assigned here");
 });
