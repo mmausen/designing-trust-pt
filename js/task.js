@@ -67,6 +67,47 @@ window.Task = (function () {
   let userPlacedCount = 0, ladderReorders = 0;
   let slotAuthor = Array(6).fill(null);
 
+  /* Config.PLACEMENT_STYLE, with a dev-bar override that survives between
+     rounds so a style can be watched across several. See Config for what
+     A / B / C mean. */
+  let styleOverride = null;
+  const placementStyle = () => {
+    if (Config.isPlacementStyle(styleOverride)) return styleOverride;
+    return Config.isPlacementStyle(Config.PLACEMENT_STYLE) ? Config.PLACEMENT_STYLE : "A";
+  };
+  function setPlacementStyle(v) {
+    styleOverride = Config.isPlacementStyle(v) ? v : null;
+    return placementStyle();
+  }
+
+  /* The cases the AI may pick up next, under the style in force.
+     `free` is everything still in the inbox that it has a slot for.
+
+       A — all of them; a taken slot is simply overridden.
+       B — only those whose slot is empty. When none are, it is finished
+           (see aiWorkLeft) rather than undoing the participant.
+       C — the same, until nothing fits alongside the participant any more;
+           then the whole of `free` again, and the contested slots go too. */
+  /* Set when planJob finds nothing it may place under the style in force.
+     Read by step() to end the turn. A flag rather than a re-derivation,
+     because the queue is never truly empty (planJob pushes a pause), and
+     because it must never fire while a case is still in hand. */
+  let aiStalled = false;
+
+  function placeableNow(free) {
+    const style = placementStyle();
+    if (style === "A") return free;
+    const open = free.filter(c => !slots[aiRanking.indexOf(c.id)]);
+    if (open.length) return open;
+    return style === "C" ? free : [];
+  }
+
+  // Is there anything the AI can still do? Drives the end of its turn.
+  function aiWorkLeft() {
+    const free = inbox.filter(c => c.id !== fc.carrying && aiRanking.indexOf(c.id) !== -1);
+    return placeableNow(free).length > 0;
+  }
+
   /* ── timing ──────────────────────────────────────────────────────────
      The explainer opens on top of the task, so raw wall-clock time would
      fuse "reading the instructions" with "doing the task" — and reopening
@@ -189,6 +230,7 @@ window.Task = (function () {
     if (handoff) Cursor.use(character);
     aiTakeovers = 0; userTakebacks = 0; aiPlacedCount = 0;
     userPlacedCount = 0; ladderReorders = 0; slotAuthor = Array(6).fill(null);
+    aiStalled = false;
     taskDef = Tasks.get(taskId);
 
     cards = Tasks.inboxCardsFor(taskId, Config.SHUFFLE_SEED); // deterministic per task
@@ -1009,19 +1051,25 @@ window.Task = (function () {
        it just waits out a beat. (B21 used to drift the cursor around here;
        neither character switched it on, so it went.) */
     const free = inbox.filter(c => c.id !== fc.carrying && aiRanking.indexOf(c.id) !== -1);
-    if (!free.length) { pushPause(300); return; }
+    const pool = placeableNow(free);
+    if (!pool.length) {
+      aiStalled = fc.carrying == null;   // never mid-carry
+      pushPause(300);                    // step() ends the turn on the next tick
+      return;
+    }
+    aiStalled = false;
 
     // lowest index in aiRanking = highest priority = the next one it reaches for
     let target = null, slotIdx = Infinity;
-    free.forEach(c => {
+    pool.forEach(c => {
       const r = aiRanking.indexOf(c.id);
       if (r < slotIdx) { slotIdx = r; target = c; }
     });
     const cc = target && tileCenter(target.id);
     if (!cc) { pushPause(300); return; }
 
-    // reach for the tile — the other tiles are the roads not taken
-    const others = free.filter(c => c.id !== target.id).map(c => tileCenter(c.id)).filter(Boolean);
+    // reach for the tile — the other cases it could have taken instead
+    const others = pool.filter(c => c.id !== target.id).map(c => tileCenter(c.id)).filter(Boolean);
     pushReach({ x: fc.x, y: fc.y }, cc, others, cc.fw);
     pushPause(Cursor.MOTION.grabDwell);                       // settle before lifting
     pushGrab(target.id);
@@ -1139,7 +1187,7 @@ window.Task = (function () {
     aiCursor.style.transform = `translate(${fc.x}px,${fc.y}px)`;
     aiState = "idle";                    // the participant has control first
     Store.log("handoff_armed", {
-      taskId, character,
+      taskId, character, placementStyle: placementStyle(),
       cursorDials: Cursor.dials(), travel: Cursor.travel(), afterPlace: Cursor.afterPlace(),
     });
     render();
@@ -1166,7 +1214,7 @@ window.Task = (function () {
   }
 
   // Everything placed → fade the cursor out and hand the result over for review.
-  function autoFinish() {
+  function autoFinish(boardFull) {
     fc.active = false;
     fc.done = true;
     fc.queue.length = 0;
@@ -1178,11 +1226,17 @@ window.Task = (function () {
     if (zoneEl) { zoneEl.classList.remove("active"); zoneEl.hidden = true; }
     ghostHide();
     clearSlotMarks();
-    $("hint").textContent = I18n.t("ui.task.aiDone");
+    /* Never claim a finished board when the AI stopped short of one — under
+       style B the participant still has cases to place, and "all cases are
+       placed" would send them looking for a Confirm they cannot press. */
+    $("hint").textContent = I18n.t(boardFull ? "ui.task.aiDone" : "ui.task.aiStopped");
     render();
-    allPlacedAt = performance.now();
+    /* reviewMs measures looking a FINISHED order over. There is nothing to
+       review yet when the board is part-empty, so it starts only on a full one. */
+    if (boardFull) allPlacedAt = performance.now();
     Store.log("handoff_done", {
-      taskId, slots: [...slots], atMs: sinceStart(),
+      taskId, slots: [...slots], atMs: sinceStart(), boardFull: !!boardFull,
+      placementStyle: placementStyle(),
       aiTakeovers, userTakebacks,
       placedByAi: aiPlacedCount, placedByUser: userPlacedCount,
       ladderReorders, slotAuthor: [...slotAuthor],
@@ -1256,7 +1310,11 @@ window.Task = (function () {
     prevTs = now; lastStepTs = now;
 
     const complete = slots.every(Boolean);
-    if (fc.active && complete) autoFinish();
+    /* Style B can finish with the board part-empty: it stops rather than
+       undo the participant, and the rest is theirs to place. A and C only
+       ever stop on a full board. */
+    const stalled = aiStalled && fc.carrying == null;
+    if (fc.active && (complete || stalled)) autoFinish(complete);
     // Handoff: the AI steps in while the real cursor rests inside the
     // activation zone. Leaving the zone hands control back (see wire()).
     else if (handoff && !complete && !fc.active && !fc.returning && !drag
@@ -1371,6 +1429,7 @@ window.Task = (function () {
       finalPlacedByUser: slotAuthor.filter(a => a === "user").length,
       slotAuthor: [...slotAuthor],
       ladderReorders,
+      placementStyle: handoff ? placementStyle() : null,
       cursorCharacter: handoff ? character : null,
       cursorDials: handoff ? Cursor.dials() : null,
       cursorTravel: handoff ? Cursor.travel() : null,
@@ -1390,5 +1449,5 @@ window.Task = (function () {
     Flow.next();
   }
 
-  return { wire, start, stop, relocalize };
+  return { wire, start, stop, relocalize, setPlacementStyle, placementStyle };
 })();

@@ -180,6 +180,37 @@
     });
   }
 
+  /* ── dev placement-style picker ──
+     A / B / C: what the AI does about a slot the participant already filled.
+     See Config.PLACEMENT_STYLE for what each means. Unlike the setup, this is
+     not part of a group — it applies to whichever character is running, and
+     the override sticks across rounds so a style can be watched over several. */
+  const STYLE_LABEL = { A: "A · override", B: "B · skip", C: "C · skip, then override" };
+
+  function fillDevStyle() {
+    const sel = $("dev-style");
+    if (!sel) return;
+    sel.innerHTML = "";
+    Config.PLACEMENT_STYLES.forEach(v => {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = STYLE_LABEL[v] || v;
+      sel.appendChild(opt);
+    });
+    sel.value = Config.isPlacementStyle(Config.PLACEMENT_STYLE) ? Config.PLACEMENT_STYLE : "A";
+  }
+
+  /* Switch the AI's placement style. It changes what the AI does NEXT, so a
+     round already under way is restarted rather than left half-played under
+     two policies — which would be unreadable in the data. */
+  function devSetStyle(v) {
+    if (!Config.isPlacementStyle(v)) return;
+    Task.setPlacementStyle(v);
+    Store.log("placement_style_override", { style: v });
+    const cur = Flow.current();
+    if (cur && cur.type === "task") { Task.stop(); Flow.render(); }
+  }
+
   // Keep the picker showing the setup that is actually in force.
   function syncDevGroup() {
     const sel = $("dev-group");
@@ -315,6 +346,8 @@
     if (Config.CONFIG.devMode) {
       $("dev-bar").hidden = false;
       $("dev-skip").addEventListener("click", devSkip);
+      fillDevStyle();
+      $("dev-style").addEventListener("change", e => devSetStyle(e.target.value));
       fillDevGroup();
       syncDevGroup();
       $("dev-group").addEventListener("change", e => devSetGroup(e.target.value));

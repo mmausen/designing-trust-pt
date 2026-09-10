@@ -150,6 +150,42 @@ same place under the board, the same review phase afterwards, the same footer li
 the board is full (`ui.task.aiDone`). What differs is only how control changes hands:
 hover-and-hold versus one press.
 
+### What the AI does about a slot you already filled
+
+`Config.PLACEMENT_STYLE` — `"A"`, `"B"` or `"C"`, with a picker in the dev bar that
+overrides it for testing and sticks across rounds. It applies to the **handoff** mechanic
+only: the hidden one commits a whole ranking in one press, so there is no per-case
+decision to make. It is a placement *policy*, not cursor motion — both characters use
+whichever style is set, and it is not part of a setup (G1–G4).
+
+| | |
+|---|---|
+| **A** *(default)* | **Override.** The AI places its case in the slot it wants; whatever sat there returns to the inbox. Its ranking always comes out intact; your work can be undone. |
+| **B** | **Defer.** It skips any case whose slot is taken, carries on down its ranking, and finishes once nothing is left that it can place without overriding. It never undoes you, and may leave the board part-empty for you to finish. |
+| **C** | **Defer, then override.** Style B's pass first, so everything that fits alongside you lands first — then it goes back and takes the contested slots anyway, filling the board. |
+
+**A and C end with the same board**; they differ in the order you watch it happen, which
+is the point. **B is the only one that leaves your placements standing.**
+
+Worked example — you put the AI's 6th-ranked case in slot 2 and its 5th in slot 4, then
+hand over. Ranking is `t2 t0 t1 t3 t5 t4`:
+
+| | what the AI does | it ends with |
+|---|---|---|
+| A | `t2→1`, `t0→2` *(evicts t4)*, `t1→3`, `t3→4` *(evicts t5)*, `t5→5`, `t4→6` | the full ranking |
+| B | `t2→1`, `t1→3`, then stops | `t2 · your t4 · t1 · your t5 · — · —`, two cases left in your inbox |
+| C | `t2→1`, `t1→3`, `t0→2` *(evicts t4)*, `t4→6`, `t3→4` *(evicts t5)*, `t5→5` | the full ranking |
+
+C's interleaving is the rule working as intended: a case the AI evicts returns to the
+inbox and is picked up again **at its own position**, so it goes straight into its own
+empty slot before the next contested one is taken.
+
+Under B the round can end with the board part-empty, so the footer says
+`ui.task.aiStopped` — "placed every case it could without changing what you had already
+placed" — rather than claiming a finished board. `reviewMs` stays null in that case: there
+is no finished order to review. Each result records the `placementStyle` that ran, and
+`handoff_done` carries it alongside `boardFull`.
+
 > **Both characters place in ranking order** (changed 2026-09-09). The handoff cursor used
 > to reach for whichever case sat *nearest*, which is cheaper to travel but hid the AI's
 > priority order behind the accident of where the cases happened to lie. It now goes for

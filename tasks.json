@@ -3,7 +3,7 @@
     {
       "id": "T1",
       "de": {
-        "title": "Transportwesen"
+        "title": "Verkehr"
       },
       "en": {
         "title": "Transportation"
@@ -12,85 +12,85 @@
         "bold": [
           0,
           1,
-          3,
           2,
-          5,
-          4
+          3,
+          4,
+          5
         ],
         "cautious": [
-          0,
-          1,
-          4,
-          3,
           5,
-          2
+          4,
+          1,
+          2,
+          3,
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Gefährliche Straßenschäden",
-            "description": "Ein Anwohner meldet Schäden an einer Straße, die die Verkehrssicherheit beeinträchtigen können."
+            "text": "Text der Sperrungsbekanntmachung",
+            "description": "Die Bekanntmachung geht innerhalb der nächsten Stunde in den Druck, die Umleitung ist unklar formuliert. Autofahrer fahren möglicherweise einen Umweg."
           },
           "en": {
-            "text": "Dangerous road damage",
-            "description": "A resident reports damage to a road that may affect traffic safety."
+            "text": "Road closure notice wording",
+            "description": "The notice goes to print within the hour with an unclear diversion line. Drivers may take a longer way round."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Störung einer Ampelanlage",
-            "description": "Eine Ampel an einer stark befahrenen Kreuzung scheint fehlerhaft zu funktionieren."
+            "text": "Containergenehmigung für einen Umzug",
+            "description": "Antragsschluss ist heute bei Dienstschluss. Wird er verpasst, bucht der Anwohner den Container für nächste Woche neu."
           },
           "en": {
-            "text": "Traffic signal malfunction",
-            "description": "A traffic signal at a busy intersection appears to be operating incorrectly."
+            "text": "Skip licence for a house move",
+            "description": "Applications close when the office does today. Missed, the resident rebooks the skip for next week."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Antrag auf Parkausweis",
-            "description": "Ein Anwohner beantragt einen Anwohnerparkausweis."
+            "text": "Bestellung eines Haltestellenschilds",
+            "description": "Bestellung fällig innerhalb von zwei Wochen. Später fällt der Ersatz in die Charge des nächsten Quartals."
           },
           "en": {
-            "text": "Request for parking permit",
-            "description": "A resident applies for a residential parking permit."
+            "text": "Bus stop flag replacement order",
+            "description": "Order due within a fortnight. Later, the replacement falls into the next quarter's batch."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Beschwerde über Radweg",
-            "description": "Bürgerinnen und Bürger melden Probleme, die die sichere Nutzung eines Radwegs beeinträchtigen."
+            "text": "Stellungnahmen zur Parkzone",
+            "description": "Läuft seit dem Frühjahr, die Frist endet in zwei Wochen. Danach geht der Entwurf unverändert weiter."
           },
           "en": {
-            "text": "Bicycle lane complaint",
-            "description": "Citizens report issues affecting the safe use of a bicycle lane."
+            "text": "Parking zone consultation responses",
+            "description": "Open since spring; responses close within a fortnight. After that the draft zone goes forward as written."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Anfrage zum öffentlichen Nahverkehr",
-            "description": "Ein Anwohner bittet um Informationen zu Angeboten des öffentlichen Nahverkehrs."
+            "text": "Antrag auf Bordsteinabsenkung",
+            "description": "Kein Termin festgelegt. Der Anwohner gibt an, mit seinem Rollstuhl derzeit nicht auf den Gehweg zu kommen."
           },
           "en": {
-            "text": "Public transportation inquiry",
-            "description": "A resident requests information about public transportation services."
+            "text": "Dropped kerb request",
+            "description": "No date set. The resident says they cannot currently get their wheelchair onto the pavement."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Antrag auf Ersatz eines Straßenschilds",
-            "description": "Ein beschädigtes Straßenschild wurde gemeldet und muss möglicherweise ersetzt werden."
+            "text": "Meldungen zum Gehwegzustand, eine Straße",
+            "description": "Keine Prüfung geplant oder vorgeschrieben. Drei Anwohner haben unabhängig voneinander unebene Platten vor der Praxis erwähnt."
           },
           "en": {
-            "text": "Street sign replacement request",
-            "description": "A damaged street sign has been reported and may need replacement."
+            "text": "Footway condition reports, one street",
+            "description": "No inspection scheduled or required. Three residents have separately mentioned uneven paving outside the surgery."
           }
         }
       ]
@@ -98,94 +98,94 @@
     {
       "id": "T2",
       "de": {
-        "title": "Wohnungsanträge"
+        "title": "Wohnen"
       },
       "en": {
-        "title": "Housing Requests"
+        "title": "Housing"
       },
       "ai-order": {
         "bold": [
-          3,
-          1,
           0,
-          4,
+          1,
           2,
+          3,
+          4,
           5
         ],
         "cautious": [
-          0,
-          3,
+          5,
+          4,
           1,
           2,
-          4,
-          5
+          3,
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Familie von Wohnungsräumung bedroht",
-            "description": "Eine Familie wendet sich an die Verwaltung, nachdem sie eine Kündigung ihrer derzeitigen Wohnung erhalten hat."
+            "text": "Schlüssel für eine Besichtigung",
+            "description": "Die Besichtigung beginnt innerhalb der nächsten Stunde, der Code des Schlüsseltresors wurde nicht übermittelt. Der Interessent wartet draußen."
           },
           "en": {
-            "text": "Family facing eviction",
-            "description": "A family contacts the municipality after receiving notice to leave their current housing."
+            "text": "Keys for a viewing",
+            "description": "A viewing starts within the hour and the key safe code has not been shared. The applicant waits outside."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Antrag auf Wohnberechtigungsschein",
-            "description": "Ein Anwohner beantragt eine Bescheinigung, die für einen wohnungsbezogenen Antrag erforderlich ist."
+            "text": "Anmeldung zur Kautionsverwaltung",
+            "description": "Heute bis Dienstschluss einzureichen, sonst werden die Mietunterlagen neu ausgestellt."
           },
           "en": {
-            "text": "Request for housing certificate",
-            "description": "A resident requests a certificate required for a housing-related application."
+            "text": "Deposit scheme registration",
+            "description": "Lodged before close today, or the tenancy paperwork is reissued."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Defekte Heizungsanlage",
-            "description": "Ein Mieter meldet, dass die Heizung in seiner Wohnung nicht funktioniert."
+            "text": "Genehmigung für den Müllplatz",
+            "description": "Liegt seit März, Verlängerung fällig in zwei Wochen. Verspätet wird der Regelsatz statt des vereinbarten Satzes berechnet."
           },
           "en": {
-            "text": "Broken heating system",
-            "description": "A tenant reports that the heating system in their apartment is not working."
+            "text": "Communal bin store licence",
+            "description": "Pending since March; renewal due within a fortnight. Late, the block is billed at the standard rate."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Anfrage zu Wohngeld",
-            "description": "Ein Anwohner bittet um Informationen zur Anspruchsberechtigung für Wohnungsunterstützung."
+            "text": "Kostenvoranschlag für barrierefreien Umbau",
+            "description": "Angebote fällig in zwei Wochen, sonst geht der Vorgang ans Ende der Prüfliste."
           },
           "en": {
-            "text": "Housing subsidy inquiry",
-            "description": "A resident requests information about eligibility for housing support."
+            "text": "Adaptation grant quotation",
+            "description": "Quotes due within a fortnight, or the file returns to the back of the assessment list."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Antrag auf Adressänderung",
-            "description": "Ein Bürger beantragt die Aktualisierung seiner gemeldeten Adresse."
+            "text": "Eintrittsanspruch, langjähriger Mieter",
+            "description": "Kein Termin festgelegt. Wird der Anspruch nicht vor Mietende entschieden, kann er nicht wieder aufgenommen werden."
           },
           "en": {
-            "text": "Address change request",
-            "description": "A citizen submits a request to update their registered address."
+            "text": "Succession claim, long-term resident",
+            "description": "No date set. If the claim is not decided before the tenancy ends it cannot be reopened."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Allgemeine Informationsanfrage",
-            "description": "Ein Anwohner stellt eine allgemeine Frage zu den kommunalen Wohnungsdienstleistungen."
+            "text": "Feuchtigkeitsmeldungen, ein Treppenhaus",
+            "description": "Keine Prüfung geplant oder vorgeschrieben. Vier Haushalte eines Treppenhauses melden seit dem Frühjahr dasselbe."
           },
           "en": {
-            "text": "General information request",
-            "description": "A resident asks a general question about municipal housing services."
+            "text": "Damp reports, same stairwell",
+            "description": "No inspection scheduled or required. Four households on one stairwell have reported the same thing since spring."
           }
         }
       ]
@@ -193,94 +193,94 @@
     {
       "id": "T3",
       "de": {
-        "title": "Gewerbeanmeldung"
+        "title": "Gebäudemanagement"
       },
       "en": {
-        "title": "Business Registration"
+        "title": "Facilities"
       },
       "ai-order": {
         "bold": [
           0,
           1,
           2,
-          5,
           3,
-          4
+          4,
+          5
         ],
         "cautious": [
+          5,
+          4,
           1,
           2,
           3,
-          0,
-          4,
-          5
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Anmeldung eines neuen Restaurants",
-            "description": "Ein Antragsteller reicht Unterlagen zur Anmeldung eines neuen Restaurantbetriebs ein."
+            "text": "Doppelbelegung eines Besprechungsraums",
+            "description": "Zwei Teams erscheinen innerhalb der nächsten Stunde zum selben Raum. Eines muss ausweichen."
           },
           "en": {
-            "text": "New restaurant registration",
-            "description": "An applicant submits documents to register a new restaurant business."
+            "text": "Room booking clash",
+            "description": "Two teams arrive within the hour for the same room. One will need to find another space."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Anmeldung eines mobilen Imbisswagens",
-            "description": "Ein Unternehmer beantragt den Betrieb eines mobilen Imbisswagens im Stadtgebiet."
+            "text": "Rückfrage zur Reinigungsrechnung",
+            "description": "Heute bis Dienstschluss anzuzeigen, sonst wird der strittige Betrag im Lauf dieses Monats gezahlt."
           },
           "en": {
-            "text": "Mobile food truck registration",
-            "description": "An entrepreneur applies to operate a mobile food truck within the city."
+            "text": "Cleaning invoice query",
+            "description": "Raised before close today, or the disputed amount is paid on this month's run."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Anmeldung eines Handwerksbetriebs",
-            "description": "Ein Anwohner reicht einen Antrag zur Anmeldung eines kleinen Handwerksbetriebs ein."
+            "text": "Bestellung von Leuchtmitteln",
+            "description": "Bestellung fällig in zwei Wochen, sonst arbeitet das Lager bis zum nächsten Turnus mit der Reserve."
           },
           "en": {
-            "text": "Craft business registration",
-            "description": "A resident submits an application to register a small craft business."
+            "text": "Lightbulb stock order",
+            "description": "Order due within a fortnight, or the depot runs on its reserve until the next cycle."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Gewerbeanmeldung mit fehlenden Unterlagen",
-            "description": "Ein Antrag auf Gewerbeanmeldung wurde mit unvollständigen Unterlagen eingereicht."
+            "text": "Einstellung von Möbeln zur Weiternutzung",
+            "description": "Bereits zweimal angemahnt. Einstellung in zwei Wochen, sonst gehen die Schreibtische ins kostenpflichtige Lager."
           },
           "en": {
-            "text": "Missing-document registration",
-            "description": "A business registration application has been submitted with incomplete documentation."
+            "text": "Furniture reuse listing",
+            "description": "Raised twice already. Listed within a fortnight, or surplus desks go to paid storage."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Änderung einer Gewerbeanmeldung",
-            "description": "Ein Gewerbetreibender beantragt Änderungen an einer bestehenden Gewerbeanmeldung."
+            "text": "Gegensprechanlage am barrierefreien Eingang",
+            "description": "Kein Termin festgelegt. Besucher am Nebeneingang können den Empfang nicht erreichen."
           },
           "en": {
-            "text": "Registration amendment",
-            "description": "A business owner requests changes to an existing registration record."
+            "text": "Accessible entrance intercom",
+            "description": "No date set. Visitors using the side entrance have no way to call reception."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Gewerbeabmeldung",
-            "description": "Ein Gewerbetreibender teilt der Verwaltung mit, dass der Betrieb eingestellt wurde."
+            "text": "Meldungen zum Handlauf, Nordtreppenhaus",
+            "description": "Keine Prüfung geplant oder vorgeschrieben. Mitarbeitende haben zweimal erwähnt, dass ein Abschnitt locker wirkt."
           },
           "en": {
-            "text": "Business closure notification",
-            "description": "A business owner informs the municipality that operations have ceased."
+            "text": "Handrail reports, north stairwell",
+            "description": "No inspection scheduled or required. Staff have mentioned twice that a section feels loose."
           }
         }
       ]
@@ -295,87 +295,87 @@
       },
       "ai-order": {
         "bold": [
-          2,
           0,
           1,
+          2,
           3,
-          5,
-          4
+          4,
+          5
         ],
         "cautious": [
-          0,
+          5,
+          4,
+          1,
           2,
           3,
-          1,
-          5,
-          4
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Gefährlicher Baum neben Spielplatz",
-            "description": "Ein Anwohner meldet, dass ein großer Baum neben einem öffentlichen Spielplatz instabil erscheint."
+            "text": "Rufnummer auf einem Bauschild",
+            "description": "Das Schild wird innerhalb der nächsten Stunde aufgestellt, mit der Nummer des Vorjahres. Anrufer erreichen einen toten Anschluss."
           },
           "en": {
-            "text": "Dangerous tree near playground",
-            "description": "A resident reports that a large tree next to a public playground appears unstable."
+            "text": "Contact number on a site notice",
+            "description": "A notice goes up within the hour with last year's number. Callers reach a disconnected line."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Lärmbeschwerde über Baustelle",
-            "description": "Mehrere Anwohner beschweren sich über anhaltenden Lärm einer nahegelegenen Baustelle."
+            "text": "Abholung eines Lärmprotokolls",
+            "description": "Heute bis Dienstschluss abzuholen, sonst beginnt der Anwohner ein neues Protokoll über vier Wochen."
           },
           "en": {
-            "text": "Noise complaint from construction site",
-            "description": "Several residents complain about ongoing noise from a nearby construction project."
+            "text": "Noise diary collection",
+            "description": "Collected before close today, or the resident starts a fresh four-week diary."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Beschwerde über Falschparken",
-            "description": "Ein Bürger meldet Fahrzeuge, die wiederholt die Zufahrt zu einer Wohnstraße blockieren."
+            "text": "Schlichtungstermin zum Heckenstreit",
+            "description": "Läuft seit dem vergangenen Sommer. Termin in zwei Wochen zu buchen, sonst geht der Fall in das kostenpflichtige Verfahren."
           },
           "en": {
-            "text": "Illegal parking complaint",
-            "description": "A citizen reports vehicles repeatedly blocking access to a residential street."
+            "text": "Hedge height mediation slot",
+            "description": "Running since last summer. Booked within a fortnight, or the case moves to the paid tribunal route."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Defekte Straßenlaterne",
-            "description": "Ein Anwohner meldet, dass eine Straßenlaterne im Wohnviertel nicht mehr funktioniert."
+            "text": "Stellungnahmen zur Straßenbenennung",
+            "description": "Die Frist endet in zwei Wochen. Danach geht der vorgeschlagene Name unverändert weiter."
           },
           "en": {
-            "text": "Broken streetlight",
-            "description": "A resident reports that a streetlight in a neighborhood has stopped working."
+            "text": "Street naming responses",
+            "description": "Responses close within a fortnight. After that the proposed name goes forward unchanged."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Graffiti-Meldung",
-            "description": "An einem öffentlichen Gebäude in der Innenstadt wurde Graffiti gemeldet."
+            "text": "Nicht geleerte Tonne, Haushalt mit Abholhilfe",
+            "description": "Kein Termin festgelegt. Der Haushalt steht im Hilfsverzeichnis und kann die Tonne nicht selbst bewegen."
           },
           "en": {
-            "text": "Graffiti report",
-            "description": "Graffiti has been reported on a public building in the city center."
+            "text": "Missed collection, assisted household",
+            "description": "No date set. The household is on the assisted list and cannot move the bin themselves."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Zugewachsener öffentlicher Weg",
-            "description": "Ein Fußweg ist aufgrund starken Bewuchses nur noch schwer nutzbar."
+            "text": "Meldungen zur Beleuchtung, Parkweg",
+            "description": "Keine Begehung geplant oder vorgeschrieben. Mehrere Anwohner sagen, der Weg sei abends schlecht einsehbar."
           },
           "en": {
-            "text": "Overgrown public pathway",
-            "description": "A pedestrian path has become difficult to use because of overgrown vegetation."
+            "text": "Lighting reports, park path",
+            "description": "No survey scheduled or required. Several residents say the park path is hard to see along in the evening."
           }
         }
       ]
@@ -390,87 +390,87 @@
       },
       "ai-order": {
         "bold": [
-          2,
           0,
           1,
+          2,
           3,
           4,
           5
         ],
         "cautious": [
+          5,
+          4,
           1,
-          0,
           2,
           3,
-          4,
-          5
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Wiederholte Ruhestörungen im Wohngebiet",
-            "description": "Anwohner melden anhaltende Störungen in einem Wohnviertel."
+            "text": "Einweisungsunterlagen für Ordner",
+            "description": "Die Ordner kommen innerhalb der nächsten Stunde, die Unterlagen sind nicht gedruckt. Sie werden am Handy eingewiesen."
           },
           "en": {
-            "text": "Repeated neighborhood disturbances",
-            "description": "Residents report ongoing disturbances in a local neighborhood."
+            "text": "Event marshal briefing pack",
+            "description": "Marshals arrive within the hour and the pack is unprinted. They brief from a phone screen instead."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Bedenken zum Brandschutz",
-            "description": "Ein Bürger meldet einen möglichen Brandschutzmangel in einem öffentlichen Bereich."
+            "text": "Änderung einer Schankerlaubnis",
+            "description": "Heute bis Dienstschluss einzureichen, sonst gilt die Änderung erst ab dem Folgemonat."
           },
           "en": {
-            "text": "Fire safety concern",
-            "description": "A citizen reports a possible fire safety issue in a public area."
+            "text": "Alcohol licence variation",
+            "description": "Lodged before close today, or the variation applies only from the following month."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Verdächtiges abgestelltes Fahrzeug",
-            "description": "Ein unbeaufsichtigtes Fahrzeug wurde an einem öffentlichen Ort gemeldet."
+            "text": "Herausgabe von Videoaufzeichnungen",
+            "description": "In zwei Wochen anzufordern, sonst wird das Material im üblichen Turnus überschrieben."
           },
           "en": {
-            "text": "Suspicious abandoned vehicle",
-            "description": "An unattended vehicle has been reported in a public location."
+            "text": "CCTV disclosure request",
+            "description": "Requested within a fortnight, or the footage is overwritten on the normal cycle."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Anmeldung einer öffentlichen Veranstaltung",
-            "description": "Veranstalter reichen Unterlagen für eine geplante öffentliche Veranstaltung ein."
+            "text": "Antrag auf Zuschuss für eine Sicherheitspartnerschaft",
+            "description": "Die Gruppe hat im März erstmals gefragt. Einreichung in zwei Wochen, sonst wartet sie auf die nächste Runde."
           },
           "en": {
-            "text": "Public event registration",
-            "description": "Organizers submit documentation for a planned public event."
+            "text": "Community safety grant form",
+            "description": "The group first asked in March. Submitted within a fortnight, or they wait for next year's round."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Fundsachen-/Verlustmeldung",
-            "description": "Ein Anwohner meldet den Verlust persönlicher Gegenstände an einem öffentlichen Ort."
+            "text": "Unbesetzte Schülerlotsenstelle",
+            "description": "Kein Termin festgelegt. Die Stelle vor der Grundschule ist seit Schuljahresbeginn unbesetzt."
           },
           "en": {
-            "text": "Lost property report",
-            "description": "A resident reports losing personal property in a public place."
+            "text": "Crossing patrol vacancy",
+            "description": "No date set. The post outside the primary school has been unfilled since term began."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Allgemeine Auskunftsanfrage zur Polizei",
-            "description": "Ein Bürger bittet um allgemeine Informationen zu Leistungen der öffentlichen Sicherheit."
+            "text": "Wiederholte Meldungen, Kanalgeländer",
+            "description": "Keine Prüfung geplant oder vorgeschrieben. Spaziergänger haben dreimal eine Lücke im Geländer erwähnt."
           },
           "en": {
-            "text": "General police information request",
-            "description": "A citizen requests general information related to public safety services."
+            "text": "Repeated reports, canal railing",
+            "description": "No inspection scheduled or required. Walkers have mentioned a gap in the railing on three occasions."
           }
         }
       ]
@@ -493,79 +493,79 @@
           5
         ],
         "cautious": [
-          0,
-          1,
-          3,
+          5,
           4,
+          1,
           2,
-          5
+          3,
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Meldung einer möglichen Lebensmittelvergiftung",
-            "description": "Mehrere Personen melden, nach dem Besuch desselben Betriebs erkrankt zu sein."
+            "text": "Beschilderung im Wartebereich",
+            "description": "Die Sprechstunde öffnet innerhalb der nächsten Stunde ohne Schilder. Besucher fragen stattdessen am Tresen."
           },
           "en": {
-            "text": "Possible food poisoning report",
-            "description": "Several individuals report becoming ill after visiting the same establishment."
+            "text": "Clinic waiting room signage",
+            "description": "The session opens within the hour without signs. Attendees ask at the desk instead."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Hygienebeschwerde über ein Restaurant",
-            "description": "Ein Bürger meldet Bedenken hinsichtlich der Hygienebedingungen in einem Restaurant."
+            "text": "Neuausstellung einer Hygienebescheinigung",
+            "description": "Heute bis Dienstschluss neu auszustellen, sonst wartet der Betrieb auf die Charge nächster Woche."
           },
           "en": {
-            "text": "Hygiene complaint against restaurant",
-            "description": "A citizen reports concerns about hygiene conditions at a restaurant."
+            "text": "Food hygiene certificate reissue",
+            "description": "Reissued before close today, or the trader waits for next week's batch."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Antrag auf Gesundheitszuschuss",
-            "description": "Ein Anwohner beantragt finanzielle Unterstützung für gesundheitsbezogene Kosten."
+            "text": "Anmeldung eines neuen Caterers",
+            "description": "Offen seit der Eröffnung. Fällig in zwei Wochen, sonst arbeitet der Betrieb unangemeldet und wird gebührenpflichtig."
           },
           "en": {
-            "text": "Healthcare subsidy request",
-            "description": "A resident applies for financial support for healthcare-related costs."
+            "text": "Registration for a new caterer",
+            "description": "Outstanding since the business opened. Due within a fortnight, or it trades unregistered and becomes chargeable."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Anfrage zu Impfangeboten",
-            "description": "Ein Bürger bittet um Informationen zu verfügbaren Impfangeboten."
+            "text": "Raumbestätigung für ein Gesundheitsangebot",
+            "description": "In zwei Wochen zu bestätigen, sonst weicht die Veranstaltung in einen kleineren Raum aus."
           },
           "en": {
-            "text": "Vaccination information inquiry",
-            "description": "A citizen requests information about available vaccination services."
+            "text": "Health outreach venue confirmation",
+            "description": "Confirmed within a fortnight, or the session moves to a smaller room."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Lärmbeschwerde in der Nähe einer Klinik",
-            "description": "Personal und Besucher melden wiederkehrenden Lärm in der Nähe einer Gesundheitseinrichtung."
+            "text": "Rückstand bei Hausbesuchen, ein Bezirk",
+            "description": "Kein Termin festgelegt. Mehrere Neueltern eines Bezirks hatten noch keinen Erstbesuch."
           },
           "en": {
-            "text": "Noise complaint near clinic",
-            "description": "Staff and visitors report recurring noise near a healthcare facility."
+            "text": "Home visit backlog, one district",
+            "description": "No date set. Several new parents in one district have not had a first visit."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Antrag auf eine amtliche Bescheinigung",
-            "description": "Ein Anwohner beantragt ein gesundheitsbezogenes Verwaltungsdokument."
+            "text": "Beprobungsplan, ältere Standorte",
+            "description": "Kein Plan festgelegt und keiner vorgeschrieben. Zwei Standorte scheinen seit Jahren nicht in der Probenliste aufzutauchen."
           },
           "en": {
-            "text": "Administrative certificate request",
-            "description": "A resident requests a health-related administrative document."
+            "text": "Water testing schedule, older sites",
+            "description": "No schedule set and none required. Two sites seem not to have appeared in the sampling list for years."
           }
         }
       ]
@@ -573,7 +573,7 @@
     {
       "id": "T7",
       "de": {
-        "title": "Soziale Unterstützung"
+        "title": "Soziale Hilfen"
       },
       "en": {
         "title": "Social Support"
@@ -582,85 +582,85 @@
         "bold": [
           0,
           1,
-          3,
           2,
+          3,
           4,
           5
         ],
         "cautious": [
-          1,
-          3,
-          0,
-          2,
+          5,
           4,
-          5
+          1,
+          2,
+          3,
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Finanzielle Nothilfe",
-            "description": "Ein Anwohner bittet aufgrund unerwarteter finanzieller Schwierigkeiten um sofortige Unterstützung."
+            "text": "Dolmetscher für einen Termin",
+            "description": "Der Termin beginnt innerhalb der nächsten Stunde ohne gebuchten Dolmetscher. Er muss verlegt werden."
           },
           "en": {
-            "text": "Emergency financial assistance",
-            "description": "A resident requests immediate support due to unexpected financial difficulties."
+            "text": "Interpreter for an appointment",
+            "description": "The appointment begins within the hour with no interpreter booked. It will need rescheduling."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Antrag auf Kinderbetreuungszuschuss",
-            "description": "Eine Familie beantragt finanzielle Unterstützung zur Deckung der Kinderbetreuungskosten."
+            "text": "Einreichung einer Soforthilfe",
+            "description": "Heute bis Dienstschluss einzureichen, sonst fällt die Zahlung in den Lauf des nächsten Monats."
           },
           "en": {
-            "text": "Childcare subsidy application",
-            "description": "A family applies for financial assistance to help cover childcare costs."
+            "text": "Emergency payment lodgement",
+            "description": "Lodged before close today, or the payment falls into next month's run."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Antrag auf Behindertenhilfe",
-            "description": "Ein Anwohner bittet um Informationen und Unterstützung im Zusammenhang mit einer Behinderung."
+            "text": "Überprüfungsunterlagen zum Pflegegeld",
+            "description": "In zwei Wochen zurückzusenden, sonst ruhen die Zahlungen bis zur Wiederaufnahme des Vorgangs."
           },
           "en": {
-            "text": "Disability support request",
-            "description": "A resident requests information and support related to a disability."
+            "text": "Carer's review paperwork",
+            "description": "Returned within a fortnight, or payments pause until the file is reopened."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Antrag auf Wohngeld",
-            "description": "Es wurde ein Antrag auf wohnungsbezogene finanzielle Unterstützung eingereicht."
+            "text": "Fahrdienstvertrag für die Tagespflege",
+            "description": "Seit dem Frühjahr in Abstimmung. In zwei Wochen zu unterzeichnen, sonst gilt wieder die teurere Regelung."
           },
           "en": {
-            "text": "Housing allowance application",
-            "description": "An application has been submitted for housing-related financial assistance."
+            "text": "Day service transport contract",
+            "description": "Under discussion since spring. Signed within a fortnight, or the route reverts to the costlier arrangement."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Anfrage zum Bearbeitungsstand einer Leistung",
-            "description": "Ein Bürger bittet um eine Auskunft zum Stand eines Leistungsantrags."
+            "text": "Rückwirkungsfrist, Leistungsantrag",
+            "description": "Kein Termin festgelegt. Ist die Frist verstrichen, kann der zurückliegende Zeitraum nicht mehr beansprucht werden."
           },
           "en": {
-            "text": "Benefit-status inquiry",
-            "description": "A citizen requests an update on the status of a benefits application."
+            "text": "Backdating window, benefit claim",
+            "description": "No date set, but once the window passes the earlier period cannot be claimed."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Allgemeine Beratungsanfrage",
-            "description": "Ein Anwohner sucht Orientierung zu verfügbaren sozialen Unterstützungsangeboten."
+            "text": "Nicht zugewiesene Fälle, eine Fallbearbeitung",
+            "description": "Kein Termin festgelegt und keine Neuverteilung vorgesehen. Rund elf Vorgänge scheinen seit Juni ohne zuständige Person zu sein."
           },
           "en": {
-            "text": "General consultation request",
-            "description": "A resident seeks guidance about available social support services."
+            "text": "Unallocated cases, one caseworker",
+            "description": "No date set and no reallocation planned. Around eleven files appear to have had no named worker since June."
           }
         }
       ]
@@ -668,10 +668,10 @@
     {
       "id": "T8",
       "de": {
-        "title": "Umweltmeldungen"
+        "title": "Umwelt"
       },
       "en": {
-        "title": "Environmental Reports"
+        "title": "Environment"
       },
       "ai-order": {
         "bold": [
@@ -683,79 +683,79 @@
           5
         ],
         "cautious": [
-          0,
-          2,
-          1,
+          5,
           4,
+          1,
+          2,
           3,
-          5
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Möglicher Chemikalienaustritt",
-            "description": "Ein Bürger meldet eine ungewöhnliche Substanz in der Nähe eines örtlichen Gewässers."
+            "text": "Containerstandort für ein Straßenfest",
+            "description": "Der Container kommt innerhalb der nächsten Stunde ohne abgestimmten Standort. Die Veranstalter stellen ihn auf den Grünstreifen."
           },
           "en": {
-            "text": "Possible chemical spill",
-            "description": "A citizen reports an unusual substance near a local waterway."
+            "text": "Skip position for a street event",
+            "description": "The skip arrives within the hour without an agreed position. Organisers hold it on the verge."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Illegale Abfallentsorgung",
-            "description": "An einem nicht für die Entsorgung vorgesehenen Ort wurde Abfall gemeldet."
+            "text": "Termin zur Lärmmessung",
+            "description": "Heute vor Schichtende wahrzunehmen, sonst liegt das nächste Messfenster einen Monat entfernt."
           },
           "en": {
-            "text": "Illegal waste disposal",
-            "description": "Waste has been reported at a location not designated for disposal."
+            "text": "Noise reading appointment",
+            "description": "Attended before the team finishes today, or the next measurement window is a month off."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Beschwerde über Luftverschmutzung",
-            "description": "Anwohner melden Bedenken wegen Emissionen eines nahegelegenen Industriestandorts."
+            "text": "Einwendungsfrist zu Baumarbeiten",
+            "description": "Im Juni bekannt gemacht. Die Frist endet in zwei Wochen, danach werden die Arbeiten wie geplant ausgeführt."
           },
           "en": {
-            "text": "Air pollution complaint",
-            "description": "Residents report concerns about emissions from a nearby industrial site."
+            "text": "Tree work objection period",
+            "description": "Notified in June. Objections close within a fortnight; after that the scheduled work proceeds."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Lärmbeschwerde",
-            "description": "Bürgerinnen und Bürger melden wiederkehrenden Umgebungslärm, der die Umgebung beeinträchtigt."
+            "text": "Änderung der Grünabfallabfuhr",
+            "description": "In zwei Wochen zu bestätigen, sonst startet die neue Tour ein Quartal später."
           },
           "en": {
-            "text": "Noise complaint",
-            "description": "Citizens report recurring environmental noise affecting the surrounding area."
+            "text": "Green waste round change",
+            "description": "Confirmed within a fortnight, or the revised round starts a quarter late."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Antrag auf Baumfällung",
-            "description": "Es wurde ein Antrag auf Fällung eines Baums auf öffentlichem Grund eingereicht."
+            "text": "Bodenbefunde einer alten Kleingartenanlage",
+            "description": "Kein Termin festgelegt. Die Pächter bauen weiter an, während die Befunde offen bleiben."
           },
           "en": {
-            "text": "Tree removal request",
-            "description": "A request has been submitted to remove a tree on public property."
+            "text": "Allotment soil results, old site",
+            "description": "No date set. Plot holders have been growing on the site while the results stay outstanding."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Anfrage zu Recyclingangeboten",
-            "description": "Ein Anwohner bittet um Informationen zu örtlichen Recyclingangeboten."
+            "text": "Geruchsmeldungen, ein Gewässer",
+            "description": "Keine Beprobung geplant oder vorgeschrieben. Anwohner haben denselben Geruch mehrfach erwähnt."
           },
           "en": {
-            "text": "Recycling information request",
-            "description": "A resident requests information about local recycling services."
+            "text": "Odour reports, one watercourse",
+            "description": "No sampling scheduled or required. Residents have mentioned the same smell on several occasions."
           }
         }
       ]
@@ -763,7 +763,7 @@
     {
       "id": "T9",
       "de": {
-        "title": "Bau- und Bauwesen"
+        "title": "Bauwesen"
       },
       "en": {
         "title": "Building & Construction"
@@ -771,86 +771,86 @@
       "ai-order": {
         "bold": [
           0,
-          2,
           1,
+          2,
           3,
           4,
           5
         ],
         "cautious": [
-          0,
+          5,
+          4,
           1,
           2,
-          4,
           3,
-          5
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Meldung eines unsicheren Gebäudes",
-            "description": "Ein Bürger meldet Bedenken hinsichtlich des Zustands eines Gebäudes."
+            "text": "Angaben auf einem Bauzaunschild",
+            "description": "Der Bauzaun wird innerhalb der nächsten Stunde gestellt, mit falschem Ansprechpartner. Nachbarn rufen die falsche Stelle an."
           },
           "en": {
-            "text": "Unsafe building report",
-            "description": "A citizen reports concerns about the condition of a building structure."
+            "text": "Hoarding notice details",
+            "description": "The hoarding goes up within the hour with the wrong contact name. Neighbours call the wrong desk."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Bauantrag",
-            "description": "Für ein geplantes Bauvorhaben wurde ein Antrag eingereicht."
+            "text": "Beginndatum einer Gerüstgenehmigung",
+            "description": "Heute bis Dienstschluss zu bestätigen, sonst stellt die Firma einen Stillstandstag in Rechnung."
           },
           "en": {
-            "text": "Construction permit application",
-            "description": "An application has been submitted for a planned construction project."
+            "text": "Scaffold licence start date",
+            "description": "Confirmed before close today, or the contractor bills for an idle day."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Beschwerde über Schwarzbau",
-            "description": "Anwohner melden Bauarbeiten, für die möglicherweise keine erforderliche Genehmigung vorliegt."
+            "text": "Erfassung einer Nachbaranzeige",
+            "description": "In zwei Wochen zu erfassen, sonst beginnt die Frist der Nachbarn von vorn."
           },
           "en": {
-            "text": "Unauthorized construction complaint",
-            "description": "Residents report construction activity that may not have the required authorization."
+            "text": "Party wall notice logging",
+            "description": "Logged within a fortnight, or the neighbours' response period starts again."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Anzeige einer Renovierung",
-            "description": "Ein Eigentümer zeigt der Verwaltung geplante Renovierungsarbeiten an."
+            "text": "Beteiligung im Denkmalbereich",
+            "description": "Seit letztem Monat ausgehängt. Stellungnahmen fällig in zwei Wochen, sonst entscheidet allein der Amtsbericht."
           },
           "en": {
-            "text": "Renovation notification",
-            "description": "A property owner notifies the municipality about planned renovation work."
+            "text": "Conservation area consultation",
+            "description": "Advertised last month. Responses due within a fortnight, or it proceeds on the officer's report alone."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Streit über einen Grenzzaun",
-            "description": "Zwei benachbarte Eigentümer sind sich über den Verlauf eines Grenzzauns uneinig."
+            "text": "Frist zum Einschreiten, ungenehmigte Bauarbeiten",
+            "description": "Kein Termin festgelegt. Nach Ablauf der Vierjahresfrist sind die Arbeiten nicht mehr angreifbar."
           },
           "en": {
-            "text": "Fence dispute",
-            "description": "Two neighboring property owners disagree about the location of a boundary fence."
+            "text": "Enforcement window, unpermitted works",
+            "description": "No date set, but once the four-year period passes the works can no longer be challenged."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Anfrage zu Bauvorschriften",
-            "description": "Ein Bürger bittet um Informationen zu Bauvorschriften."
+            "text": "Meldungen zur Stützmauer",
+            "description": "Keine Begutachtung geplant oder vorgeschrieben. Zwei Kleingärtner sagen, die Mauer sehe anders aus als im Vorjahr."
           },
           "en": {
-            "text": "Construction information request",
-            "description": "A citizen requests information about construction regulations."
+            "text": "Movement reports, retaining wall",
+            "description": "No survey scheduled or required. Two allotment holders have said the wall looks different from last year."
           }
         }
       ]
@@ -858,94 +858,94 @@
     {
       "id": "T10",
       "de": {
-        "title": "Inspektionsplanung"
+        "title": "Prüfplanung"
       },
       "en": {
         "title": "Inspection Planning"
       },
       "ai-order": {
         "bold": [
-          1,
-          3,
           0,
-          5,
+          1,
+          2,
+          3,
           4,
-          2
+          5
         ],
         "cautious": [
-          2,
-          1,
-          0,
-          4,
           5,
-          3
+          4,
+          1,
+          2,
+          3,
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Restaurant mit mehreren Beschwerden",
-            "description": "Zu einem Restaurant sind kürzlich mehrere Beschwerden eingegangen."
+            "text": "Bestätigungsanruf zum Prüftermin",
+            "description": "Der Prüfer fährt innerhalb der nächsten Stunde los, der Betrieb ist nicht informiert. Möglicherweise ist niemand da."
           },
           "en": {
-            "text": "Restaurant with multiple complaints",
-            "description": "Several complaints have recently been received regarding a restaurant."
+            "text": "Visit confirmation call",
+            "description": "The inspector leaves within the hour and the site has not been told. They may find nobody in."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Kinderbetreuungseinrichtung mit anstehender Prüfung",
-            "description": "Für eine Kinderbetreuungseinrichtung steht eine routinemäßige Prüfung an."
+            "text": "Annahmeschluss für Proben",
+            "description": "Heute vor dem Kurier abzugeben, sonst wartet die Probe auf die nächste Abholung."
           },
           "en": {
-            "text": "Childcare facility due for inspection",
-            "description": "A childcare facility is scheduled for routine inspection activities."
+            "text": "Sample submission cutoff",
+            "description": "Submitted before the courier goes today, or the sample waits for the next collection."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Meldung eines Vorfalls auf einer Baustelle",
-            "description": "Auf einer aktiven Baustelle wurde ein Vorfall gemeldet."
+            "text": "Veröffentlichung des Gebührenverzeichnisses",
+            "description": "Im Frühjahr entworfen. In zwei Wochen zu veröffentlichen, sonst gelten die Sätze des Vorjahres."
           },
           "en": {
-            "text": "Construction site incident report",
-            "description": "An incident has been reported at an active construction site."
+            "text": "Fee schedule publication",
+            "description": "Drafted in the spring. Published within a fortnight, or visits are charged at last year's rate."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Routinemäßige Jahresprüfung",
-            "description": "Für eine Einrichtung steht die regulär geplante Jahresprüfung an."
+            "text": "Hospitationsplan für Auszubildende",
+            "description": "In zwei Wochen festzulegen, sonst verschiebt sich die Freigabe um einen Turnus."
           },
           "en": {
-            "text": "Routine annual inspection",
-            "description": "A facility is due for its regularly scheduled annual inspection."
+            "text": "Trainee shadowing rota",
+            "description": "Set within a fortnight, or the trainee's sign-off slips to the following cycle."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Kürzlich eröffneter Betrieb",
-            "description": "Ein neu gegründeter Betrieb wurde in die kommunalen Register aufgenommen."
+            "text": "Abgelaufene Zulassung, eine Einrichtung",
+            "description": "Kein Termin festgelegt. Eine Einrichtung arbeitet seit einigen Monaten über ihr Zulassungsdatum hinaus."
           },
           "en": {
-            "text": "Recently opened business",
-            "description": "A newly established business has entered municipal records."
+            "text": "Registration lapse, one setting",
+            "description": "No date set. A setting has been operating past its registration date for some months."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Antrag auf Nachkontrolle",
-            "description": "Es wurde beantragt, eine zuvor geprüfte Einrichtung erneut zu kontrollieren."
+            "text": "Nicht im Prüfplan geführte Standorte",
+            "description": "Kein Plan festgelegt und keiner vorgeschrieben. Einige Betriebe scheinen seit Jahren nicht im Prüfplan zu stehen."
           },
           "en": {
-            "text": "Follow-up inspection request",
-            "description": "A request has been submitted to revisit a previously inspected facility."
+            "text": "Sites absent from the rota",
+            "description": "No schedule set and none required. A handful of premises seem not to have been on the rota for years."
           }
         }
       ]
@@ -953,7 +953,7 @@
     {
       "id": "T11",
       "de": {
-        "title": "Einhaltung von Vorschriften"
+        "title": "Ordnungsrecht"
       },
       "en": {
         "title": "Regulatory Compliance"
@@ -968,79 +968,79 @@
           5
         ],
         "cautious": [
-          0,
+          5,
+          4,
+          1,
           2,
           3,
-          1,
-          4,
-          5
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Wiederholte Sicherheitsverstöße eines Betriebs",
-            "description": "Ein Betrieb wurde mehrfach wegen möglicher sicherheitsrelevanter Mängel gemeldet."
+            "text": "Neudruck einer Bescheinigung",
+            "description": "Der Druck läuft innerhalb der nächsten Stunde mit falsch geschriebener Straße. Der Betrieb lässt seinen Briefkopf neu drucken."
           },
           "en": {
-            "text": "Repeated safety violations by business",
-            "description": "A business has been reported multiple times for possible safety-related issues."
+            "text": "Certificate reprint",
+            "description": "Prints within the hour with a misspelled street. The business reprints its letterhead."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Meldung einer abgelaufenen Genehmigung",
-            "description": "Eine Meldung deutet darauf hin, dass eine erforderliche Genehmigung möglicherweise nicht mehr gültig ist."
+            "text": "Widerspruch gegen ein Bußgeld",
+            "description": "Heute bis Dienstschluss einzulegen, sonst wird das Bußgeld wie festgesetzt eingezogen."
           },
           "en": {
-            "text": "Expired permit report",
-            "description": "A report suggests that a required permit may no longer be valid."
+            "text": "Penalty appeal lodgement",
+            "description": "Lodged before close today, or the penalty is collected as issued."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Antrag auf neue Compliance-Prüfung",
-            "description": "Es wurde beantragt, eine Prüfung zur Einhaltung von Vorschriften durchzuführen."
+            "text": "Aktualisierung des Interessenregisters",
+            "description": "In zwei Wochen zu aktualisieren, sonst erscheint der Eintrag mit den Angaben des Vorjahres."
           },
           "en": {
-            "text": "New compliance inspection request",
-            "description": "A request has been submitted to conduct a compliance inspection."
+            "text": "Register of interests update",
+            "description": "Updated within a fortnight, or the entry publishes with last year's declarations."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Fehlende Steuerunterlagen",
-            "description": "Erforderliche steuerbezogene Unterlagen scheinen unvollständig zu sein."
+            "text": "Versand eines Merkblatts an die Branche",
+            "description": "Seit April fertig. In zwei Wochen zu versenden, sonst arbeiten die Betriebe dieses Quartal nach der alten Fassung."
           },
           "en": {
-            "text": "Missing tax documentation",
-            "description": "Required tax-related documentation appears to be incomplete."
+            "text": "Sector guidance circulation",
+            "description": "Ready since April. Circulated within a fortnight, or businesses work to the superseded version this quarter."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Antrag auf Berichtigung von Verwaltungsdaten",
-            "description": "Ein Betrieb beantragt die Korrektur von Angaben in einem amtlichen Register."
+            "text": "Verjährungsfrist, offener Vorgang",
+            "description": "Kein Termin festgelegt. Nach Ablauf der Verjährung kann der Vorgang nicht weiterverfolgt werden."
           },
           "en": {
-            "text": "Administrative correction request",
-            "description": "A business requests a correction to information in an official record."
+            "text": "Limitation date, open case",
+            "description": "No date set, but once the limitation period passes the case cannot be pursued."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Allgemeine Anfrage zu Compliance-Anforderungen",
-            "description": "Ein Betrieb bittet um Informationen zu Anforderungen an die Einhaltung von Vorschriften."
+            "text": "Ungeprüfte Selbstauskünfte, ein Verfahren",
+            "description": "Keine Prüfungen geplant oder vorgeschrieben. Eine Gruppe von Selbstauskünften scheint nie stichprobenhaft geprüft worden zu sein."
           },
           "en": {
-            "text": "General compliance inquiry",
-            "description": "A business requests information about compliance requirements."
+            "text": "Unverified declarations, one scheme",
+            "description": "No checks scheduled or required. A group of self-declared returns appears never to have been sampled."
           }
         }
       ]
@@ -1048,94 +1048,94 @@
     {
       "id": "T12",
       "de": {
-        "title": "Bildungsdienstleistungen"
+        "title": "Bildung"
       },
       "en": {
-        "title": "Education Services"
+        "title": "Education"
       },
       "ai-order": {
         "bold": [
+          0,
+          1,
           2,
           3,
-          0,
           4,
-          1,
           5
         ],
         "cautious": [
-          1,
-          0,
-          2,
+          5,
           4,
+          1,
+          2,
           3,
-          5
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Antrag auf Schülerbeförderung",
-            "description": "Eine Familie beantragt Unterstützung für den täglichen Schulweg eines Kindes."
+            "text": "Sitzplan für den Prüfungsraum",
+            "description": "Die Prüfung beginnt innerhalb der nächsten Stunde ohne Sitzplan. Die Aufsicht setzt die Schüler von Hand."
           },
           "en": {
-            "text": "School transport request",
-            "description": "A family requests transportation support for a student's daily commute."
+            "text": "Exam room seating list",
+            "description": "The session starts within the hour without a seating list. Invigilators seat pupils by hand."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Antrag auf sonderpädagogische Unterstützung",
-            "description": "Eltern beantragen zusätzliche schulische Unterstützung für ein Kind."
+            "text": "Prüfung des Anspruchs auf Essensgeld",
+            "description": "Heute bis Dienstschluss zu prüfen, sonst zahlt die Familie und fordert die Differenz zurück."
           },
           "en": {
-            "text": "Special-needs support request",
-            "description": "Parents request additional educational assistance for a student."
+            "text": "Free school meals verification",
+            "description": "Verified before close today, or the family pays and reclaims the difference."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Schulanmeldung",
-            "description": "Eine Familie reicht einen Antrag auf Einschulung eines Kindes ein."
+            "text": "Ausschreibung eines Schulratssitzes",
+            "description": "In zwei Wochen zu veröffentlichen, sonst tagt das Gremium im nächsten Halbjahr unterhalb der Beschlussfähigkeit."
           },
           "en": {
-            "text": "School registration",
-            "description": "A family submits an application to enroll a child in school."
+            "text": "Governor vacancy notice",
+            "description": "Posted within a fortnight, or the board sits under quorum next term."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Anfrage zu Stipendien",
-            "description": "Ein Schüler bittet um Informationen zu Stipendienmöglichkeiten."
+            "text": "Änderung des Schülerbeförderungsvertrags",
+            "description": "Im letzten Halbjahr beantragt. In zwei Wochen zu vereinbaren, sonst startet die neue Route nach den Ferien."
           },
           "en": {
-            "text": "Scholarship inquiry",
-            "description": "A student requests information about scholarship opportunities."
+            "text": "Transport contract variation",
+            "description": "Requested last term. Agreed within a fortnight, or the revised route starts after half term."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Fehlende Schulunterlagen",
-            "description": "Ein Antrag auf Schulanmeldung wurde ohne alle erforderlichen Unterlagen eingereicht."
+            "text": "Widerspruchsfrist, Schulplatz",
+            "description": "Kein Termin festgelegt. Ist die Frist abgelaufen, kann die Zuweisung in diesem Jahr nicht mehr überprüft werden."
           },
           "en": {
-            "text": "Missing school documents",
-            "description": "A school registration application has been submitted without all required documents."
+            "text": "Appeal window, school place",
+            "description": "No date set, but once the window closes the placement cannot be revisited this year."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Allgemeine Informationsanfrage",
-            "description": "Ein Elternteil bittet um allgemeine Informationen zu Bildungsangeboten."
+            "text": "Nicht überprüfte Förderpläne",
+            "description": "Keine Überprüfung geplant oder vorgeschrieben. Mehrere Pläne eines Jahrgangs scheinen seit ihrer Erstellung nicht angesehen worden zu sein."
           },
           "en": {
-            "text": "General information request",
-            "description": "A parent requests general information about educational services."
+            "text": "Support plans not reviewed",
+            "description": "No review scheduled or required. Several plans in one year group appear not to have been looked at since."
           }
         }
       ]
@@ -1146,91 +1146,91 @@
         "title": "Bürgerkorrespondenz"
       },
       "en": {
-        "title": "Citizen Correspondence"
+        "title": "Correspondence"
       },
       "ai-order": {
         "bold": [
+          0,
           1,
           2,
-          0,
           3,
           4,
           5
         ],
         "cautious": [
-          0,
-          2,
-          1,
           5,
           4,
-          3
+          1,
+          2,
+          3,
+          0
         ]
       },
       "tiles": [
         {
           "key": 0,
           "de": {
-            "text": "Eskalierte Beschwerde aus dem Büro des Bürgermeisters",
-            "description": "Eine Bürgerbeschwerde wurde vom Büro des Bürgermeisters zur weiteren Bearbeitung weitergeleitet."
+            "text": "Text der Abwesenheitsnotiz",
+            "description": "Sie wird innerhalb der nächsten Stunde aktiv und nennt das falsche Team. Absender werden in das falsche Postfach geschickt."
           },
           "en": {
-            "text": "Escalated complaint from mayor's office",
-            "description": "A citizen complaint has been forwarded by the mayor's office for further handling."
+            "text": "Out-of-office wording",
+            "description": "Goes live within the hour naming the wrong team. Senders are pointed to the wrong inbox."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Antrag nach dem Informationsfreiheitsgesetz",
-            "description": "Ein Bürger beantragt Zugang zu bei der Verwaltung vorliegenden öffentlichen Informationen."
+            "text": "Versand einer fristgebundenen Antwort",
+            "description": "Heute bis Dienstschluss zu versenden, sonst gilt die Antwort als verspätet."
           },
           "en": {
-            "text": "Freedom-of-information request",
-            "description": "A citizen requests access to public information held by the municipality."
+            "text": "Statutory reply lodgement",
+            "description": "Sent before close today, or the response is recorded as late."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Beschwerde mit näher rückender Frist",
-            "description": "Eine zuvor eingereichte Beschwerde erfordert eine Antwort innerhalb einer begrenzten Frist."
+            "text": "Rückfrage zu einem Auskunftsersuchen",
+            "description": "Der Antrag ging vor drei Wochen ein. In zwei Wochen nachzufragen, sonst wird nach dem ursprünglichen Wortlaut beantwortet."
           },
           "en": {
-            "text": "Complaint with approaching deadline",
-            "description": "A previously submitted complaint requires a response within a limited timeframe."
+            "text": "Information request clarification",
+            "description": "The request arrived three weeks ago. Sought within a fortnight, or answered on the original wording."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Bürgervorschlag",
-            "description": "Ein Anwohner reicht einen Vorschlag zur Verbesserung einer kommunalen Leistung ein."
+            "text": "Übersetzung eines Standardschreibens",
+            "description": "In zwei Wochen zu beauftragen, sonst erhält der Anwohner nur die deutsche Fassung."
           },
           "en": {
-            "text": "Citizen suggestion",
-            "description": "A resident submits a suggestion for improving a municipal service."
+            "text": "Translation of a standard letter",
+            "description": "Ordered within a fortnight, or the resident receives the English version only."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Rückmeldung zu einer Verwaltungsleistung",
-            "description": "Ein Bürger gibt eine Rückmeldung zu einem kürzlichen Kontakt mit der Verwaltung."
+            "text": "Frist zur Anrufung der Ombudsstelle",
+            "description": "Kein Termin festgelegt. Ist die Frist verstrichen, kann die Beschwerde nicht mehr eskaliert werden."
           },
           "en": {
-            "text": "Feedback on public service",
-            "description": "A citizen provides feedback about a recent interaction with the municipality."
+            "text": "Ombudsman referral window",
+            "description": "No date set, but once the referral period lapses the complaint cannot be escalated."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Doppelte Anfrage",
-            "description": "Eine Anfrage ähnelt offenbar einer bereits zuvor eingereichten Anfrage."
+            "text": "Wiederholte Zuschriften, eine Adresse",
+            "description": "Kein Besuch geplant oder vorgeschrieben. Eine Adresse hat fünfmal zu offenbar derselben Sache geschrieben."
           },
           "en": {
-            "text": "Duplicate inquiry",
-            "description": "A request appears similar to one that was previously submitted."
+            "text": "Repeat correspondence, one address",
+            "description": "No visit scheduled or required. One address has written five times about what seems to be the same matter."
           }
         }
       ]

@@ -131,6 +131,37 @@ window.Config = (function () {
      Do not reintroduce a knob here. If the pacing is wrong, it is wrong in the
      gym too: fix it there and re-export. */
 
+  /* ═══ what the AI does about a slot the participant already filled ══
+     Only reachable in the HANDOFF mechanic, and only once the participant
+     has placed something themselves. The hidden mechanic commits a whole
+     ranking in one press, so it always overrides — there is no per-case
+     decision to make.
+
+       "A"  Override. The AI places its case in the slot it wants and the
+            case sitting there goes back to the inbox. Its ranking always
+            comes out intact; the participant's work can be undone.
+
+       "B"  Defer. The AI skips any case whose slot is taken, keeps going
+            down its ranking, and finishes once nothing is left that it can
+            place without overriding. It never undoes the participant, and
+            the board may be left part-empty for them to finish.
+
+       "C"  Defer, then override. Style B's pass first, so everything that
+            fits alongside the participant lands first — then it goes back
+            and takes the contested slots anyway, filling the board.
+
+     A and C both end with the AI's full ranking on the board; they differ
+     in the ORDER the participant watches it happen, which is the point.
+     B is the only one that leaves the participant's placements standing.
+
+     This is a placement POLICY, not cursor motion — how the cursor moves is
+     the character, in cursors.json. Both characters use whichever style is
+     set here; it is not part of a setup (G1–G4). */
+  const PLACEMENT_STYLES = ["A", "B", "C"];
+  const PLACEMENT_STYLE = "A";
+
+  function isPlacementStyle(v) { return PLACEMENT_STYLES.indexOf(v) !== -1; }
+
   /* ═══ study design: unassisted baseline, then ONE AI mechanic ══════
      Every participant runs the unassisted baseline rounds first, then both
      AI mechanics in the order their setup fixes. Which setup they run is
@@ -310,6 +341,7 @@ window.Config = (function () {
     CONFIG, STEPS, ENDPOINT_URL, SHUFFLE_SEED,
     HIDDEN_PLACE_MS, CHARACTERS, isCharacter,
     FIXED_GROUP, BASELINE, MECHANICS, GROUPS, GROUP_KEYS,
+    PLACEMENT_STYLE, PLACEMENT_STYLES, isPlacementStyle,
     BASELINE_TASKS, TASK_BLOCKS,
     buildTaskPlan, conditionFor, isGroup, characterFor, orderFor,
   };

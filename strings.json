@@ -41,6 +41,7 @@
           "hidden": "KI setzt auf Knopfdruck"
         },
         "aiDone": "Alle Fälle sind platziert. Sehen Sie die Reihenfolge in Ruhe durch und ziehen Sie jeden Fall, den Sie ändern möchten — bestätigen Sie dann.",
+        "aiStopped": "Die KI hat alle Fälle platziert, die sie einordnen konnte, ohne Ihre eigenen Platzierungen zu verändern. Die übrigen Fälle setzen Sie selbst — dann bestätigen Sie.",
         "startAi": "KI starten"
       },
       "survey": {
@@ -239,6 +240,7 @@
           "hidden": "AI places on request"
         },
         "aiDone": "All cases are placed. Look the order over and drag any case you'd like to move, then confirm.",
+        "aiStopped": "The AI has placed every case it could without changing what you had already placed. The remaining cases are yours to set — then confirm.",
         "startAi": "Start AI"
       },
       "survey": {
