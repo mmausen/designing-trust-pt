@@ -153,10 +153,9 @@ hover-and-hold versus one press.
 ### What the AI does about a slot you already filled
 
 `Config.PLACEMENT_STYLE` — `"A"`, `"B"` or `"C"`, with a picker in the dev bar that
-overrides it for testing and sticks across rounds. It applies to the **handoff** mechanic
-only: the hidden one commits a whole ranking in one press, so there is no per-case
-decision to make. It is a placement *policy*, not cursor motion — both characters use
-whichever style is set, and it is not part of a setup (G1–G4).
+overrides it for testing and sticks across rounds. It applies to **both mechanics**. It is a
+placement *policy*, not cursor motion — both characters use whichever style is set, and it
+is not part of a setup (G1–G4).
 
 | | |
 |---|---|
@@ -179,6 +178,20 @@ hand over. Ranking is `t2 t0 t1 t3 t5 t4`:
 C's interleaving is the rule working as intended: a case the AI evicts returns to the
 inbox and is picked up again **at its own position**, so it goes straight into its own
 empty slot before the next contested one is taken.
+
+**In the hidden mechanic** the same styles decide *which cases fly* on the one press:
+
+| | |
+|---|---|
+| A | every case travels, from wherever it sits, over anything you had arranged |
+| B | only cases still in the **inbox**, and only into slots you left **empty**. Everything you placed stays put, and the board can be left part-full |
+| C | identical to A here — C means "what fits first, *then* the contested slots", and that is an **order**; a one-shot flight has no order to watch, so its end state is A's |
+
+Under B a case whose slot you took stays in the inbox, and a case you placed is never
+relocated even if the AI would rather have it elsewhere — the same rule the handoff cursor
+follows, where the AI only ever picks up from the inbox. If nothing can move at all, the
+press lands immediately rather than freezing the board for a second while nothing happens.
+`hidden_done` records `boardFull` and the `placementStyle`, as `handoff_done` does.
 
 Under B the round can end with the board part-empty, so the footer says
 `ui.task.aiStopped` — "placed every case it could without changing what you had already

@@ -787,15 +787,19 @@ window.Task = (function () {
 
   /* ═══ the hidden mechanic (G2) ════════════════════════════════════
      No cursor and no narration. The block under the board is a "Start AI"
-     button; one press and every step travels from wherever it currently sits
-     — inbox or ladder, already-sorted or not — to the slot the AI chose, all
-     six at once, linearly, in Config.HIDDEN_PLACE_MS. The AI's whole visible
+     button; one press and the cases travel to the slots the AI chose, all at
+     once, linearly, in Config.HIDDEN_PLACE_MS. The AI's whole visible
      contribution is that one second; everything after it is the participant's
      review, exactly as after a handoff.
 
-     It runs ONCE per task. Like the handoff zone at autoFinish(), the button
-     retires when the board is full: there is no more work to hand over, and a
-     second press could only undo the participant's own corrections.
+     WHICH cases travel is the placement style — see hiddenTargetBoard().
+     Under A and C every case moves, from wherever it sits, over anything the
+     participant had arranged. Under B only cases still in the inbox move, and
+     only into slots the participant left empty, so the board can be left
+     part-full for them to finish.
+
+     It runs ONCE per task. The button retires afterwards: a second press
+     could only undo the participant's own corrections.
 
      ── why clones rather than the real tiles ──
      This is FLIP (measure, commit, measure, animate back), but it moves copies
@@ -848,6 +852,36 @@ window.Task = (function () {
     clearFlyLayer();
   }
 
+  /* Which cases this press actually moves, and the board it leaves behind.
+
+       A — the AI's whole ranking, committed over whatever was there.
+       C — identical to A here. C means "place what fits alongside them first,
+           THEN take the contested slots", and that is an ORDER; a one-shot
+           flight has no order to watch, so its end state is A's.
+       B — never undoes the participant. A case still in the inbox flies to
+           its slot only if that slot is empty; anything they already placed
+           stays exactly where they put it, and a case whose slot is taken
+           stays in the inbox. The board can be left part-full.
+
+     Note B moves cases OUT OF THE INBOX only, never from one slot to another
+     — the same rule the handoff cursor follows, where the AI only ever picks
+     up from the inbox. A case the participant placed is left alone even if
+     the AI would rather have it somewhere else. */
+  function hiddenTargetBoard() {
+    if (placementStyle() !== "B") {
+      return { next: [...aiRanking], moved: aiRanking.filter(Boolean) };
+    }
+    const next = [...slots];
+    const moved = [];
+    aiRanking.forEach((id, i) => {
+      if (!id || next[i]) return;                         // no case, or the slot is taken
+      if (!inbox.some(c => c.id === id)) return;          // they placed it somewhere already
+      next[i] = id;
+      moved.push(id);
+    });
+    return { next, moved };
+  }
+
   function startHiddenPlacement() {
     if (!hiddenAi || hiddenPlaced || hiddenFlying || drag) return;
     const myRun = runId;
@@ -869,17 +903,22 @@ window.Task = (function () {
     // Where everything is now …
     const from = cardRects("#inbox .card, #ladder .card");
 
-    // … commit the AI's order, and find out where everything landed.
-    const order = [...aiRanking];
-    slots = order;
-    inbox = [];
+    // … commit whatever this style allows, and find out where it landed.
+    const { next, moved } = hiddenTargetBoard();
+    slots = next;
+    inbox = inbox.filter(c => moved.indexOf(c.id) === -1);
     render();                                    // hides the real tiles: hiddenFlying is set
     const to = cardRects("#ladder .card");
 
+    /* Nothing to move — style B, and every slot the AI wanted was already
+       taken. Land immediately rather than freezing the board for a second
+       while nothing happens. */
+    if (!moved.length) { finishHiddenPlacement(myRun); return; }
+
     const layer = $("fly-layer");
     const clones = [];
-    order.forEach((id, i) => {
-      if (!id) return;
+    next.forEach((id, i) => {
+      if (!id || moved.indexOf(id) === -1) return;   // only what the AI actually moved
       aiPlacedCount++;
       slotAuthor[i] = "ai";
       Store.log("ai_placement", { cardId: id, slot: i });
@@ -925,11 +964,16 @@ window.Task = (function () {
     clearFlyLayer();
     aiState = "done";
     if (zoneEl) { zoneEl.hidden = true; zoneEl.disabled = false; }
-    $("hint").textContent = I18n.t("ui.task.aiDone");
+    /* Style B can leave the board part-full, exactly as it can in a handoff:
+       never claim a finished board the participant still has cases to fill,
+       and start the review clock only when there is an order to review. */
+    const boardFull = slots.every(Boolean);
+    $("hint").textContent = I18n.t(boardFull ? "ui.task.aiDone" : "ui.task.aiStopped");
     render();
-    allPlacedAt = performance.now();
+    if (boardFull) allPlacedAt = performance.now();
     Store.log("hidden_done", {
-      taskId, slots: [...slots], atMs: sinceStart(),
+      taskId, slots: [...slots], atMs: sinceStart(), boardFull,
+      placementStyle: placementStyle(),
       placedByAi: aiPlacedCount, placedByUser: userPlacedCount,
       ladderReorders, slotAuthor: [...slotAuthor],
       durationMs: Config.HIDDEN_PLACE_MS,
@@ -1429,7 +1473,7 @@ window.Task = (function () {
       finalPlacedByUser: slotAuthor.filter(a => a === "user").length,
       slotAuthor: [...slotAuthor],
       ladderReorders,
-      placementStyle: handoff ? placementStyle() : null,
+      placementStyle: (aiMode === "solo") ? null : placementStyle(),
       cursorCharacter: handoff ? character : null,
       cursorDials: handoff ? Cursor.dials() : null,
       cursorTravel: handoff ? Cursor.travel() : null,
