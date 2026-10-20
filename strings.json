@@ -8,13 +8,13 @@
         "continue": "Fortsetzen",
         "startNew": "Neu starten"
       },
-      "prolific": {
-        "heading": "Ihre Prolific-ID",
-        "body": "Bitte geben Sie Ihre Prolific-ID ein, damit Ihre Teilnahme zugeordnet und vergütet werden kann. Sie finden sie in Ihrem Prolific-Konto.",
-        "label": "Prolific-ID",
-        "placeholder": "z. B. 5f2a9c1e4b7d3a8e6c0f1b2d",
+      "anonId": {
+        "heading": "Ihre Teilnahme-ID",
+        "body": "Bitte geben Sie die anonymisierte ID ein, die Sie vom Forschungsteam dieser Studie erhalten haben. Sie verbindet Ihre Antworten mit Ihrer Teilnahme.",
+        "label": "Teilnahme-ID",
+        "placeholder": "Ihre ID",
         "next": "Weiter",
-        "required": "Bitte geben Sie Ihre Prolific-ID ein."
+        "required": "Bitte geben Sie Ihre Teilnahme-ID ein."
       },
       "task": {
         "inboxHd": "Eingang — offene Fälle ({n} übrig)",
@@ -207,13 +207,13 @@
         "continue": "Resume",
         "startNew": "Start new"
       },
-      "prolific": {
-        "heading": "Your Prolific ID",
-        "body": "Please enter your Prolific ID so your participation can be matched and paid. You can find it in your Prolific account.",
-        "label": "Prolific ID",
-        "placeholder": "e.g. 5f2a9c1e4b7d3a8e6c0f1b2d",
+      "anonId": {
+        "heading": "Your participant ID",
+        "body": "Please enter the anonymised ID you received from the research team running this study. It links your responses to your participation.",
+        "label": "Participant ID",
+        "placeholder": "Your ID",
         "next": "Continue",
-        "required": "Please enter your Prolific ID."
+        "required": "Please enter your participant ID."
       },
       "task": {
         "inboxHd": "Inbox — open cases ({n} remaining)",

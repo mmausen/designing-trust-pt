@@ -41,7 +41,7 @@ prioritises, which a per-round switch would destroy.
 > nothing is scored. The only ranking measure is `overrides` — how far the participant's
 > final order departs from the AI's. The debrief shows the participant no feedback at all.
 
-Flow: **Prolific ID → pre-survey → baseline rounds → AI block 1 → mid-survey
+Flow: **participant ID → pre-survey → baseline rounds → AI block 1 → mid-survey
 → AI block 2 → post-survey → debrief → end**. Each block opens with its own onboarding
 for the mechanic it introduces; later rounds in the same block go straight to work.
 **Every non-task step can be switched off** in `Config.STEPS` — see below.
@@ -104,7 +104,7 @@ otherwise serve stale code. These queries can be dropped when baking to a single
 | `js/task.js` | The ranking interaction: custom drag, the AI cursor engine (handoff), the one-second flight (hidden) |
 | `js/results.js` | The final debrief screen (no feedback — see the note above) |
 | `js/main.js` | Boot: fetch content, resume offer, wiring |
-| `js/prolific.js` | The optional Prolific-ID step |
+| `js/anon-id.js` | The optional step that asks for the researcher-issued participant ID |
 
 </details>
 
@@ -276,7 +276,7 @@ task's `ai-order`. Nothing in the code marks such a task, and nothing scores the
 
 ```js
 const STEPS = {
-  prolificId: true,   // ask for the participant's Prolific ID, and log it
+  anonId:     true,   // ask for the anonymised ID the research team issued, and log it
   preSurvey:  true,   // questionnaire before the first task
   midSurvey:  true,   // questionnaire between the two AI blocks
   postSurvey: true,   // questionnaire after the last task
@@ -306,15 +306,22 @@ The **mid-survey** sits on the seam between the two AI blocks — it asks about 
 just finished, so it lands before the next one introduces itself. Its questions live in
 `strings.json` under `surveys.mid`, in the same shape as `pre` and `post`.
 
-**Prolific ID** (`STEPS.prolificId`) — a screen asking for the participant's Prolific ID,
-stored on the session as `prolificId` and logged. It deliberately does **not** become the
-`participantId`: that names the participant's **folder** under `logs/`, and is generated
-before this screen is reached, so letting typed text take that role would put user input
-on the filesystem as a path. The two ride side by side instead.
-**There is no format check.** Any non-empty value is taken as given: a guess about
-Prolific's format is not worth nagging a recruited participant at the door, and matching
-ids against Prolific's own records is an analysis job. Only `length` is logged, never a
-verdict.
+**Participant ID** (`STEPS.anonId`) — a screen asking for the anonymised ID the research
+team issued to this participant beforehand, stored on the session as `anonId` and logged.
+It is what links a run to the researchers' own list; the prototype itself never learns who
+anyone is. It deliberately does **not** become the `participantId`: that names the
+participant's **folder** under `logs/`, and is generated before this screen is reached, so
+letting typed text take that role would put user input on the filesystem as a path — and
+a mistyped or reused ID would merge two people's runs into one folder. The two ride side
+by side instead.
+**There is no format check.** The format is whatever the research team issues, and may
+change between batches; any non-empty value is taken as given, and matching it against the
+researchers' list is an analysis job. Only `length` is logged, never a verdict.
+
+> This replaced a Prolific-ID step on 2026-10-20, when the study stopped recruiting through
+> Prolific. The session field was `prolificId` and the events `prolific_view` /
+> `prolific_id_entered`; sessions from before then carry those names (and `schemaVersion`
+> 5 rather than 6).
 
 **Tile shuffle** (`SHUFFLE_SEED`) — the inbox order is seeded, not random: identical
 for every participant, different per task. Change the string to reshuffle all tasks
@@ -811,8 +818,9 @@ interleave inside a line.
 One session object, autosaved to `localStorage["bdr_triage_session"]`, resumable on
 reload. `Store.download()` exports it as JSON from the console.
 
-- `prolificId` — what the participant typed on the Prolific step (`null` if that step
-  was off). Personal data: it identifies a payable account
+- `anonId` — the researcher-issued ID the participant typed (`null` if that step was
+  off). Pseudonymous: anonymised on its own, but it links to the research team's list, so
+  handle it as personal data
 - `steps` — which optional steps this session actually ran
 - `group` / `groupSource` — the assigned setup (G1–G4) and how it was decided
 - `character` — `"bold"` or `"cautious"`, pinned at session creation from the group
@@ -869,7 +877,7 @@ reload. `Store.download()` exports it as JSON from the console.
   - `ai_override` — per tile the participant moved away from the AI's suggestion. With
     nothing scored, this and the `overrides` count are the ranking measure
   - surveys — `survey_view`, `survey_submit` (`id` is `pre` / `mid` / `post`)
-  - Prolific — `prolific_view`, `prolific_id_entered` (`length` only — the value
+  - participant ID — `anon_id_view`, `anon_id_entered` (`length` only — the value
     itself is on the session, not repeated into the event stream)
 
 </details>
@@ -915,7 +923,7 @@ participant accepted the AI's order without inspecting it.
 - [ ] Set the number of rounds — `BASELINE_TASKS` runs 3 (`T1`–`T3`) and each
       `TASK_BLOCKS` block runs 5, so a session is 13 rounds. Every group runs them
       in the same order; only the mechanic on each block is counterbalanced
-- [ ] Confirm `STEPS` matches how this run is administered — Prolific ID and
+- [ ] Confirm `STEPS` matches how this run is administered — participant ID and
       the three questionnaires each switch off independently
 - [ ] Replace the placeholder questions in `surveys.mid` alongside `pre` and `post`
 - [ ] Set `FIXED_GROUP` to the setup this batch runs, and check the boot console says so

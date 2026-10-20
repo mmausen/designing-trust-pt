@@ -46,8 +46,10 @@ window.Store = (function () {
            entries carry `mechanic` + `block`, and the group fixes the
            character and the order rather than the mechanic
        5 → plan entries carry `taskBlock`; the session carries `prolificId`
-           and the STEPS that were enabled for it */
-  const SCHEMA_VERSION = 5;
+           and the STEPS that were enabled for it
+       6 → `prolificId` became `anonId` — the study stopped recruiting through
+           Prolific, and the ID is now one the research team issues */
+  const SCHEMA_VERSION = 6;
 
   function newSession(pid, assignment) {
     // Never let a previous run be overwritten without a copy surviving.
@@ -56,10 +58,10 @@ window.Store = (function () {
     data = {
       schemaVersion: SCHEMA_VERSION,
       participantId: pid || "",
-      /* Typed by the participant on the optional Prolific step, never used as
-         the participantId — see js/prolific.js for why. Null when that step is
-         switched off or not yet reached. */
-      prolificId: null,
+      /* The anonymised ID the research team issued, typed on the optional
+         ID step. Never used as the participantId — see js/anon-id.js for
+         why. Null when that step is switched off or not yet reached. */
+      anonId: null,
       config: { ...Config.CONFIG },
       /* Which optional steps this session actually ran. Snapshotted rather
          than read live, so a run stays interpretable after the toggles are
@@ -110,12 +112,12 @@ window.Store = (function () {
   }
   function group() { return data ? data.group : null; }
 
-  function setProlificId(v) {
+  function setAnonId(v) {
     if (!data) return;
-    data.prolificId = v || null;
+    data.anonId = v || null;
     save();
   }
-  function prolificId() { return data ? data.prolificId : null; }
+  function anonId() { return data ? data.anonId : null; }
 
   /* Falls back to the group's character rather than returning null: a round
      with no character would have no AI ranking at all, which would silently
@@ -278,7 +280,7 @@ window.Store = (function () {
   return {
     SCHEMA_VERSION,
     newSession, get, restore, setStep, setLang, setGroup, group, character, order,
-    setProlificId, prolificId,
+    setAnonId, anonId,
     log, addResult, setSurvey, markComplete,
     load, clear, download, sendRemote, flush,
     archive, flushArchive, downloadArchive,

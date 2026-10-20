@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
    FLOW — the step machine. One linear sequence:
-     prolificId → pre-survey → [baseline rounds] → [AI block 1]
+     anonId → pre-survey → [baseline rounds] → [AI block 1]
        → mid-survey → [AI block 2] → post-survey → debrief
 
    Every non-task step is optional — Config.STEPS switches each on or off, and
@@ -21,7 +21,7 @@ window.Flow = (function () {
     const S = Config.STEPS;
     steps = [];
 
-    if (S.prolificId) steps.push({ type: "prolific" });
+    if (S.anonId) steps.push({ type: "anonId" });
     if (S.preSurvey) steps.push({ type: "survey", id: "pre" });
 
     plan.forEach((p, idx) => {
@@ -58,7 +58,7 @@ window.Flow = (function () {
     if (!step) return;
     Store.setStep(i);
     switch (step.type) {
-      case "prolific": Prolific.render(); break;
+      case "anonId":   AnonId.render(); break;
       case "survey":   Survey.render(step.id); break;
       case "task":     Task.start(step); break;
       case "debrief":  Results.showDebrief(); break;

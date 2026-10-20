@@ -31,7 +31,7 @@ window.Config = (function () {
      themselves are never optional — they are the study.
 
      Order when all are on:
-       prolificId → pre → [baseline] → [AI block 1]
+       anonId → pre → [baseline] → [AI block 1]
          → mid → [AI block 2] → post → debrief
 
      The RESUME offer is independent of all of these: it has its own screen,
@@ -43,7 +43,7 @@ window.Config = (function () {
      indexes the steps array whose shape these switches decide. Finish or
      discard a pilot session before flipping one. */
   const STEPS = {
-    prolificId: true,   // ask for the participant's Prolific ID, and log it
+    anonId:     true,   // ask for the anonymised ID the research team issued, and log it
     preSurvey:  false,   // questionnaire before the first task
     midSurvey:  false,   // questionnaire between the two AI blocks
     postSurvey: false,   // questionnaire after the last task

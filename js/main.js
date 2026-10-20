@@ -53,7 +53,7 @@
     const cur = Flow.current();
     if (!cur) return;
     if (cur.type === "survey") Survey.relocalize();
-    else if (cur.type === "prolific") Prolific.relocalize();
+    else if (cur.type === "anonId") AnonId.relocalize();
     else if (cur.type === "task") Task.relocalize();
     else if (cur.type === "debrief") Results.relocalize();
   }
@@ -310,7 +310,7 @@
     });
 
     Task.wire();
-    Prolific.wire();
+    AnonId.wire();
 
     // ── language switcher ──
     I18n.onChange(onLanguageChanged);
