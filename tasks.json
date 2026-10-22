@@ -30,66 +30,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Text der Sperrungsbekanntmachung",
+            "text": "Falsche Umleitung in Straßensperrungsmitteilung",
             "description": "Die Bekanntmachung geht innerhalb der nächsten Stunde in den Druck, die Umleitung ist unklar formuliert. Autofahrer fahren möglicherweise einen Umweg."
           },
           "en": {
-            "text": "Road closure notice wording",
+            "text": "Incorrect diversion route in road closure notice",
             "description": "The notice goes to print within the hour with an unclear diversion line. Drivers may take a longer way round."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Containergenehmigung für einen Umzug",
+            "text": "Genehmigung für Umzugscontainer benötigt",
             "description": "Antragsschluss ist heute bei Dienstschluss. Wird er verpasst, bucht der Anwohner den Container für nächste Woche neu."
           },
           "en": {
-            "text": "Skip licence for a house move",
+            "text": "Skip permit needed for house move",
             "description": "Applications close when the office does today. Missed, the resident rebooks the skip for next week."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Bestellung eines Haltestellenschilds",
+            "text": "Fehlendes Bushaltestellenschild",
             "description": "Bestellung fällig innerhalb von zwei Wochen. Später fällt der Ersatz in die Charge des nächsten Quartals."
           },
           "en": {
-            "text": "Bus stop flag replacement order",
+            "text": "Missing bus stop sign",
             "description": "Order due within a fortnight. Later, the replacement falls into the next quarter's batch."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Stellungnahmen zur Parkzone",
+            "text": "Frist für Rückmeldungen zu Parkregelungen läuft bald ab",
             "description": "Läuft seit dem Frühjahr, die Frist endet in zwei Wochen. Danach geht der Entwurf unverändert weiter."
           },
           "en": {
-            "text": "Parking zone consultation responses",
+            "text": "Parking restrictions consultation closing soon",
             "description": "Open since spring; responses close within a fortnight. After that the draft zone goes forward as written."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Antrag auf Bordsteinabsenkung",
+            "text": "Rollstuhlfahrer erreicht Gehweg nicht",
             "description": "Kein Termin festgelegt. Der Anwohner gibt an, mit seinem Rollstuhl derzeit nicht auf den Gehweg zu kommen."
           },
           "en": {
-            "text": "Dropped kerb request",
+            "text": "Wheelchair user unable to access pavement",
             "description": "No date set. The resident says they cannot currently get their wheelchair onto the pavement."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Meldungen zum Gehwegzustand, eine Straße",
+            "text": "Meldungen über unebenen Gehweg in einer Straße",
             "description": "Keine Prüfung geplant oder vorgeschrieben. Drei Anwohner haben unabhängig voneinander unebene Platten vor der Praxis erwähnt."
           },
           "en": {
-            "text": "Footway condition reports, one street",
+            "text": "Reports of uneven paving on one street",
             "description": "No inspection scheduled or required. Three residents have separately mentioned uneven paving outside the surgery."
           }
         }
@@ -125,66 +125,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Schlüssel für eine Besichtigung",
+            "text": "Wohnungsbesichtigung scheitert an fehlendem Zugangscode",
             "description": "Die Besichtigung beginnt innerhalb der nächsten Stunde, der Code des Schlüsseltresors wurde nicht übermittelt. Der Interessent wartet draußen."
           },
           "en": {
-            "text": "Keys for a viewing",
+            "text": "Property viewing blocked by missing access code",
             "description": "A viewing starts within the hour and the key safe code has not been shared. The applicant waits outside."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Anmeldung zur Kautionsverwaltung",
+            "text": "Kautionsregistrierung heute fällig",
             "description": "Heute bis Dienstschluss einzureichen, sonst werden die Mietunterlagen neu ausgestellt."
           },
           "en": {
-            "text": "Deposit scheme registration",
+            "text": "Tenant deposit registration due today",
             "description": "Lodged before close today, or the tenancy paperwork is reissued."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Genehmigung für den Müllplatz",
+            "text": "Vertrag für Mülllagerung muss erneuert werden",
             "description": "Liegt seit März, Verlängerung fällig in zwei Wochen. Verspätet wird der Regelsatz statt des vereinbarten Satzes berechnet."
           },
           "en": {
-            "text": "Communal bin store licence",
+            "text": "Bin store agreement needs renewal",
             "description": "Pending since March; renewal due within a fortnight. Late, the block is billed at the standard rate."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Kostenvoranschlag für barrierefreien Umbau",
+            "text": "Wohnungsanpassung wartet auf Angebot",
             "description": "Angebote fällig in zwei Wochen, sonst geht der Vorgang ans Ende der Prüfliste."
           },
           "en": {
-            "text": "Adaptation grant quotation",
+            "text": "Home adaptation awaiting contractor quote",
             "description": "Quotes due within a fortnight, or the file returns to the back of the assessment list."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Eintrittsanspruch, langjähriger Mieter",
+            "text": "Bewohner wartet auf Nachfolgeregelung",
             "description": "Kein Termin festgelegt. Wird der Anspruch nicht vor Mietende entschieden, kann er nicht wieder aufgenommen werden."
           },
           "en": {
-            "text": "Succession claim, long-term resident",
+            "text": "Resident awaiting succession decision",
             "description": "No date set. If the claim is not decided before the tenancy ends it cannot be reopened."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Feuchtigkeitsmeldungen, ein Treppenhaus",
+            "text": "Mehrere Haushalte melden Feuchtigkeit",
             "description": "Keine Prüfung geplant oder vorgeschrieben. Vier Haushalte eines Treppenhauses melden seit dem Frühjahr dasselbe."
           },
           "en": {
-            "text": "Damp reports, same stairwell",
+            "text": "Damp reported by multiple households",
             "description": "No inspection scheduled or required. Four households on one stairwell have reported the same thing since spring."
           }
         }
@@ -220,66 +220,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Doppelbelegung eines Besprechungsraums",
+            "text": "Besprechungsraum doppelt gebucht",
             "description": "Zwei Teams erscheinen innerhalb der nächsten Stunde zum selben Raum. Eines muss ausweichen."
           },
           "en": {
-            "text": "Room booking clash",
+            "text": "Meeting room double-booked",
             "description": "Two teams arrive within the hour for the same room. One will need to find another space."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Rückfrage zur Reinigungsrechnung",
+            "text": "Umstrittene Reinigungsrechnung",
             "description": "Heute bis Dienstschluss anzuzeigen, sonst wird der strittige Betrag im Lauf dieses Monats gezahlt."
           },
           "en": {
-            "text": "Cleaning invoice query",
+            "text": "Disputed cleaning invoice",
             "description": "Raised before close today, or the disputed amount is paid on this month's run."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Bestellung von Leuchtmitteln",
+            "text": "Wartungsmaterial geht zur Neige",
             "description": "Bestellung fällig in zwei Wochen, sonst arbeitet das Lager bis zum nächsten Turnus mit der Reserve."
           },
           "en": {
-            "text": "Lightbulb stock order",
+            "text": "Maintenance supplies running low",
             "description": "Order due within a fortnight, or the depot runs on its reserve until the next cycle."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Einstellung von Möbeln zur Weiternutzung",
+            "text": "Ungenutzte Möbel zur Weiterverwendung",
             "description": "Bereits zweimal angemahnt. Einstellung in zwei Wochen, sonst gehen die Schreibtische ins kostenpflichtige Lager."
           },
           "en": {
-            "text": "Furniture reuse listing",
+            "text": "Unused furniture awaiting reuse",
             "description": "Raised twice already. Listed within a fortnight, or surplus desks go to paid storage."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Gegensprechanlage am barrierefreien Eingang",
+            "text": "Barrierefreier Eingang erreicht Empfang nicht",
             "description": "Kein Termin festgelegt. Besucher am Nebeneingang können den Empfang nicht erreichen."
           },
           "en": {
-            "text": "Accessible entrance intercom",
+            "text": "Accessible entrance cannot reach reception",
             "description": "No date set. Visitors using the side entrance have no way to call reception."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Meldungen zum Handlauf, Nordtreppenhaus",
+            "text": "Lockerer Handlauf im Treppenhaus gemeldet",
             "description": "Keine Prüfung geplant oder vorgeschrieben. Mitarbeitende haben zweimal erwähnt, dass ein Abschnitt locker wirkt."
           },
           "en": {
-            "text": "Handrail reports, north stairwell",
+            "text": "Loose handrail reported in stairwell",
             "description": "No inspection scheduled or required. Staff have mentioned twice that a section feels loose."
           }
         }
@@ -315,66 +315,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Rufnummer auf einem Bauschild",
+            "text": "Falsche Telefonnummer auf öffentlichem Aushang",
             "description": "Das Schild wird innerhalb der nächsten Stunde aufgestellt, mit der Nummer des Vorjahres. Anrufer erreichen einen toten Anschluss."
           },
           "en": {
-            "text": "Contact number on a site notice",
+            "text": "Incorrect contact number on public notice",
             "description": "A notice goes up within the hour with last year's number. Callers reach a disconnected line."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Abholung eines Lärmprotokolls",
+            "text": "Nachweise für Lärmbeschwerde heute fällig",
             "description": "Heute bis Dienstschluss abzuholen, sonst beginnt der Anwohner ein neues Protokoll über vier Wochen."
           },
           "en": {
-            "text": "Noise diary collection",
+            "text": "Noise complaint evidence due today",
             "description": "Collected before close today, or the resident starts a fresh four-week diary."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Schlichtungstermin zum Heckenstreit",
+            "text": "Nachbarschaftsstreit wartet auf Vermittlung",
             "description": "Läuft seit dem vergangenen Sommer. Termin in zwei Wochen zu buchen, sonst geht der Fall in das kostenpflichtige Verfahren."
           },
           "en": {
-            "text": "Hedge height mediation slot",
+            "text": "Neighbour dispute awaiting mediation",
             "description": "Running since last summer. Booked within a fortnight, or the case moves to the paid tribunal route."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Stellungnahmen zur Straßenbenennung",
+            "text": "Frist für Rückmeldungen zum Straßennamen läuft bald ab",
             "description": "Die Frist endet in zwei Wochen. Danach geht der vorgeschlagene Name unverändert weiter."
           },
           "en": {
-            "text": "Street naming responses",
+            "text": "Street naming consultation closing soon",
             "description": "Responses close within a fortnight. After that the proposed name goes forward unchanged."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Nicht geleerte Tonne, Haushalt mit Abholhilfe",
+            "text": "Unterstützter Haushalt ohne Müllabfuhr",
             "description": "Kein Termin festgelegt. Der Haushalt steht im Hilfsverzeichnis und kann die Tonne nicht selbst bewegen."
           },
           "en": {
-            "text": "Missed collection, assisted household",
+            "text": "Assisted household missed bin collection",
             "description": "No date set. The household is on the assisted list and cannot move the bin themselves."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Meldungen zur Beleuchtung, Parkweg",
+            "text": "Schlechte Beleuchtung auf Parkweg gemeldet",
             "description": "Keine Begehung geplant oder vorgeschrieben. Mehrere Anwohner sagen, der Weg sei abends schlecht einsehbar."
           },
           "en": {
-            "text": "Lighting reports, park path",
+            "text": "Poor lighting reported on park path",
             "description": "No survey scheduled or required. Several residents say the park path is hard to see along in the evening."
           }
         }
@@ -410,66 +410,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Einweisungsunterlagen für Ordner",
+            "text": "Veranstaltungspersonal ohne Unterlagen",
             "description": "Die Ordner kommen innerhalb der nächsten Stunde, die Unterlagen sind nicht gedruckt. Sie werden am Handy eingewiesen."
           },
           "en": {
-            "text": "Event marshal briefing pack",
+            "text": "Event staff missing briefing materials",
             "description": "Marshals arrive within the hour and the pack is unprinted. They brief from a phone screen instead."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Änderung einer Schankerlaubnis",
+            "text": "Änderung einer Gewerbeerlaubnis heute fällig",
             "description": "Heute bis Dienstschluss einzureichen, sonst gilt die Änderung erst ab dem Folgemonat."
           },
           "en": {
-            "text": "Alcohol licence variation",
+            "text": "Business licence change due today",
             "description": "Lodged before close today, or the variation applies only from the following month."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Herausgabe von Videoaufzeichnungen",
+            "text": "Videoaufnahmen könnten verloren gehen",
             "description": "In zwei Wochen anzufordern, sonst wird das Material im üblichen Turnus überschrieben."
           },
           "en": {
-            "text": "CCTV disclosure request",
+            "text": "CCTV footage at risk of being lost",
             "description": "Requested within a fortnight, or the footage is overwritten on the normal cycle."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Antrag auf Zuschuss für eine Sicherheitspartnerschaft",
+            "text": "Frist für Sicherheitsförderung nähert sich",
             "description": "Die Gruppe hat im März erstmals gefragt. Einreichung in zwei Wochen, sonst wartet sie auf die nächste Runde."
           },
           "en": {
-            "text": "Community safety grant form",
+            "text": "Community safety grant deadline approaching",
             "description": "The group first asked in March. Submitted within a fortnight, or they wait for next year's round."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Unbesetzte Schülerlotsenstelle",
+            "text": "Schülerlotsenstelle unbesetzt",
             "description": "Kein Termin festgelegt. Die Stelle vor der Grundschule ist seit Schuljahresbeginn unbesetzt."
           },
           "en": {
-            "text": "Crossing patrol vacancy",
+            "text": "School crossing patrol position vacant",
             "description": "No date set. The post outside the primary school has been unfilled since term began."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Wiederholte Meldungen, Kanalgeländer",
+            "text": "Meldungen über beschädigtes Kanalgeländer",
             "description": "Keine Prüfung geplant oder vorgeschrieben. Spaziergänger haben dreimal eine Lücke im Geländer erwähnt."
           },
           "en": {
-            "text": "Repeated reports, canal railing",
+            "text": "Reports of damaged canal railing",
             "description": "No inspection scheduled or required. Walkers have mentioned a gap in the railing on three occasions."
           }
         }
@@ -505,66 +505,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Beschilderung im Wartebereich",
+            "text": "Fehlende Beschilderung im Wartebereich",
             "description": "Die Sprechstunde öffnet innerhalb der nächsten Stunde ohne Schilder. Besucher fragen stattdessen am Tresen."
           },
           "en": {
-            "text": "Clinic waiting room signage",
+            "text": "Missing signs at clinic waiting area",
             "description": "The session opens within the hour without signs. Attendees ask at the desk instead."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Neuausstellung einer Hygienebescheinigung",
+            "text": "Ersatz für Hygienezertifikat benötigt",
             "description": "Heute bis Dienstschluss neu auszustellen, sonst wartet der Betrieb auf die Charge nächster Woche."
           },
           "en": {
-            "text": "Food hygiene certificate reissue",
+            "text": "Replacement food hygiene certificate needed",
             "description": "Reissued before close today, or the trader waits for next week's batch."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Anmeldung eines neuen Caterers",
+            "text": "Cateringbetrieb wartet auf Registrierung",
             "description": "Offen seit der Eröffnung. Fällig in zwei Wochen, sonst arbeitet der Betrieb unangemeldet und wird gebührenpflichtig."
           },
           "en": {
-            "text": "Registration for a new caterer",
+            "text": "Catering business awaiting registration",
             "description": "Outstanding since the business opened. Due within a fortnight, or it trades unregistered and becomes chargeable."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Raumbestätigung für ein Gesundheitsangebot",
+            "text": "Veranstaltungsort für Gesundheitsaktion unbestätigt",
             "description": "In zwei Wochen zu bestätigen, sonst weicht die Veranstaltung in einen kleineren Raum aus."
           },
           "en": {
-            "text": "Health outreach venue confirmation",
+            "text": "Health event venue not confirmed",
             "description": "Confirmed within a fortnight, or the session moves to a smaller room."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Rückstand bei Hausbesuchen, ein Bezirk",
+            "text": "Neue Eltern warten auf Hausbesuche",
             "description": "Kein Termin festgelegt. Mehrere Neueltern eines Bezirks hatten noch keinen Erstbesuch."
           },
           "en": {
-            "text": "Home visit backlog, one district",
+            "text": "New parents awaiting support visits",
             "description": "No date set. Several new parents in one district have not had a first visit."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Beprobungsplan, ältere Standorte",
+            "text": "Ältere Standorte fehlen bei Wasserprüfungen",
             "description": "Kein Plan festgelegt und keiner vorgeschrieben. Zwei Standorte scheinen seit Jahren nicht in der Probenliste aufzutauchen."
           },
           "en": {
-            "text": "Water testing schedule, older sites",
+            "text": "Older sites missing from water testing",
             "description": "No schedule set and none required. Two sites seem not to have appeared in the sampling list for years."
           }
         }
@@ -600,66 +600,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Dolmetscher für einen Termin",
+            "text": "Termin ohne Dolmetscherunterstützung",
             "description": "Der Termin beginnt innerhalb der nächsten Stunde ohne gebuchten Dolmetscher. Er muss verlegt werden."
           },
           "en": {
-            "text": "Interpreter for an appointment",
+            "text": "Appointment missing interpreter support",
             "description": "The appointment begins within the hour with no interpreter booked. It will need rescheduling."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Einreichung einer Soforthilfe",
+            "text": "Antrag auf Soforthilfe heute fällig",
             "description": "Heute bis Dienstschluss einzureichen, sonst fällt die Zahlung in den Lauf des nächsten Monats."
           },
           "en": {
-            "text": "Emergency payment lodgement",
+            "text": "Emergency support application due today",
             "description": "Lodged before close today, or the payment falls into next month's run."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Überprüfungsunterlagen zum Pflegegeld",
+            "text": "Unterlagen zur Pflegeprüfung überfällig",
             "description": "In zwei Wochen zurückzusenden, sonst ruhen die Zahlungen bis zur Wiederaufnahme des Vorgangs."
           },
           "en": {
-            "text": "Carer's review paperwork",
+            "text": "Caregiver review paperwork overdue",
             "description": "Returned within a fortnight, or payments pause until the file is reopened."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Fahrdienstvertrag für die Tagespflege",
+            "text": "Beförderungsregelung wartet auf Genehmigung",
             "description": "Seit dem Frühjahr in Abstimmung. In zwei Wochen zu unterzeichnen, sonst gilt wieder die teurere Regelung."
           },
           "en": {
-            "text": "Day service transport contract",
+            "text": "Transport arrangements awaiting approval",
             "description": "Under discussion since spring. Signed within a fortnight, or the route reverts to the costlier arrangement."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Rückwirkungsfrist, Leistungsantrag",
+            "text": "Anspruch auf Nachzahlung gefährdet",
             "description": "Kein Termin festgelegt. Ist die Frist verstrichen, kann der zurückliegende Zeitraum nicht mehr beansprucht werden."
           },
           "en": {
-            "text": "Backdating window, benefit claim",
+            "text": "Benefit backdating eligibility at risk",
             "description": "No date set, but once the window passes the earlier period cannot be claimed."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Nicht zugewiesene Fälle, eine Fallbearbeitung",
+            "text": "Fälle ohne zuständige Sachbearbeitung",
             "description": "Kein Termin festgelegt und keine Neuverteilung vorgesehen. Rund elf Vorgänge scheinen seit Juni ohne zuständige Person zu sein."
           },
           "en": {
-            "text": "Unallocated cases, one caseworker",
+            "text": "Cases without assigned caseworker",
             "description": "No date set and no reallocation planned. Around eleven files appear to have had no named worker since June."
           }
         }
@@ -695,66 +695,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Containerstandort für ein Straßenfest",
+            "text": "Standort für Container noch ungeklärt",
             "description": "Der Container kommt innerhalb der nächsten Stunde ohne abgestimmten Standort. Die Veranstalter stellen ihn auf den Grünstreifen."
           },
           "en": {
-            "text": "Skip position for a street event",
+            "text": "Skip location not agreed for event",
             "description": "The skip arrives within the hour without an agreed position. Organisers hold it on the verge."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Termin zur Lärmmessung",
+            "text": "Lärmmessungstermin heute fällig",
             "description": "Heute vor Schichtende wahrzunehmen, sonst liegt das nächste Messfenster einen Monat entfernt."
           },
           "en": {
-            "text": "Noise reading appointment",
+            "text": "Noise measurement appointment due today",
             "description": "Attended before the team finishes today, or the next measurement window is a month off."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Einwendungsfrist zu Baumarbeiten",
+            "text": "Einwände gegen Baumarbeiten enden bald",
             "description": "Im Juni bekannt gemacht. Die Frist endet in zwei Wochen, danach werden die Arbeiten wie geplant ausgeführt."
           },
           "en": {
-            "text": "Tree work objection period",
+            "text": "Tree work objections closing soon",
             "description": "Notified in June. Objections close within a fortnight; after that the scheduled work proceeds."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Änderung der Grünabfallabfuhr",
+            "text": "Änderungen bei Grünabfallabholung ausstehend",
             "description": "In zwei Wochen zu bestätigen, sonst startet die neue Tour ein Quartal später."
           },
           "en": {
-            "text": "Green waste round change",
+            "text": "Green waste collection changes pending",
             "description": "Confirmed within a fortnight, or the revised round starts a quarter late."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Bodenbefunde einer alten Kleingartenanlage",
+            "text": "Bodentestergebnisse noch ausstehend",
             "description": "Kein Termin festgelegt. Die Pächter bauen weiter an, während die Befunde offen bleiben."
           },
           "en": {
-            "text": "Allotment soil results, old site",
+            "text": "Soil test results still outstanding",
             "description": "No date set. Plot holders have been growing on the site while the results stay outstanding."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Geruchsmeldungen, ein Gewässer",
+            "text": "Wiederholte Geruchsmeldungen am Gewässer",
             "description": "Keine Beprobung geplant oder vorgeschrieben. Anwohner haben denselben Geruch mehrfach erwähnt."
           },
           "en": {
-            "text": "Odour reports, one watercourse",
+            "text": "Repeated odour reports near waterway",
             "description": "No sampling scheduled or required. Residents have mentioned the same smell on several occasions."
           }
         }
@@ -790,66 +790,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Angaben auf einem Bauzaunschild",
+            "text": "Falsche Kontaktdaten auf Baustellenschild",
             "description": "Der Bauzaun wird innerhalb der nächsten Stunde gestellt, mit falschem Ansprechpartner. Nachbarn rufen die falsche Stelle an."
           },
           "en": {
-            "text": "Hoarding notice details",
+            "text": "Incorrect contact details on site notice",
             "description": "The hoarding goes up within the hour with the wrong contact name. Neighbours call the wrong desk."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Beginndatum einer Gerüstgenehmigung",
+            "text": "Beginn der Gerüstgenehmigung unbestätigt",
             "description": "Heute bis Dienstschluss zu bestätigen, sonst stellt die Firma einen Stillstandstag in Rechnung."
           },
           "en": {
-            "text": "Scaffold licence start date",
+            "text": "Scaffold permit start date unconfirmed",
             "description": "Confirmed before close today, or the contractor bills for an idle day."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Erfassung einer Nachbaranzeige",
+            "text": "Baumaßnahme noch nicht erfasst",
             "description": "In zwei Wochen zu erfassen, sonst beginnt die Frist der Nachbarn von vorn."
           },
           "en": {
-            "text": "Party wall notice logging",
+            "text": "Building work notification not recorded",
             "description": "Logged within a fortnight, or the neighbours' response period starts again."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Beteiligung im Denkmalbereich",
+            "text": "Frist für Denkmalschutz-Rückmeldungen läuft bald ab",
             "description": "Seit letztem Monat ausgehängt. Stellungnahmen fällig in zwei Wochen, sonst entscheidet allein der Amtsbericht."
           },
           "en": {
-            "text": "Conservation area consultation",
+            "text": "Conservation area consultation closing soon",
             "description": "Advertised last month. Responses due within a fortnight, or it proceeds on the officer's report alone."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Frist zum Einschreiten, ungenehmigte Bauarbeiten",
+            "text": "Fall unerlaubter Bauarbeiten gefährdet",
             "description": "Kein Termin festgelegt. Nach Ablauf der Vierjahresfrist sind die Arbeiten nicht mehr angreifbar."
           },
           "en": {
-            "text": "Enforcement window, unpermitted works",
+            "text": "Unauthorised building work case at risk",
             "description": "No date set, but once the four-year period passes the works can no longer be challenged."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Meldungen zur Stützmauer",
+            "text": "Sorgen wegen Bewegung einer Stützmauer",
             "description": "Keine Begutachtung geplant oder vorgeschrieben. Zwei Kleingärtner sagen, die Mauer sehe anders aus als im Vorjahr."
           },
           "en": {
-            "text": "Movement reports, retaining wall",
+            "text": "Concerns about retaining wall movement",
             "description": "No survey scheduled or required. Two allotment holders have said the wall looks different from last year."
           }
         }
@@ -885,66 +885,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Bestätigungsanruf zum Prüftermin",
+            "text": "Betrieb nicht über Inspektion informiert",
             "description": "Der Prüfer fährt innerhalb der nächsten Stunde los, der Betrieb ist nicht informiert. Möglicherweise ist niemand da."
           },
           "en": {
-            "text": "Visit confirmation call",
+            "text": "Premises not notified about inspection",
             "description": "The inspector leaves within the hour and the site has not been told. They may find nobody in."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Annahmeschluss für Proben",
+            "text": "Probenabgabe heute fällig",
             "description": "Heute vor dem Kurier abzugeben, sonst wartet die Probe auf die nächste Abholung."
           },
           "en": {
-            "text": "Sample submission cutoff",
+            "text": "Sample submission due today",
             "description": "Submitted before the courier goes today, or the sample waits for the next collection."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Veröffentlichung des Gebührenverzeichnisses",
+            "text": "Neue Gebühren noch nicht veröffentlicht",
             "description": "Im Frühjahr entworfen. In zwei Wochen zu veröffentlichen, sonst gelten die Sätze des Vorjahres."
           },
           "en": {
-            "text": "Fee schedule publication",
+            "text": "New inspection fees unpublished",
             "description": "Drafted in the spring. Published within a fortnight, or visits are charged at last year's rate."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Hospitationsplan für Auszubildende",
+            "text": "Einsatzplan für Auszubildende fehlt",
             "description": "In zwei Wochen festzulegen, sonst verschiebt sich die Freigabe um einen Turnus."
           },
           "en": {
-            "text": "Trainee shadowing rota",
+            "text": "Trainee shadowing schedule missing",
             "description": "Set within a fortnight, or the trainee's sign-off slips to the following cycle."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Abgelaufene Zulassung, eine Einrichtung",
+            "text": "Einrichtung arbeitet mit abgelaufener Registrierung",
             "description": "Kein Termin festgelegt. Eine Einrichtung arbeitet seit einigen Monaten über ihr Zulassungsdatum hinaus."
           },
           "en": {
-            "text": "Registration lapse, one setting",
+            "text": "Facility operating after registration expired",
             "description": "No date set. A setting has been operating past its registration date for some months."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Nicht im Prüfplan geführte Standorte",
+            "text": "Betriebe fehlen im Inspektionsprogramm",
             "description": "Kein Plan festgelegt und keiner vorgeschrieben. Einige Betriebe scheinen seit Jahren nicht im Prüfplan zu stehen."
           },
           "en": {
-            "text": "Sites absent from the rota",
+            "text": "Premises missing from inspection programme",
             "description": "No schedule set and none required. A handful of premises seem not to have been on the rota for years."
           }
         }
@@ -980,66 +980,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Neudruck einer Bescheinigung",
+            "text": "Offizielles Zertifikat enthält Fehler",
             "description": "Der Druck läuft innerhalb der nächsten Stunde mit falsch geschriebener Straße. Der Betrieb lässt seinen Briefkopf neu drucken."
           },
           "en": {
-            "text": "Certificate reprint",
+            "text": "Official certificate contains incorrect details",
             "description": "Prints within the hour with a misspelled street. The business reprints its letterhead."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Widerspruch gegen ein Bußgeld",
+            "text": "Einspruch gegen Strafe heute fällig",
             "description": "Heute bis Dienstschluss einzulegen, sonst wird das Bußgeld wie festgesetzt eingezogen."
           },
           "en": {
-            "text": "Penalty appeal lodgement",
+            "text": "Penalty appeal due today",
             "description": "Lodged before close today, or the penalty is collected as issued."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Aktualisierung des Interessenregisters",
+            "text": "Öffentliches Register muss aktualisiert werden",
             "description": "In zwei Wochen zu aktualisieren, sonst erscheint der Eintrag mit den Angaben des Vorjahres."
           },
           "en": {
-            "text": "Register of interests update",
+            "text": "Public register needs updating",
             "description": "Updated within a fortnight, or the entry publishes with last year's declarations."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Versand eines Merkblatts an die Branche",
+            "text": "Aktualisierte Hinweise nicht versendet",
             "description": "Seit April fertig. In zwei Wochen zu versenden, sonst arbeiten die Betriebe dieses Quartal nach der alten Fassung."
           },
           "en": {
-            "text": "Sector guidance circulation",
+            "text": "Updated guidance not sent to businesses",
             "description": "Ready since April. Circulated within a fortnight, or businesses work to the superseded version this quarter."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Verjährungsfrist, offener Vorgang",
+            "text": "Offener Fall nähert sich Frist",
             "description": "Kein Termin festgelegt. Nach Ablauf der Verjährung kann der Vorgang nicht weiterverfolgt werden."
           },
           "en": {
-            "text": "Limitation date, open case",
+            "text": "Open case approaching legal deadline",
             "description": "No date set, but once the limitation period passes the case cannot be pursued."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Ungeprüfte Selbstauskünfte, ein Verfahren",
+            "text": "Selbstangaben nie überprüft",
             "description": "Keine Prüfungen geplant oder vorgeschrieben. Eine Gruppe von Selbstauskünften scheint nie stichprobenhaft geprüft worden zu sein."
           },
           "en": {
-            "text": "Unverified declarations, one scheme",
+            "text": "Self-reported information never checked",
             "description": "No checks scheduled or required. A group of self-declared returns appears never to have been sampled."
           }
         }
@@ -1075,66 +1075,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Sitzplan für den Prüfungsraum",
+            "text": "Prüfung startet ohne Sitzplan",
             "description": "Die Prüfung beginnt innerhalb der nächsten Stunde ohne Sitzplan. Die Aufsicht setzt die Schüler von Hand."
           },
           "en": {
-            "text": "Exam room seating list",
+            "text": "Exam starting without seating plan",
             "description": "The session starts within the hour without a seating list. Invigilators seat pupils by hand."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Prüfung des Anspruchs auf Essensgeld",
+            "text": "Prüfung des Essensgeldanspruchs heute fällig",
             "description": "Heute bis Dienstschluss zu prüfen, sonst zahlt die Familie und fordert die Differenz zurück."
           },
           "en": {
-            "text": "Free school meals verification",
+            "text": "Free school meals check due today",
             "description": "Verified before close today, or the family pays and reclaims the difference."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Ausschreibung eines Schulratssitzes",
+            "text": "Freier Schulratssitz nicht ausgeschrieben",
             "description": "In zwei Wochen zu veröffentlichen, sonst tagt das Gremium im nächsten Halbjahr unterhalb der Beschlussfähigkeit."
           },
           "en": {
-            "text": "Governor vacancy notice",
+            "text": "School governor vacancy not advertised",
             "description": "Posted within a fortnight, or the board sits under quorum next term."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Änderung des Schülerbeförderungsvertrags",
+            "text": "Änderungen beim Schülertransport warten auf Einigung",
             "description": "Im letzten Halbjahr beantragt. In zwei Wochen zu vereinbaren, sonst startet die neue Route nach den Ferien."
           },
           "en": {
-            "text": "Transport contract variation",
+            "text": "School transport changes awaiting agreement",
             "description": "Requested last term. Agreed within a fortnight, or the revised route starts after half term."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Widerspruchsfrist, Schulplatz",
+            "text": "Frist für Schulplatz-Widerspruch endet bald",
             "description": "Kein Termin festgelegt. Ist die Frist abgelaufen, kann die Zuweisung in diesem Jahr nicht mehr überprüft werden."
           },
           "en": {
-            "text": "Appeal window, school place",
+            "text": "School placement appeal window closing",
             "description": "No date set, but once the window closes the placement cannot be revisited this year."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Nicht überprüfte Förderpläne",
+            "text": "Förderpläne überfällig zur Überprüfung",
             "description": "Keine Überprüfung geplant oder vorgeschrieben. Mehrere Pläne eines Jahrgangs scheinen seit ihrer Erstellung nicht angesehen worden zu sein."
           },
           "en": {
-            "text": "Support plans not reviewed",
+            "text": "Student support plans overdue for review",
             "description": "No review scheduled or required. Several plans in one year group appear not to have been looked at since."
           }
         }
@@ -1170,66 +1170,66 @@
         {
           "key": 0,
           "de": {
-            "text": "Text der Abwesenheitsnotiz",
+            "text": "Automatische Antwort verweist auf falsches Team",
             "description": "Sie wird innerhalb der nächsten Stunde aktiv und nennt das falsche Team. Absender werden in das falsche Postfach geschickt."
           },
           "en": {
-            "text": "Out-of-office wording",
+            "text": "Automatic reply points to wrong team",
             "description": "Goes live within the hour naming the wrong team. Senders are pointed to the wrong inbox."
           }
         },
         {
           "key": 1,
           "de": {
-            "text": "Versand einer fristgebundenen Antwort",
+            "text": "Formelle Antwort heute fällig",
             "description": "Heute bis Dienstschluss zu versenden, sonst gilt die Antwort als verspätet."
           },
           "en": {
-            "text": "Statutory reply lodgement",
+            "text": "Formal response due today",
             "description": "Sent before close today, or the response is recorded as late."
           }
         },
         {
           "key": 2,
           "de": {
-            "text": "Rückfrage zu einem Auskunftsersuchen",
+            "text": "Anfrage benötigt Rückfrage",
             "description": "Der Antrag ging vor drei Wochen ein. In zwei Wochen nachzufragen, sonst wird nach dem ursprünglichen Wortlaut beantwortet."
           },
           "en": {
-            "text": "Information request clarification",
+            "text": "Resident request needs clarification",
             "description": "The request arrived three weeks ago. Sought within a fortnight, or answered on the original wording."
           }
         },
         {
           "key": 3,
           "de": {
-            "text": "Übersetzung eines Standardschreibens",
+            "text": "Standardschreiben muss übersetzt werden",
             "description": "In zwei Wochen zu beauftragen, sonst erhält der Anwohner nur die deutsche Fassung."
           },
           "en": {
-            "text": "Translation of a standard letter",
+            "text": "Standard letter requires translation",
             "description": "Ordered within a fortnight, or the resident receives the English version only."
           }
         },
         {
           "key": 4,
           "de": {
-            "text": "Frist zur Anrufung der Ombudsstelle",
+            "text": "Frist zur Beschwerdeeskalation nähert sich",
             "description": "Kein Termin festgelegt. Ist die Frist verstrichen, kann die Beschwerde nicht mehr eskaliert werden."
           },
           "en": {
-            "text": "Ombudsman referral window",
+            "text": "Complaint escalation deadline approaching",
             "description": "No date set, but once the referral period lapses the complaint cannot be escalated."
           }
         },
         {
           "key": 5,
           "de": {
-            "text": "Wiederholte Zuschriften, eine Adresse",
+            "text": "Wiederholte Beschwerden zum selben Problem",
             "description": "Kein Besuch geplant oder vorgeschrieben. Eine Adresse hat fünfmal zu offenbar derselben Sache geschrieben."
           },
           "en": {
-            "text": "Repeat correspondence, one address",
+            "text": "Repeated complaints about same issue",
             "description": "No visit scheduled or required. One address has written five times about what seems to be the same matter."
           }
         }
